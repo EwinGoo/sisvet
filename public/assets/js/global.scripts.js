@@ -58,7 +58,7 @@ utilities = {
                     errors[name].length > 1
                         ? showError($(`[name="${name}"`)[0], errors[name][0])
                         : showError($(`[name="${name}"`)[0], errors[name]);
-                } else if (value.trim() !== "" && name) {
+                } else if (value.trim() !== "" && name && name != "change") {
                     console.log(name);
                     showSucces($(`[name="${name}"`)[0]);
                 }
@@ -71,7 +71,7 @@ utilities = {
             elements.forEach(function (element) {
                 var instance = new Choices(element, {
                     // searchEnabled: search,
-                    allowHTML: search,
+                    // allowHTML: search,
                 });
                 instance.setChoiceByValue("");
                 choiceInstances.push(instance);

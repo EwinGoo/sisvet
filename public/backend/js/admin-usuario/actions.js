@@ -1,4 +1,4 @@
-export function ACTIONS(name = "", id = null) {
+export function _ACTIONS(name = "", id = null) {
     return `
     <td class="text-sm">
         <!--<a href="javascript:;" data-bs-toggle="tooltip"
@@ -17,4 +17,12 @@ export function ACTIONS(name = "", id = null) {
     `;
 }
 
-export function BTN_STATE() {}
+export function _ESTADO(id, state = null) {
+    return `
+        <span data-id="${id}" data-state="${state}" class="badge badge-${
+        state === "1" ? "success" : "secondary"
+    } badge-sm state">
+            ${state === "1" ? "ACTIVO" : "INACTIVO"}
+        </span>
+    `;
+}

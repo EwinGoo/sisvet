@@ -78,9 +78,9 @@
                     </div>
                 </div>
                 <div class="table-responsive az-table">
-                    <table class="table table-flush az-table" style="width:100%" id="datatable" >
+                    <table class="table table-flush az-table" style="width:100%" id="datatable">
                         <thead class="thead-light">
-                            <tr >
+                            <tr>
                                 <th>id</th>
                                 <th>ci</th>
                                 <th>nombre completo</th>
@@ -89,7 +89,7 @@
                             </tr>
                         </thead>
                         <tbody>
-                            
+
                             {{-- <tr>
                                 <td>
                                     <div class="d-flex">

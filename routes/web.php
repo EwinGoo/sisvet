@@ -1,7 +1,8 @@
 <?php
 
+use App\Http\Controllers\Backend\PropietarioController;
 use App\Http\Controllers\Backend\Reportes\TestChasideReport;
-use App\Http\Controllers\Backend\Reportes\TestSoviReport;
+use App\Http\Controllers\Backend\Reportes\Dashboard;
 use App\Http\Controllers\Frontend\ChasideController;
 use App\Http\Controllers\Frontend\InteligenciaController;
 use App\Http\Controllers\Frontend\TestController;
@@ -19,9 +20,12 @@ use App\Http\Controllers\TestController as Test;
 | be assigned to the "web" middleware group. Make something great!
 |
 */
-Route::get('/', function () {
-    return view('welcome');
-});
 
+// Route::get('/', function () {
+//     return view('welcome');
+// })->middleware('auth');
+Route::get('/', function () {
+    return redirect()->action([PropietarioController::class, 'index']);
+})->middleware('auth');
 
 require __DIR__ . '/auth.php';

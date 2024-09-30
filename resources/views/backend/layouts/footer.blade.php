@@ -8,7 +8,7 @@
                         document.write(new Date().getFullYear());
                     </script>
                     , desarrollado por
-                    <a href="https://linktr.ee/azbits" class="font-weight-bold" target="_blank">JorgeF</a>
+                    <a href="#" class="font-weight-bold" target="_blank">JorgeF</a>
                     para un desempeño mejor.
                 </div>
             </div>

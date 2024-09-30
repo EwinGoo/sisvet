@@ -18,44 +18,17 @@ class PropietarioController extends Controller
     }
     public function index()
     {
-        /* init::Listar propietarios */
-
-        $data = PropietarioModel::select('*')->selectRaw("CONCAT_WS(' ', nombre, paterno, IFNULL(materno, '')) as nombre_completo")->orderBy('id_propietario', 'desc')->get();
         if (request()->ajax()) {
+            /* init::Listar propietarios */
+            $data = PropietarioModel::select('*')->selectRaw("CONCAT_WS(' ', nombre, paterno, IFNULL(materno, '')) as nombre_completo")->orderBy('id_propietario', 'desc')->get();
             return response()->json(['data' => $data], 200);
         }
         return $this->render("propietario.index");
-    }
-    public function listarpropietarioAjax()
-    {
-        $propietarios = PropietarioModel::where('estado', '1')->get();
-        // return response()->json($propietario);s
-
-        $propietario = PropietarioModel::where('estado', '1')->get();
-        if ($propietario->isEmpty()) {
-            $data = [
-                'message' => 'No se encontraron registros.',
-                'status' => 200
-            ];
-            return response()->json($data, 404);
-        }
-        $data = [
-            'propietarios' => $propietarios,
-            'status' => 200
-        ];
-        // return response()->json($propietario, 200);
-        return response()->json($data, 200);
-    }
-    public function create()
-    {
-        /* init::Crear propietario */
-        return $this->render("propietario.form");
     }
 
     public function store(Request $request)
     {
         /* init::Guardar propietario */
-        // dd($_POST);
         $validator = Validator::make($request->all(), [
             'ci' => 'required|unique:propietarios,ci',
             'nombre' => 'required',
@@ -92,31 +65,6 @@ class PropietarioController extends Controller
             'status' => 201
         ];
         return response()->json($data, 201);
-    }
-
-    public function show(PropietarioModel $PropietarioModel)
-    {
-        $id = 1;
-        $propietario = PropietarioModel::find($id);
-        if (!$propietario) {
-            $data = [
-                'message' => 'propietario no encontrada',
-                'status' => 404
-            ];
-            return response()->json($data, 404);
-        }
-        $data = [
-            'propietario' => $propietario,
-            'status' => 200
-        ];
-        return response()->json($data, 200);
-    }
-
-    public function edit(PropietarioModel $propietario)
-    {
-        /* init::Editar propietario */
-        $this->data['propietario'] = $propietario;
-        return $this->render('propietario.edit-form');
     }
     public function update(Request $request, $id)
     {
@@ -164,7 +112,7 @@ class PropietarioController extends Controller
             return response()->json($data, 500);
         }
         $data = [
-            'message' => 'propietario actualizada executad',
+            'message' => 'Propietario actualizado exitosamente',
             'propietario' => $propietario,
             'status' => 200
         ];
@@ -180,9 +128,7 @@ class PropietarioController extends Controller
             ];
             return response()->json($data, 404);
         }
-    
-        $propietario->delete(); // Este método ahora realiza una eliminación lógica
-    
+        $propietario->delete();
         $data = [
             'message' => 'Propietario eliminado exitosamente',
             'status' => 200

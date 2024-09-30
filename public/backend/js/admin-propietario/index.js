@@ -1,4 +1,4 @@
-import { ACTIONS } from "./actions.js";
+import { ACTIONS } from "../components/actions.js";
 
 $(document).ready(function () {
     // variables

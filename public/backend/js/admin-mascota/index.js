@@ -1,4 +1,4 @@
-import { ACTIONS } from "./actions.js";
+import { ACTIONS } from "../components/actions.js";
 
 $(document).ready(function () {
     // variables
@@ -51,10 +51,18 @@ $(document).ready(function () {
             url: "/admin/mascota",
         },
         columns: [
-            { data: "id_mascota" },
+            {
+                data: null,
+                targets: 0,
+                orderable: true,
+                render: function (data, type, row, meta) {
+                    return meta.row + 1;
+                },
+            },
+            // { data: "id_mascota" },
             { data: "nombre_mascota" },
             { data: "nombre_completo" },
-            // { data: "celular" },
+            { data: "animal" },
             {
                 data: null,
                 targets: -1,
@@ -104,27 +112,11 @@ $(document).ready(function () {
         $("form#form-main :input").each(function () {
             let name = $(this).attr("name");
             if ($(this).prop("tagName") === "SELECT") {
-                // let choice = choiceInstances.filter(
-                //     (elemento) => elemento._baseId === "choices--" + name
-                // );
-                // choice[0].setChoiceByValue(reg[name]);
-                document.addEventListener('DOMContentLoaded', function () {
-                const element = document.getElementById('id_propietario');
-
-                if (element && element.choices) {
-                    element.choices.setChoiceByValue('2');
-                } else {
-                    console.error('Choices.js no está inicializado correctamente o el elemento no existe.');
-                }
-                // console.log(element.choice);
-                const choicesInstance =element.choice;
-                
-                // const choices = new Choices(element);
-                // Seleccionar el valor '2' del select
-                // console.log(reg[name]);
-                
-                choicesInstance.setChoiceByValue(`${reg[name]}`);
-            });
+                let choice = choiceInstances.filter(
+                    (elemento) => elemento._baseId === "choices--" + name
+                );
+                choice[0].setChoiceByValue(`${reg[name]}`);
+            // });
             } else {
                 $(this).parent().addClass("is-filled");
                 $(this).val(reg[name]); 

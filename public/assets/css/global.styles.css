@@ -408,3 +408,6 @@ table.dataTable.dtr-inline.collapsed > tbody > tr > th.dtr-control:before {
 .ui-menu .ui-menu-item.ui-state-active {
     background-color: #f0f0f0; /* Cambia el color de fondo del elemento seleccionado */
 }
+.state{
+    cursor: pointer;
+}

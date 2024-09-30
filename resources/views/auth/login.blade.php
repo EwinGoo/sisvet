@@ -63,9 +63,8 @@
                 <nav
                     class="navbar navbar-expand-lg blur border-radius-lg top-0 z-index-3 shadow position-absolute mt-4 py-2 start-0 end-0 mx-4">
                     <div class="container-fluid ps-2 pe-0">
-                        <a class="navbar-brand font-weight-bolder ms-lg-0 ms-3 "
-                            href="../../../pages/dashboards/analytics.html">
-                            Sistema Orientacion Vocacional
+                        <a class="navbar-brand font-weight-bolder ms-lg-0 ms-3 " href="{{ route('dashboard') }}">
+                            SISTEMA VETERINARIA SAN MARTÍN
                         </a>
                         <button class="navbar-toggler shadow-none ms-2" type="button" data-bs-toggle="collapse"
                             data-bs-target="#navigation" aria-controls="navigation" aria-expanded="false"
@@ -1005,7 +1004,7 @@
                         <div
                             class="col-6 d-lg-flex d-none h-100 my-auto pe-0 position-absolute top-0 start-0 text-center justify-content-center flex-column">
                             <div class="position-relative bg-gradient-primary h-100 m-3 px-7 border-radius-lg d-flex flex-column justify-content-center"
-                                style="background-image: url('{{ asset('material-dashboard/assets/img/illustrations/illustration-signup.jpg') }}'); background-size: cover;">
+                                style="background-image: url('{{ asset('assets/images/login-logo.png') }}'); background-size: cover;">
                             </div>
                         </div>
                         <div class="col-xl-4 col-lg-5 col-md-7 d-flex flex-column ms-auto me-auto ms-lg-auto me-lg-5">

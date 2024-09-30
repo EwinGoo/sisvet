@@ -9,7 +9,7 @@ use Illuminate\Routing\Controller as BaseController;
 
 // use App\Utils\MenuGenerator;
 use App\Http\Controllers\MenuGenerator;
-use App\Models\User;
+use App\Models\UsuarioModel;
 use Illuminate\Support\Facades\Auth;
 
 // use App\Utils\MenuGenerator as UtilsMenuGenerator;
@@ -45,8 +45,8 @@ class Controller extends BaseController
     }
     public function render($view)
     {
-        // $users = new User();
-        // $this->data['usuario'] = $users->getUsers(Auth::id());
+        $users = UsuarioModel::where('id_usuario', Auth::id())->first();
+        $this->data['usuario'] = $users;
         // dd($this->data['usuario']);
         // $this->data['notificaciones'] = ContactoModel::whereIn('estado', ['1'])->orderByDesc('fecha_creacion')->get();
         // $this->data['cantidad'] = ContactoModel::whereIn('estado', ['1'])->get()->count();
@@ -74,9 +74,9 @@ class Controller extends BaseController
         $data = [];
         /* init::Menu del sistemas */
         // if (Auth::user()->rol == 'ADMIN') {
-            // $data["administración"] = [
-            //     "usuarios" => "admin-usuario",
-            // ];
+        $data["administración"] = [
+            "usuarios" => "admin-usuario",
+        ];
         // }
         $data = array_merge($data, [
             "propietarios" => 'admin-propietario',

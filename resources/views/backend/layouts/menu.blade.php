@@ -1,6 +1,6 @@
-<!-- php
+@php
     $usuario = $data['usuario'];
-endphp -->
+@endphp
 <aside
     class="sidenav navbar navbar-vertical navbar-expand-xs border-0 border-radius-xl my-3 fixed-start ms-3 bg-gradient-dark"
     id="sidenav-main">
@@ -22,8 +22,8 @@ endphp -->
                     <img src="https://t3.ftcdn.net/jpg/05/17/79/88/240_F_517798849_WuXhHTpg2djTbfNf0FQAjzFEoluHpnct.jpg"
                         class="avatar" />
                     <span class="nav-link-text ms-2 ps-1">
-                        <!--  $usuario->nombre . ' ' . $usuario->paterno -->
-                        {{ 'Jorge Flores' }}
+
+                        {{ $usuario->nombre . ' ' . $usuario->paterno }}
                     </span>
                 </a>
                 <div class="collapse" id="ProfileNav" style>
