@@ -19,12 +19,15 @@
             <li class="nav-item mb-2 mt-0">
                 <a data-bs-toggle="collapse" href="#ProfileNav" class="nav-link text-white" aria-controls="ProfileNav"
                     role="button" aria-expanded="false">
-                    <img src="https://t3.ftcdn.net/jpg/05/17/79/88/240_F_517798849_WuXhHTpg2djTbfNf0FQAjzFEoluHpnct.jpg"
-                        class="avatar" />
-                    <span class="nav-link-text ms-2 ps-1">
-
-                        {{ $usuario->nombre . ' ' . $usuario->paterno }}
-                    </span>
+                    <img src="{{ $usuario->image }}" class="avatar" />
+                    <div>
+                        <span class="nav-link-text ms-2 ps-1">
+                            {{ $usuario->nombre . ' ' . $usuario->paterno }}
+                        </span>
+                        <div class="text-center">
+                            <span class="text-center badge bg-gradient-success">{{ $usuario->rol }}</span>
+                        </div>
+                    </div>
                 </a>
                 <div class="collapse" id="ProfileNav" style>
                     <ul class="nav">

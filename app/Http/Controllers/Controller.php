@@ -11,7 +11,7 @@ use Illuminate\Routing\Controller as BaseController;
 use App\Http\Controllers\MenuGenerator;
 use App\Models\UsuarioModel;
 use Illuminate\Support\Facades\Auth;
-
+use App\Helpers\Helpers;
 // use App\Utils\MenuGenerator as UtilsMenuGenerator;
 
 class Controller extends BaseController
@@ -20,9 +20,9 @@ class Controller extends BaseController
 
     /* init::developer date */
 
-    protected $developer = 'Edwin Alanoca Ramirez';
-    protected $number = '67109724';
-    protected $link = 'https://linktr.ee/azbits';
+    protected $developer = '';
+    protected $number = '';
+    protected $link = '';
     protected $username = 'azbits';
 
     /* end::developer date */
@@ -45,8 +45,11 @@ class Controller extends BaseController
     }
     public function render($view)
     {
-        $users = UsuarioModel::where('id_usuario', Auth::id())->first();
-        $this->data['usuario'] = $users;
+        // $users = UsuarioModel::where('id_usuario', Auth::id())->first();
+        $user = UsuarioModel::getUser(Auth::id());
+        $user->image = Helpers::getImage($user->ruta_archivo);
+        // dd(UsuarioModel::getUser());
+        $this->data['usuario'] = $user;
         // dd($this->data['usuario']);
         // $this->data['notificaciones'] = ContactoModel::whereIn('estado', ['1'])->orderByDesc('fecha_creacion')->get();
         // $this->data['cantidad'] = ContactoModel::whereIn('estado', ['1'])->get()->count();

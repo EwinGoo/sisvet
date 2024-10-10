@@ -18,14 +18,14 @@
     <div class="row mt-4 mt-sm-4">
         <div class="col-12 col-sm-6  mt-5 mt-sm-0">
             <div class="input-group input-group-outline">
-                <label for="paterno" class="form-label">Paterno</label>
+                <label for="paterno" class="form-label">Apellido Paterno</label>
                 <input id="paterno" name="paterno" class="form-control" type="text" />
                 <small>Error message</small>
             </div>
         </div>
         <div class="col-12 col-sm-6 mt-5 mt-sm-0">
             <div class="input-group input-group-outline">
-                <label for="materno" class="form-label">Materno<span class="text-muted">
+                <label for="materno" class="form-label">Apellido Materno<span class="text-muted">
                     </span> </label>
                 <input id="materno" name="materno" class="form-control" type="text" />
                 <small>Error message</small>
@@ -38,6 +38,13 @@
                 <label for="celular" class="form-label">Celular</label>
                 <input id="celular" name="celular" class="form-control" type="text" maxlength="8"
                     minlength="8" />
+                <small>Error message</small>
+            </div>
+        </div>
+        <div class="col-12 col-sm-6 mt-3 mt-sm-0">
+            <div class="input-group input-group-outline">
+                <label for="direccion" class="form-label">Dirección</label>
+                <input id="direccion" name="direccion" class="form-control" type="text" />
                 <small>Error message</small>
             </div>
         </div>

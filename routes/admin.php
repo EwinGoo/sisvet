@@ -20,9 +20,21 @@ Route::get('/dashboard', [PropietarioController::class, 'index'])->middleware(['
 // });
 Route::prefix('admin')->middleware(['auth'])->group(function () {
     Route::resource('propietario', PropietarioController::class)->names('admin-propietario');
+
     Route::resource('mascota', MascotaController::class)->names('admin-mascota');
+    // Route::get('/historial', [MascotaController::class, 'historialClinico'])->name('admin-mascota.historial-clinico');
+    Route::post('/historial', [MascotaController::class, 'historialClinicoSave'])->name('admin-mascota.historial-clinico');
+
+    Route::post('/anamnesis', [MascotaController::class, 'anamnesisSave']);
+    Route::post('/examen', [MascotaController::class, 'examenSave']);
+    Route::post('/sintomas', [MascotaController::class, 'sintomasSave']);
+    Route::post('/diagnostico', [MascotaController::class, 'diagnosticoSave']);
+    Route::post('/tratamiento', [MascotaController::class, 'tratamientoSave']);
+    Route::post('/evolucion', [MascotaController::class, 'evolucionSave']);
+
     Route::resource('usuario', UsuarioController::class)->names('admin-usuario');
     Route::post('/change-state-user', [UsuarioController::class, 'changeStatus'])->name('change-state');
+    Route::get('/usuario/{id}/image', [UsuarioController::class, 'getImage'])->name('admin-usuario.get-image');
 });
 
 /* end::Rutas del sistema de administración*/

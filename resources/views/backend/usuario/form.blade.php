@@ -20,11 +20,54 @@
         /* height: 100% !important; */
     }
 </style>
+{{-- <style>
+    .image-preview-container {
+        max-width: 300px;
+        margin: 0 auto;
+    }
+
+    .drop-area {
+        border: 2px dashed #ccc;
+        border-radius: 10px;
+        padding: 20px;
+        text-align: center;
+        position: relative;
+        cursor: pointer;
+    }
+
+    .drop-area:hover {
+        background-color: #f0f0f0;
+    }
+
+    .image-preview {
+        margin-top: 10px;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+    }
+
+    .image-preview img {
+        max-width: 100%;
+        max-height: 200px;
+        border-radius: 10px;
+    }
+</style> --}}
 <form id='form-main'>
     <div class="row mt-3 mb-2">
         <div class="col-12 col-sm-4 mt-3 mt-sm-0">
             <label for="image" class="form-label">Foto de perfil: </label>
-            <input type="file" class="filepond" name="image" accept="image/png, image/jpeg, image/gif" />
+            <input type="file" class="filepond" name="image" id="image"
+                accept="image/png, image/jpeg, image/gif" />
+            <small id='error-image' class="text-danger"></small>
+            {{-- <div class="image-preview-container">
+                <div id="drop-area" class="drop-area">
+                    <p>Arrastra y suelta una imagen o <span class="label-action">examinar</span></p>
+                    <input type="file" id="file-input" accept="image/*" style="display: none;">
+                </div>
+                <div id="preview" class="image-preview">
+                    <img id="imageElement" src="" alt="Vista previa de la imagen" style="display: none;">
+                </div>
+            </div> --}}
         </div>
         <div class="col-12 col-sm-8 mt-3 mt-sm-0">
             <div class="row mb-2">
@@ -104,16 +147,21 @@
             <input class="form-check-input mt-3" type="ckeckbox" name="change" value="1" id="change">
         </div> --}}
 
-        <div class="col-12 col-sm-6 mt-3 mt-sm-3">
+        <div class="col-12 col-sm-12 mt-3 mt-sm-3" id="rol-area">
             <label class="form-control ms-0 mb-0 p-0">Rol del usuario: </label>
             <div class="input-group input-group-outline">
                 <div class="form-check mb-3">
-                    <input class="form-check-input" type="radio" name="rol" value="admin" id="admin">
-                    <label class="custom-control-label" for="admin">ADMINSTRADOR</label>
+                    <input class="form-check-input" type="radio" name="rol" value="administrador"
+                        id="administrador">
+                    <label class="custom-control-label" for="administrador">ADMINISTRADOR</label>
                 </div>
                 <div class="form-check">
-                    <input class="form-check-input" type="radio" name="rol" value="user" id="user">
-                    <label class="custom-control-label" for="user">USUARIO</label>
+                    <input class="form-check-input" type="radio" name="rol" value="medico" id="medico">
+                    <label class="custom-control-label" for="medico">MEDICO</label>
+                </div>
+                <div class="form-check">
+                    <input class="form-check-input" type="radio" name="rol" value="vendedor" id="vendedor">
+                    <label class="custom-control-label" for="vendedor">VENDEDOR</label>
                 </div>
                 <small class="text-danger" id="error-rol" style='visibility: inherit'></small>
             </div>

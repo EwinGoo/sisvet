@@ -174,4 +174,5 @@
         </div>
     </div>
     @include('backend.mascota.modal')
+    @include('backend.mascota.modal-historial')
 @endsection

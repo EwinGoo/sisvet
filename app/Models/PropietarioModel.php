@@ -13,11 +13,11 @@ class PropietarioModel extends Model
     use SoftDeletes;
     protected $table = 'propietarios';
     protected $primaryKey = 'id_propietario';
-    protected $fillable = ['ci','nombre', 'paterno', 'materno', 'celular'];
+    protected $fillable = ['ci', 'nombre', 'paterno', 'materno', 'celular', 'direccion'];
     protected $guarded = [];
     public $timestamps = true;
     protected $dates = ['deleted_at'];
-    
+
     public function getEstudiante($ci)
     {
         return DB::table('estudiantes as e')

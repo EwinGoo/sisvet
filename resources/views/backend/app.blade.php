@@ -526,7 +526,7 @@
     @if ($pageURL)
         {{-- @vite('public/backend/js/' . $page . '/index.js') --}}
         <script src="{{ asset('backend/js/' . $pageURL . '/index.js') }}" type="module"></script>
-    @elseif($page && $page !== 'dashboard')
+    @elseif($page && $page !== 'dashboard' && $pageURL == null)
         <script src="{{ asset('backend/js/' . $page . '/index.js') }}" type="module"></script>
     @endif
 </body>

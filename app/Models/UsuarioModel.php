@@ -53,4 +53,12 @@ class UsuarioModel extends Authenticatable
     protected $casts = [
         'email_verified_at' => 'datetime',
     ];
+    public static function getUser($id)
+    {
+        $results = self::select('*')
+            ->leftJoin('multimedia as m', 'usuarios.id_multimedia', '=', 'm.id_multimedia')
+            ->where('id_usuario', $id)
+            ->first();
+        return $results;
+    }
 }

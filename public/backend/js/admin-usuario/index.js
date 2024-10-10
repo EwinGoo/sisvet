@@ -11,7 +11,9 @@ $(document).ready(function () {
         btnTextSubmit,
         btnState,
         table,
-        id;
+        id,
+        imgState,
+        isFirst;
     form = $("#form-main");
     modalEl = $("#modal-main");
     modalTitle = $("#modal-title");
@@ -24,23 +26,30 @@ $(document).ready(function () {
     btnState = {
         id: null,
         add: function () {
+            // imgState = true;
+            // isFirst = true;
             modalTitle.text("nuevo usuario");
             btnSubmit.removeAttr("data-id", id);
             utilities.resetForm(form);
             btnSubmit.prop("disabled", false);
-            $("#admin").val("admin");
-            $("#user").val("user");
+            $("#administrador").val("administrador");
+            $("#vendedor").val("vendedor");
+            $("#medico").val("medico");
             $("#text-pass").text("");
             $("#change-field").css("display", "none");
             this.id = null;
             $("#password").prop("disabled", false);
             $("#password_confirmation").prop("disabled", false);
+            pond.removeFiles();
         },
         edit: function (id) {
+            imgState = false;
+            // isFirst = true;
             modalTitle.text("editar usuario");
             utilities.resetForm(form);
             this.id = id;
             btnSubmit.prop("disabled", false);
+            pond.removeFiles();
         },
     };
 
@@ -90,7 +99,6 @@ $(document).ready(function () {
                 targets: -1,
                 orderable: false,
                 render: function (data, type, row) {
-                    console.log(row.estado);
                     return _ESTADO(row.id_usuario, row.estado);
                 },
             },
@@ -113,11 +121,6 @@ $(document).ready(function () {
     utilities.formValidateInit();
     utilities.ajaxSetup();
     // choiceInstances[1].disable();
-    $.ajaxSetup({
-        headers: {
-            "X-CSRF-TOKEN": $('meta[name="csrf-token"]').attr("content"),
-        },
-    });
     table.on("click", ".edit", function () {
         let id = $(this).data("id");
         btnState.edit(id);
@@ -193,12 +196,8 @@ $(document).ready(function () {
         $("form#form-main :input").each(function () {
             let name = $(this).attr("name");
             if ($(this).is(":radio")) {
-                // console.log(name, "entro", reg[name]);
-                // let radio = ;
-                // let choice = choiceInstances.filter(
-                //     (elemento) => elemento._baseId === "choices--" + name
-                // );
-                // choice[0].setChoiceByValue(reg[name]);
+                console.log(reg[name]);
+
                 $(`#${reg[name].toLowerCase()}`).prop("checked", true);
             } else {
                 $(this).parent().addClass("is-filled");
@@ -206,8 +205,9 @@ $(document).ready(function () {
             }
         });
         $("#change-field").css("display", "block");
-        $("#admin").val("admin");
-        $("#user").val("user");
+        $("#administrador").val("administrador");
+        $("#medico").val("medico");
+        $("#vendedor").val("vendedor");
         $("#change").val("1");
         // $("#text-pass").text("¿Desea cambiar la contraseña?");
         // $("#email").val(reg.email);
@@ -216,19 +216,41 @@ $(document).ready(function () {
         $("#password").prop("disabled", true);
         $("#password_confirmation").prop("disabled", true);
         // $("#check-pass").removeClass("d-none");
-
+        getImage(reg.id_usuario)
+            .then((image) => {
+                pond.addFiles([
+                    {
+                        source: image,
+                        options: {
+                            type: "local",
+                        },
+                    },
+                ]);
+            })
+            .catch((error) => {
+                console.error(error);
+            });
         utilities.reloadStyle();
-        // $("form#form-main :input").each(function () {
-        //     $(this).parent().addClass("is-filled");
-        // });
+        // isFirst = false;
     }
     function saveRegister(url, method) {
-        // utilities.ajaxSetup();/
-        // $("#email").prop("disabled", false);
+        const files = pond.getFiles();
+        let formData = new FormData($("#form-main")[0]);
+
+        if (files.length == 1 && imgState) {
+            formData.append("image", files[0].file); // '
+            console.log(imgState, formData);
+            // return;
+        } else {
+            formData.delete("image");
+        }
+        formData.append("_method", method);
         $.ajax({
-            type: method,
+            type: "POST",
             url,
-            data: form.serialize(),
+            data: formData,
+            contentType: false, // Para que jQuery no establezca el tipo de contenido
+            processData: false,
             success: (d) => {
                 // console.log(d);
                 modalEl.modal("hide");
@@ -239,13 +261,72 @@ $(document).ready(function () {
                 btnSubmit.prop("disabled", false);
                 let errors = data.responseJSON.errors;
                 console.log(errors);
-
                 utilities.formValidation(errors);
                 // console.log(errors.rol);
                 // $("#email").prop("disabled", true);
-                // $("#error-rol").text(errors.rol);
+                $("#error-rol").text(errors.rol);
             },
         });
     }
-    function changePass() {}
+    $("#image").on("click", function () {
+        $("#error-image").text("");
+        imgState = true;
+    });
+    $("#rol-area").on("click", function () {
+        $("#error-rol").text("");
+    });
+    async function getImage(id) {
+        try {
+            const response = await $.ajax({
+                type: "GET",
+                url: "/admin/usuario/" + id + "/image",
+            });
+            return response.image; // Devuelve la imagen
+        } catch (data) {
+            // console.log(data.responseJSON.message); // Manejo de errores
+            throw new Error(data.responseJSON.message); // Lanza el error
+        }
+    }
+    // // Obtén los elementos del DOM
+    // const dropArea = document.getElementById("drop-area");
+    // const fileInput = document.getElementById("file-input");
+    // const imageElement = document.getElementById("imageElement");
+
+    // // Evitar el comportamiento por defecto
+    // dropArea.addEventListener("dragover", (event) => {
+    //     event.preventDefault();
+    // });
+
+    // dropArea.addEventListener("drop", (event) => {
+    //     event.preventDefault();
+    //     const files = event.dataTransfer.files;
+    //     handleFiles(files);
+    // });
+
+    // dropArea.addEventListener("click", () => {
+    //     fileInput.click(); // Abre el selector de archivos al hacer clic en el área
+    // });
+
+    // // Cuando se selecciona un archivo
+    // fileInput.addEventListener("change", (event) => {
+    //     const files = event.target.files;
+    //     handleFiles(files);
+    // });
+
+    // // Función para manejar los archivos
+    // function handleFiles(files) {
+    //     if (files.length > 0) {
+    //         const file = files[0];
+    //         if (file.type.startsWith("image/")) {
+    //             const reader = new FileReader();
+    //             reader.onload = function (e) {
+    //                 imageElement.src = e.target.result;
+    //                 imageElement.style.display = "block"; // Muestra la imagen
+    //             };
+    //             reader.readAsDataURL(file); // Convierte la imagen a base64
+    //         } else {
+    //             alert("Por favor, selecciona solo imágenes.");
+    //         }
+    //     }
+    // }
 });

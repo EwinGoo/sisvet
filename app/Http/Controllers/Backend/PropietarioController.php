@@ -34,6 +34,7 @@ class PropietarioController extends Controller
             'nombre' => 'required',
             'paterno' => 'required',
             'celular' => 'required|numeric|digits:8',
+            'direccion' => 'required',
         ], [
             'ci.required' => 'Campo cedula es requerido',
             'ci.unique' => 'La cedula ya ha sido tomado.',
@@ -52,6 +53,7 @@ class PropietarioController extends Controller
             'materno' => $request->materno,
             'ci' => $request->ci,
             'celular' => $request->celular,
+            'direccion' => $request->direccion,
         ]);
         if (!$propietario) {
             $data = [
@@ -103,6 +105,7 @@ class PropietarioController extends Controller
             'materno' => $request->materno,
             'ci' => $request->ci,
             'celular' => $request->celular,
+            'direccion' => $request->direccion,
         ]);
         if (!$propietario) {
             $data = [

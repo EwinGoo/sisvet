@@ -10,6 +10,8 @@ use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\View\View;
+use GuzzleHttp\Client;
+
 
 class AuthenticatedSessionController extends Controller
 {
@@ -26,12 +28,12 @@ class AuthenticatedSessionController extends Controller
      */
     public function store(LoginRequest $request): RedirectResponse
     {
-
-        // dd($_POST);
         $user = UsuarioModel::where('email', $request->email)->first();
 
+        // if (!$this->validateReCaptcha($request)) {
+        //     return back()->withErrors(['captcha' => 'Error en la validación de reCAPTCHA.'])->onlyInput('email');
+        // }
         if (!$user || !$user->estado) {
-            // Redirigir con un mensaje de error si el usuario no está activo
             return back()->withErrors([
                 'email' => 'Su cuenta está inactiva. Por favor, contacte con el administrador.',
             ])->onlyInput('email');
@@ -55,5 +57,19 @@ class AuthenticatedSessionController extends Controller
         $request->session()->regenerateToken();
 
         return redirect('/');
+    }
+
+    protected function validateReCaptcha(Request $request)
+    {
+        $client = new Client();
+        $response = $client->post('https://www.google.com/recaptcha/api/siteverify', [
+            'form_params' => [
+                'secret' => env('RECAPTCHA_SECRET_KEY'),
+                'response' => $request->input('g-recaptcha-response'),
+            ]
+        ]);
+
+        $body = json_decode((string)$response->getBody());
+        return $body->success;
     }
 }

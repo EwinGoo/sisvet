@@ -101,6 +101,7 @@ class ComposerStaticInit1c40dab8337dfd1e59104915c2fd76ae
         ),
         'R' => 
         array (
+            'ReCaptcha\\' => 10,
             'Ramsey\\Uuid\\' => 12,
             'Ramsey\\Collection\\' => 18,
         ),
@@ -188,7 +189,6 @@ class ComposerStaticInit1c40dab8337dfd1e59104915c2fd76ae
         'C' => 
         array (
             'Cron\\' => 5,
-            'Codedge\\Fpdf\\EasyTable\\' => 23,
             'Codedge\\Fpdf\\' => 13,
             'Carbon\\Doctrine\\' => 16,
             'Carbon\\' => 7,
@@ -361,6 +361,10 @@ class ComposerStaticInit1c40dab8337dfd1e59104915c2fd76ae
         'Spatie\\Backtrace\\' => 
         array (
             0 => __DIR__ . '/..' . '/spatie/backtrace/src',
+        ),
+        'ReCaptcha\\' => 
+        array (
+            0 => __DIR__ . '/..' . '/google/recaptcha/src/ReCaptcha',
         ),
         'Ramsey\\Uuid\\' => 
         array (
@@ -583,10 +587,6 @@ class ComposerStaticInit1c40dab8337dfd1e59104915c2fd76ae
         array (
             0 => __DIR__ . '/..' . '/dragonmantank/cron-expression/src/Cron',
         ),
-        'Codedge\\Fpdf\\EasyTable\\' => 
-        array (
-            0 => __DIR__ . '/..' . '/codedge/laravel-fpdf/src/fpdf-easytable',
-        ),
         'Codedge\\Fpdf\\' => 
         array (
             0 => __DIR__ . '/..' . '/codedge/laravel-fpdf/src',
@@ -613,6 +613,7 @@ class ComposerStaticInit1c40dab8337dfd1e59104915c2fd76ae
     public static $classMap = array (
         'App\\Console\\Kernel' => __DIR__ . '/../..' . '/app/Console/Kernel.php',
         'App\\Exceptions\\Handler' => __DIR__ . '/../..' . '/app/Exceptions/Handler.php',
+        'App\\Helpers\\Helpers' => __DIR__ . '/../..' . '/app/Helpers/Helpers.php',
         'App\\Http\\Controllers\\Auth\\AuthenticatedSessionController' => __DIR__ . '/../..' . '/app/Http/Controllers/Auth/AuthenticatedSessionController.php',
         'App\\Http\\Controllers\\Auth\\ConfirmablePasswordController' => __DIR__ . '/../..' . '/app/Http/Controllers/Auth/ConfirmablePasswordController.php',
         'App\\Http\\Controllers\\Auth\\EmailVerificationNotificationController' => __DIR__ . '/../..' . '/app/Http/Controllers/Auth/EmailVerificationNotificationController.php',
@@ -623,22 +624,10 @@ class ComposerStaticInit1c40dab8337dfd1e59104915c2fd76ae
         'App\\Http\\Controllers\\Auth\\RegisteredUserController' => __DIR__ . '/../..' . '/app/Http/Controllers/Auth/RegisteredUserController.php',
         'App\\Http\\Controllers\\Auth\\UserController' => __DIR__ . '/../..' . '/app/Http/Controllers/Auth/UserController.php',
         'App\\Http\\Controllers\\Auth\\VerifyEmailController' => __DIR__ . '/../..' . '/app/Http/Controllers/Auth/VerifyEmailController.php',
-        'App\\Http\\Controllers\\Backend\\BaremoController' => __DIR__ . '/../..' . '/app/Http/Controllers/Backend/BaremoController.php',
-        'App\\Http\\Controllers\\Backend\\CarrerasAreas\\AreaController' => __DIR__ . '/../..' . '/app/Http/Controllers/Backend/CarrerasAreas/AreaController.php',
-        'App\\Http\\Controllers\\Backend\\CarrerasAreas\\AreaExistenteController' => __DIR__ . '/../..' . '/app/Http/Controllers/Backend/CarrerasAreas/AreaExistenteController.php',
-        'App\\Http\\Controllers\\Backend\\CarrerasAreas\\CarreraController' => __DIR__ . '/../..' . '/app/Http/Controllers/Backend/CarrerasAreas/CarreraController.php',
-        'App\\Http\\Controllers\\Backend\\ColegioController' => __DIR__ . '/../..' . '/app/Http/Controllers/Backend/ColegioController.php',
-        'App\\Http\\Controllers\\Backend\\DashboardController' => __DIR__ . '/../..' . '/app/Http/Controllers/Backend/DashboardController.php',
-        'App\\Http\\Controllers\\Backend\\EstudianteController' => __DIR__ . '/../..' . '/app/Http/Controllers/Backend/EstudianteController.php',
-        'App\\Http\\Controllers\\Backend\\PersonaController' => __DIR__ . '/../..' . '/app/Http/Controllers/Backend/PersonaController.php',
-        'App\\Http\\Controllers\\Backend\\PreguntaController' => __DIR__ . '/../..' . '/app/Http/Controllers/Backend/PreguntaController.php',
-        'App\\Http\\Controllers\\Backend\\Territoriales\\DepartamentoController' => __DIR__ . '/../..' . '/app/Http/Controllers/Backend/Territoriales/DepartamentoController.php',
-        'App\\Http\\Controllers\\Backend\\Territoriales\\MunicipioController' => __DIR__ . '/../..' . '/app/Http/Controllers/Backend/Territoriales/MunicipioController.php',
-        'App\\Http\\Controllers\\Backend\\Territoriales\\ProvinciaController' => __DIR__ . '/../..' . '/app/Http/Controllers/Backend/Territoriales/ProvinciaController.php',
-        'App\\Http\\Controllers\\Backend\\TestController' => __DIR__ . '/../..' . '/app/Http/Controllers/Backend/TestController.php',
+        'App\\Http\\Controllers\\Backend\\MascotaController' => __DIR__ . '/../..' . '/app/Http/Controllers/Backend/MascotaController.php',
+        'App\\Http\\Controllers\\Backend\\PropietarioController' => __DIR__ . '/../..' . '/app/Http/Controllers/Backend/PropietarioController.php',
+        'App\\Http\\Controllers\\Backend\\UsuarioController' => __DIR__ . '/../..' . '/app/Http/Controllers/Backend/UsuarioController.php',
         'App\\Http\\Controllers\\Controller' => __DIR__ . '/../..' . '/app/Http/Controllers/Controller.php',
-        'App\\Http\\Controllers\\FrontendController' => __DIR__ . '/../..' . '/app/Http/Controllers/FrontendController.php',
-        'App\\Http\\Controllers\\Frontend\\TestController' => __DIR__ . '/../..' . '/app/Http/Controllers/Frontend/TestController.php',
         'App\\Http\\Controllers\\ProfileController' => __DIR__ . '/../..' . '/app/Http/Controllers/ProfileController.php',
         'App\\Http\\Controllers\\TestController' => __DIR__ . '/../..' . '/app/Http/Controllers/TestController.php',
         'App\\Http\\Kernel' => __DIR__ . '/../..' . '/app/Http/Kernel.php',
@@ -653,23 +642,12 @@ class ComposerStaticInit1c40dab8337dfd1e59104915c2fd76ae
         'App\\Http\\Middleware\\VerifyCsrfToken' => __DIR__ . '/../..' . '/app/Http/Middleware/VerifyCsrfToken.php',
         'App\\Http\\Requests\\Auth\\LoginRequest' => __DIR__ . '/../..' . '/app/Http/Requests/Auth/LoginRequest.php',
         'App\\Http\\Requests\\ProfileUpdateRequest' => __DIR__ . '/../..' . '/app/Http/Requests/ProfileUpdateRequest.php',
-        'App\\Models\\BaremoModel' => __DIR__ . '/../..' . '/app/Models/BaremoModel.php',
-        'App\\Models\\CarrerasAreas\\AreaExistenteModel' => __DIR__ . '/../..' . '/app/Models/CarrerasAreas/AreaExistenteModel.php',
-        'App\\Models\\CarrerasAreas\\AreaModel' => __DIR__ . '/../..' . '/app/Models/CarrerasAreas/AreaModel.php',
-        'App\\Models\\CarrerasAreas\\CarreraModel' => __DIR__ . '/../..' . '/app/Models/CarrerasAreas/CarreraModel.php',
-        'App\\Models\\ColegioModel' => __DIR__ . '/../..' . '/app/Models/ColegioModel.php',
-        'App\\Models\\DashboardModel' => __DIR__ . '/../..' . '/app/Models/DashboardModel.php',
-        'App\\Models\\EstudianteModel' => __DIR__ . '/../..' . '/app/Models/EstudianteModel.php',
-        'App\\Models\\MunicipioModel' => __DIR__ . '/../..' . '/app/Models/MunicipioModel.php',
-        'App\\Models\\PersonaModel' => __DIR__ . '/../..' . '/app/Models/PersonaModel.php',
-        'App\\Models\\PreguntaModel' => __DIR__ . '/../..' . '/app/Models/PreguntaModel.php',
-        'App\\Models\\ResultadoModel' => __DIR__ . '/../..' . '/app/Models/ResultadoModel.php',
-        'App\\Models\\Territoriales\\DepartamentoModel' => __DIR__ . '/../..' . '/app/Models/Territoriales/DepartamentoModel.php',
-        'App\\Models\\Territoriales\\GestionModel' => __DIR__ . '/../..' . '/app/Models/Territoriales/GestionModel.php',
-        'App\\Models\\Territoriales\\MunicipioModel' => __DIR__ . '/../..' . '/app/Models/Territoriales/MunicipioModel.php',
-        'App\\Models\\Territoriales\\ProvinciaModel' => __DIR__ . '/../..' . '/app/Models/Territoriales/ProvinciaModel.php',
-        'App\\Models\\TestModel' => __DIR__ . '/../..' . '/app/Models/TestModel.php',
-        'App\\Models\\User' => __DIR__ . '/../..' . '/app/Models/User.php',
+        'App\\Models\\AnimalModel' => __DIR__ . '/../..' . '/app/Models/AnimalModel.php',
+        'App\\Models\\MascotaModel' => __DIR__ . '/../..' . '/app/Models/MascotaModel.php',
+        'App\\Models\\MultimediaModel' => __DIR__ . '/../..' . '/app/Models/MultimediaModel.php',
+        'App\\Models\\PropietarioModel' => __DIR__ . '/../..' . '/app/Models/PropietarioModel.php',
+        'App\\Models\\RazaModel' => __DIR__ . '/../..' . '/app/Models/RazaModel.php',
+        'App\\Models\\UsuarioModel' => __DIR__ . '/../..' . '/app/Models/UsuarioModel.php',
         'App\\Providers\\AppServiceProvider' => __DIR__ . '/../..' . '/app/Providers/AppServiceProvider.php',
         'App\\Providers\\AuthServiceProvider' => __DIR__ . '/../..' . '/app/Providers/AuthServiceProvider.php',
         'App\\Providers\\BroadcastServiceProvider' => __DIR__ . '/../..' . '/app/Providers/BroadcastServiceProvider.php',
@@ -5636,6 +5614,15 @@ class ComposerStaticInit1c40dab8337dfd1e59104915c2fd76ae
         'Ramsey\\Uuid\\UuidInterface' => __DIR__ . '/..' . '/ramsey/uuid/src/UuidInterface.php',
         'Ramsey\\Uuid\\Validator\\GenericValidator' => __DIR__ . '/..' . '/ramsey/uuid/src/Validator/GenericValidator.php',
         'Ramsey\\Uuid\\Validator\\ValidatorInterface' => __DIR__ . '/..' . '/ramsey/uuid/src/Validator/ValidatorInterface.php',
+        'ReCaptcha\\ReCaptcha' => __DIR__ . '/..' . '/google/recaptcha/src/ReCaptcha/ReCaptcha.php',
+        'ReCaptcha\\RequestMethod' => __DIR__ . '/..' . '/google/recaptcha/src/ReCaptcha/RequestMethod.php',
+        'ReCaptcha\\RequestMethod\\Curl' => __DIR__ . '/..' . '/google/recaptcha/src/ReCaptcha/RequestMethod/Curl.php',
+        'ReCaptcha\\RequestMethod\\CurlPost' => __DIR__ . '/..' . '/google/recaptcha/src/ReCaptcha/RequestMethod/CurlPost.php',
+        'ReCaptcha\\RequestMethod\\Post' => __DIR__ . '/..' . '/google/recaptcha/src/ReCaptcha/RequestMethod/Post.php',
+        'ReCaptcha\\RequestMethod\\Socket' => __DIR__ . '/..' . '/google/recaptcha/src/ReCaptcha/RequestMethod/Socket.php',
+        'ReCaptcha\\RequestMethod\\SocketPost' => __DIR__ . '/..' . '/google/recaptcha/src/ReCaptcha/RequestMethod/SocketPost.php',
+        'ReCaptcha\\RequestParameters' => __DIR__ . '/..' . '/google/recaptcha/src/ReCaptcha/RequestParameters.php',
+        'ReCaptcha\\Response' => __DIR__ . '/..' . '/google/recaptcha/src/ReCaptcha/Response.php',
         'SQLite3Exception' => __DIR__ . '/..' . '/symfony/polyfill-php83/Resources/stubs/SQLite3Exception.php',
         'SebastianBergmann\\CliParser\\AmbiguousOptionException' => __DIR__ . '/..' . '/sebastian/cli-parser/src/exceptions/AmbiguousOptionException.php',
         'SebastianBergmann\\CliParser\\Exception' => __DIR__ . '/..' . '/sebastian/cli-parser/src/exceptions/Exception.php',

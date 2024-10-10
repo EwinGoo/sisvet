@@ -47,19 +47,24 @@ utilities = {
         $("form#form-main :input").each(function () {
             let name = $(this).attr("name");
             let value = $(this).val();
+            // console.log(name);
             if ($(this).prop("tagName") === "SELECT") {
                 if (errors.hasOwnProperty(name)) {
                     showError($(`[error-name="${name}"`)[0], errors[name]);
                 }
             } else if ($(this).is(":radio")) {
-                console.log("radio");
+                // console.log("radio");
+            } else if ($(this).attr("type") === "file") {
+                // console.log("error", name);
+                if (errors.hasOwnProperty(name) || errors["image"]) {
+                    $("#error-image").text(`${errors["image"]}`);
+                }
             } else {
-                if (errors.hasOwnProperty(name)) {
+                if (errors.hasOwnProperty(name) && name !== "image") {
                     errors[name].length > 1
                         ? showError($(`[name="${name}"`)[0], errors[name][0])
                         : showError($(`[name="${name}"`)[0], errors[name]);
                 } else if (value.trim() !== "" && name && name != "change") {
-                    console.log(name);
                     showSucces($(`[name="${name}"`)[0]);
                 }
             }

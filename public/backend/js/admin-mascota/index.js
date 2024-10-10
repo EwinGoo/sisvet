@@ -1,144 +1,228 @@
-import { ACTIONS } from "../components/actions.js";
+import { ACTIONS, listHistorial } from "./actions.js";
 
 $(document).ready(function () {
-    // variables
-    var form,
-        modalEl,
-        modalTitle,
-        btnNew,
-        btnCancel,
-        btnSubmit,
-        btnTextSubmit,
-        btnState,
-        table,
-        id;
-    form = $("#form-main");
-    modalEl = $("#modal-main");
-    modalTitle = $("#modal-title");
-    btnNew = $("#btn-new");
-    btnSubmit = $("#btn-submit");
-    btnTextSubmit, btnState, table, id;
-    // dataTable = $("#datatable");
-    btnState = {
-        id: null,
-        add: function () {
-            modalTitle.text("nueva mascota");
-            btnSubmit.removeAttr("data-id", id);
-            utilities.resetForm(form);
-            btnSubmit.prop("disabled", false);
-            this.id = null;
+    const MascotaManager = {
+        elements: {
+            form: $("#form-main"),
+            formHistorial: $("#form-historial"),
+            modalEl: $("#modal-main"),
+            modalHistorial: $("#modal-historial"),
+            modalTitle: $("#modal-title"),
+            btnNewHistorial: $("#new-historial"),
+            btnNew: $("#btn-new"),
+            btnSubmit: $("#btn-submit"),
+            dataTable: $("#datatable"),
+            inputMascotaId: $("#input-mascota-id"),
         },
-        edit: function (id) {
-            modalTitle.text("editar mascota");
-            utilities.resetForm(form);
-            this.id = id;
-            btnSubmit.prop("disabled", false);
+        currentId: null,
+
+        init() {
+            this.initDataTable();
+            this.bindEvents();
+            utilities.initChoice();
+            utilities.formValidateInit();
+            utilities.ajaxSetup();
+        },
+
+        initDataTable() {
+            this.table = this.elements.dataTable.DataTable({
+                order: [[0, "desc"]],
+                responsive: true,
+                language: {
+                    searchPlaceholder: "Buscar...",
+                },
+                lengthMenu: [
+                    [5, 25, 50, -1],
+                    [10, 25, 50, "Todos"],
+                ],
+                pagingType: "full_numbers",
+                ajax: {
+                    url: "/admin/mascota",
+                },
+                columns: [
+                    // {
+                    //     data: null,
+                    //     targets: 0,
+                    //     orderable: true,
+                    //     render: (data, type, row, meta) => meta.row + 1
+                    // },
+                    { data: "id_mascota" },
+                    { data: "nombre_mascota" },
+                    { data: "nombre_completo" },
+                    { data: "animal" },
+                    {
+                        data: null,
+                        targets: -1,
+                        orderable: false,
+                        render: (data, type, row) =>
+                            ACTIONS("mascota", row.id_mascota),
+                    },
+                ],
+                drawCallback: () => {
+                    utilities.tooltip();
+                    utilities.loaderTool();
+                },
+            });
+        },
+
+        bindEvents() {
+            this.elements.dataTable.on(
+                "click",
+                ".edit",
+                this.handleEdit.bind(this)
+            );
+            this.elements.dataTable.on(
+                "click",
+                ".delete",
+                this.handleDelete.bind(this)
+            );
+            this.elements.dataTable.on(
+                "click",
+                ".historial",
+                this.handleHistorial.bind(this)
+            );
+            this.elements.btnNew.on("click", this.handleNew.bind(this));
+            this.elements.btnSubmit.on("click", this.handleSubmit.bind(this));
+        },
+
+        handleEdit(event) {
+            const id = $(event.currentTarget).data("id");
+            this.editMascota(id);
+        },
+
+        handleDelete(event) {
+            const id = $(event.currentTarget).data("id");
+            az.showSwal("warning-message-delete", `/admin/mascota/${id}`);
+        },
+        handleHistorial(event) {
+            const id = $(event.currentTarget).data("id");
+            this.elements.modalHistorial.modal("show");
+            this.elements.inputMascotaId.val(id);
+            this.elements.btnNewHistorial.off("click").on("click", (e) => {
+                e.preventDefault();
+                this.submitHistorialForm();
+            });
+
+            this.loadHistoriales(id);
+        },
+        submitHistorialForm() {
+            $.ajax({
+                url: this.elements.formHistorial.attr('action'),
+                method: 'POST',
+                data: this.elements.formHistorial.serialize(),
+                success: (response) => {
+                    if (response.redirectUrl) {
+                        // Abrir nueva pestaña con la URL de redirección
+                        window.open(response.redirectUrl, '_blank');
+                        
+                        // Recargar los historiales en la pestaña actual
+                        this.loadHistoriales(this.elements.inputMascotaId.val());
+                    }
+                },
+                error: (xhr) => {
+                    console.error("Error al crear nuevo historial:", xhr.responseText);
+                    this.showError("Error", "No se pudo crear el nuevo historial. Por favor, intente de nuevo.");
+                }
+            });
+        },
+
+        loadHistoriales(id) {
+            $.ajax({
+                url: `/admin/mascota/historiales/${id}`,
+                method: "GET",
+                success: (response) => {
+                    if (response && response.historiales) {
+                        listHistorial(response.historiales, this.elements);
+                    } else {
+                        console.error("Respuesta inesperada del servidor", response);
+                        this.showError("Error al cargar los historiales", "La respuesta del servidor no contiene los datos esperados. Por favor, intente de nuevo.");
+                    }
+                },
+                error: (xhr, status, error) => {
+                    console.error("Error al cargar historiales:", error);
+                    this.showError("Error de carga", "No se pudieron cargar los historiales. Por favor, intente de nuevo más tarde.");
+                }
+            });
+        },
+
+        handleNew() {
+            this.resetForm();
+            this.elements.modalTitle.text("Nueva mascota");
+            this.elements.btnSubmit.removeAttr("data-id");
+            this.elements.modalEl.modal("show");
+        },
+
+        handleSubmit() {
+            this.elements.btnSubmit.prop("disabled", true);
+            const url = this.currentId
+                ? `/admin/mascota/${this.currentId}`
+                : "/admin/mascota";
+            const method = this.currentId ? "PUT" : "POST";
+            this.saveRegister(url, method);
+        },
+
+        editMascota(id) {
+            const mascota = utilities.getByID(id, this.table, "id_mascota");
+            console.log(mascota);
+
+            this.populateForm(mascota);
+            this.elements.modalTitle.text("Editar mascota");
+            this.elements.btnSubmit.prop("disabled", false);
+            this.currentId = id;
+            this.elements.modalEl.modal("show");
+        },
+
+        populateForm(mascota) {
+            this.elements.form.find(":input").each(function () {
+                const $input = $(this);
+                const name = $input.attr("name");
+                if ($input.prop("tagName") === "SELECT") {
+                    const choice = choiceInstances.find(
+                        (element) => element._baseId === `choices--${name}`
+                    );
+                    if (choice) choice.setChoiceByValue(`${mascota[name]}`);
+                } else {
+                    $input.val(mascota[name]).parent().addClass("is-filled");
+                }
+            });
+        },
+
+        resetForm() {
+            utilities.resetForm(this.elements.form);
+            this.elements.btnSubmit.prop("disabled", false);
+        },
+
+        saveRegister(url, method) {
+            $.ajax({
+                type: method,
+                url,
+                data: this.elements.form.serialize(),
+                success: (response) => {
+                    this.elements.modalEl.modal("hide");
+                    this.table.ajax.reload();
+                    az.showSwal("success-message", null, response.message);
+                },
+                error: (xhr) => {
+                    this.elements.btnSubmit.prop("disabled", false);
+                    utilities.formValidation(xhr.responseJSON.errors);
+                },
+            });
+        },
+        showError(title, message) {
+            // Swal.fire({
+            //     icon: "error",
+            //     title: title,
+            //     text: message,
+            //     confirmButtonText: "Entendido",
+            //     confirmButtonColor: "#3085d6",
+            //     customClass: {
+            //         confirmButton: "btn btn-primary",
+            //     },
+            // });
+            console.log('error');
+            
         },
     };
 
-    table = $("#datatable").DataTable({
-        order: [[0, "desc"]],
-        responsive: true,
-        language: {
-            searchPlaceholder: "Buscar...",
-        },
-        lengthMenu: [
-            [5, 25, 50, -1],
-            [10, 25, 50, "Todos"],
-        ],
-        pagingType: "full_numbers",
-        ajax: {
-            url: "/admin/mascota",
-        },
-        columns: [
-            {
-                data: null,
-                targets: 0,
-                orderable: true,
-                render: function (data, type, row, meta) {
-                    return meta.row + 1;
-                },
-            },
-            // { data: "id_mascota" },
-            { data: "nombre_mascota" },
-            { data: "nombre_completo" },
-            { data: "animal" },
-            {
-                data: null,
-                targets: -1,
-                orderable: false,
-                render: function (data, type, row) {
-                    // console.log(row);
-                    return ACTIONS("mascota", row.id_mascota);
-                },
-            },
-        ],
-        drawCallback: function () {
-            utilities.tooltip();
-            utilities.loaderTool();
-        },
-    });
-    utilities.initChoice();
-    utilities.formValidateInit();
-    utilities.ajaxSetup();
-
-    table.on("click", ".edit", function () {
-        let id = $(this).data("id");
-        btnState.edit(id);
-        edit(id, table);
-    });
-    table.on("click", ".delete", function () {
-        let id = $(this).data("id");
-        az.showSwal("warning-message-delete", `/admin/mascota/${id}`);
-    });
-    btnNew.on("click", function (e) {
-        btnState.add();
-    });
-    btnSubmit.on("click", function () {
-        let id = btnState.id;
-        btnSubmit.prop("disabled", true);
-        if (!id) {
-            saveRegister("/admin/mascota", "POST");
-        } else {
-            saveRegister(`/admin/mascota/${id}`, "PUT");
-        }
-    });
-    function edit(id, table) {
-        let reg = utilities.getByID(id, table, "id_mascota");
-        console.log(reg);
-        
-        modalEl.modal("show");
-        utilities.reloadStyle();
-        $("form#form-main :input").each(function () {
-            let name = $(this).attr("name");
-            if ($(this).prop("tagName") === "SELECT") {
-                let choice = choiceInstances.filter(
-                    (elemento) => elemento._baseId === "choices--" + name
-                );
-                choice[0].setChoiceByValue(`${reg[name]}`);
-            // });
-            } else {
-                $(this).parent().addClass("is-filled");
-                $(this).val(reg[name]); 
-            }
-        });
-    }
-    function saveRegister(url, method) {
-        // utilities.ajaxSetup();/
-        $.ajax({
-            type: method,
-            url,
-            data: form.serialize(),
-            success: (d) => {
-                modalEl.modal("hide");
-                $("#datatable").DataTable().ajax.reload();
-                az.showSwal("success-message", null, d.message);
-            },
-            error: function (data) {
-                btnSubmit.prop("disabled", false);
-                let errors = data.responseJSON.errors;
-                utilities.formValidation(errors);
-            },
-        });
-    }
+    MascotaManager.init();
 });

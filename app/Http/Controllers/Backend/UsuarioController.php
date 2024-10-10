@@ -9,6 +9,7 @@ use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Validation\Rule;
 use Illuminate\Validation\Rules;
+use App\Helpers\Helpers;
 
 class UsuarioController extends Controller
 {
@@ -29,8 +30,6 @@ class UsuarioController extends Controller
     }
     public function store(Request $request)
     {
-        // dd($_POST);
-        /* init::Guardar usuario */
         $validator = Validator::make(
             $request->all(),
             [
@@ -38,7 +37,7 @@ class UsuarioController extends Controller
                 'rol' => 'required',
                 'nombre' => 'required',
                 'paterno' => 'required',
-                'rol' => 'required',
+                'image' => 'required|file|max:10000|mimes:png,jpg,jpeg',
                 'email' => 'required',
                 'celular' => 'required|numeric|digits:8',
                 'password' => ['required', 'confirmed', Rules\Password::defaults()],
@@ -52,14 +51,18 @@ class UsuarioController extends Controller
 
         // Manejo de errores de validación
         if ($validator->fails()) {
-            // if (!$request->has('id_persona') || !$request->has('persona')) {
-            //     $validator->errors()->add('persona', 'Seleccione una persona existente');
-            // }
             return response()->json([
                 'message' => 'Error en la validación de los datos',
                 'errors' => $validator->errors(),
                 'status' => 400
             ], 400);
+        }
+        if (!($idImage = Helpers::__fileUpload($request, 'image', 'usuarios'))) {
+            $data = [
+                'message' => 'Error al subir la imagen.',
+                'status' => 500
+            ];
+            return response()->json($data, 500);
         }
         $user = UsuarioModel::create([
             'usuario' => $request->usuario,
@@ -69,6 +72,7 @@ class UsuarioController extends Controller
             'celular' => $request->celular,
             'email' => $request->email,
             'password' => Hash::make($request->password),
+            'id_multimedia' => $idImage,
             'rol' => $request->rol,
         ]);
         if (!$user) {
@@ -113,6 +117,7 @@ class UsuarioController extends Controller
     public function update(Request $request, $id)
     {
         $user = UsuarioModel::find($id);
+        $idImage = $user->id_multimedia;
         if (!$user) {
             $data = [
                 'message' => 'Usuario no encontrado',
@@ -120,8 +125,7 @@ class UsuarioController extends Controller
             ];
             return response()->json($data, 404);
         }
-        // 
-
+        // dd($request->all());
         $validator = Validator::make(
             $request->all(),
             array_merge([
@@ -132,6 +136,7 @@ class UsuarioController extends Controller
                 'rol' => 'required',
                 'nombre' => 'required',
                 'paterno' => 'required',
+                'image' => 'nullable|file|max:10000|mimes:png,jpg,jpeg',
                 'email' => 'required',
                 'celular' => 'required|numeric|digits:8',
             ], $request->change ? ['password' => ['required', 'confirmed', Rules\Password::defaults()]] : []),
@@ -140,7 +145,6 @@ class UsuarioController extends Controller
                 'usuario.unique' => 'Usuario ya registrado.',
             ]
         );
-
         if ($validator->fails()) {
             $data = [
                 'message' => 'Error en la validación de los datos',
@@ -149,6 +153,15 @@ class UsuarioController extends Controller
             ];
             return response()->json($data, 400);
         }
+        if ($request->image) {
+            if (!($idImage = Helpers::__fileUpload($request, 'image', 'usuarios', $user->id_multimedia))) {
+                $data = [
+                    'message' => 'Error al subir la imagen.',
+                    'status' => 500
+                ];
+                return response()->json($data, 500);
+            }
+        }
         $user->update(array_merge([
             'usuario' => $request->usuario,
             'nombre' => $request->nombre,
@@ -156,6 +169,7 @@ class UsuarioController extends Controller
             'materno' => $request->materno,
             'celular' => $request->celular,
             'email' => $request->email,
+            'id_multimedia' => $idImage,
             'rol' => $request->rol,
         ], $request->change ? ['password' => Hash::make($request->password)] : []));
         if (!$user) {
@@ -208,5 +222,17 @@ class UsuarioController extends Controller
             'status' => 200,
             'nuevoEstado' => $nuevoEstado
         ], 200);
+    }
+    public function getImage($id)
+    {
+        $user = UsuarioModel::getUser($id);
+        if (!$user) {
+            return response()->json(['message' => 'Usuario no encontrado'], 404);
+        }
+        if (!$user->ruta_archivo) {
+            return response()->json(['message' => 'Ruta de imagen no disponible'], 404);
+        }
+        $base64Image = Helpers::getImage($user->ruta_archivo);
+        return response()->json(['image' => $base64Image]);
     }
 }

@@ -1,7 +1,7 @@
 <form id='form-main'>
     <div class="row mt-3">
         <div class="col-12 col-sm-12">
-            <label class="form-control ms-0 p-0">Propietario</label>
+            <label class="form-control ms-0 p-0">Propietario:</label>
             <div class="input-group input-group-outline" id="select-validation-id_propietario">
                 <select class="form-control choices" name="id_propietario" id="id_propietario">
                     <option value="">[SELECCIONE]</option>
@@ -45,8 +45,8 @@
         </div>
         <div class="col-12 col-sm-6 mt-3 mt-sm-3">
             <div class="input-group input-group-outline">
-                <label for="edad" class="form-label">Edad</label>
-                <input id="edad" name="edad" class="form-control" type="number" />
+                <label for="color" class="form-label">Color</label>
+                <input id="color" name="color" class="form-control" type="text" />
                 <small>Error message</small>
             </div>
         </div>
@@ -63,17 +63,22 @@
     </div>
     <div class="row mt-3 mt-sm-3">
         <div class="col-12 col-sm-6 mt-3 mt-sm-0">
-            <div class="input-group input-group-outline">
-                <label for="color" class="form-label">Color</label>
-                <input id="color" name="color" class="form-control" type="text" />
-                <small>Error message</small>
-            </div>
-        </div>
-        <div class="col-12 col-sm-6 mt-3 mt-sm-0">
-            <div class="input-group input-group-outline">
-                <label for="vacunas" class="form-label">Vacunas</label>
-                <input id="vacunas" name="vacunas" class="form-control" type="number" />
-                <small>Error message</small>
+            <label class="form-control ms-0 p-0">Edad:</label>
+            <div class="row">
+                <div class="col-12 col-sm-6 mt-3 mt-sm-0">
+                    <div class="input-group input-group-outline">
+                        <label for="years" class="form-label">Años</label>
+                        <input id="years" name="years" class="form-control" type="number" />
+                        <small>Error message</small>
+                    </div>
+                </div>
+                <div class="col-12 col-sm-6 mt-3 mt-sm-0">
+                    <div class="input-group input-group-outline">
+                        <input id="meses" name="meses" class="form-control" type="number" />
+                        <label for="meses" class="form-label">Meses</label>
+                        <small>Error message</small>
+                    </div>
+                </div>
             </div>
         </div>
     </div>
