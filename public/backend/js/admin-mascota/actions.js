@@ -26,40 +26,50 @@ export function listHistorial(historiales, elements) {
         console.error("Argumentos inválidos para listHistorial");
         return;
     }
-    const tableBody = elements.modalHistorial.find('tbody');
+    const tableBody = elements.modalHistorial.find("tbody");
     tableBody.empty();
     if (historiales.length === 0) {
-        tableBody.append('<tr><td colspan="3" class="text-center">No hay historiales disponibles</td></tr>');
+        tableBody.append(
+            '<tr><td colspan="4" class="text-center">No hay historiales disponibles</td></tr>'
+        );
         return;
     }
 
-    historiales.forEach(historial => {
-        tableBody.append(createHistorialRow(historial));
+    historiales.forEach((historial, index) => {
+        tableBody.append(
+            createHistorialRow(historial, index, historiales.length)
+        );
     });
 
     // Reinicializar tooltips si estás usando Bootstrap
     $('[data-bs-toggle="tooltip"]').tooltip();
 }
 
-function createHistorialRow(historial) {
-    const fecha = new Date(historial.fecha).toLocaleString();
+function createHistorialRow(historial, index, length) {
+    const fecha = new Date(historial.created_at).toLocaleString();
     const estado = getEstadoBadge(historial.estado);
-
     return `
         <tr>
             <td>
                 <div class="d-flex px-2 py-1">
-                    <h6 class="mb-0 font-weight-normal text-sm">${fecha}</h6>
+                    <h6 class="mb-0 font-weight-normal text-sm">${
+                        length - index
+                    }</h6>
+                </div>
+            </td>
+            <td>
+                <div class="d-flex px-2 py-1">
+                    <span class="text-white badge bg-gradient-success mb-0">${fecha}</span>
                 </div>
             </td>
             <td>
                 <p class="text-sm font-weight-normal mb-0">${estado}</p>
             </td>
             <td>
-                <a href="/admin/historial/${historial.id}" 
+                <a href="/admin/mascota/${historial.id_historial}/historial" 
                    class="btn btn-sm btn-info m-0" 
                    data-bs-toggle="tooltip"
-                   data-bs-original-title="Ver Historial" 
+                   data-bs-original-title="Revisar historial" 
                    target='_blank'>
                     <i class="material-icons position-relative text-lg">visibility</i> Revisar
                 </a>
@@ -70,11 +80,12 @@ function createHistorialRow(historial) {
 
 function getEstadoBadge(estado) {
     const badgeClasses = {
-        'ACTIVO': 'badge-success',
-        'PENDIENTE': 'badge-warning',
-        'CERRADO': 'badge-secondary'
+        1: "badge-warning",
+        2: "badge-success",
     };
 
-    const badgeClass = badgeClasses[estado.toUpperCase()] || 'badge-info';
-    return `<span class="badge ${badgeClass}">${estado}</span>`;
+    const badgeClass = badgeClasses[estado.toUpperCase()] || "badge-info";
+    return `<span class="badge ${badgeClass}">${
+        estado == 1 ? "ACTIVO" : "TERMINADO"
+    }</span>`;
 }

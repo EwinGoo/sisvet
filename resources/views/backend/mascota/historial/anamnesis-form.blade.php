@@ -21,8 +21,7 @@
         <label for="ultima_desparasitacion" class="form-control ms-0 mb-0">Ultima
             desparacitación</label>
         <div class="input-group input-group-static az-input-group-outline ">
-            <textarea id="ultima_desparasitacion" name="ultima_desparasitacion" class="form-control az-area p-3" rows="2"
-                placeholder="Descripción de ultima desparacitacin" spellcheck="false"></textarea>
+            <input type="date" name="ultima_desparasitacion" id="ultima_desparasitacion" class="form-control" placeholder="" />
             <small>Error message</small>
         </div>
     </div>

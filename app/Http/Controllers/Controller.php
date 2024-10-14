@@ -2,36 +2,30 @@
 
 namespace App\Http\Controllers;
 
-
 use Illuminate\Foundation\Auth\Access\AuthorizesRequests;
 use Illuminate\Foundation\Validation\ValidatesRequests;
 use Illuminate\Routing\Controller as BaseController;
-
-// use App\Utils\MenuGenerator;
-use App\Http\Controllers\MenuGenerator;
 use App\Models\UsuarioModel;
 use Illuminate\Support\Facades\Auth;
 use App\Helpers\Helpers;
-// use App\Utils\MenuGenerator as UtilsMenuGenerator;
 
 class Controller extends BaseController
 {
     use AuthorizesRequests, ValidatesRequests;
 
-    /* init::developer date */
+    protected const SISTEMA = 'Sistema Veterinario';
+    protected const DEVELOPER_INFO = [
+        'name' => '',
+        'number' => '',
+        'link' => '',
+        'username' => 'azbits'
+    ];
 
-    protected $developer = '';
-    protected $number = '';
-    protected $link = '';
-    protected $username = 'azbits';
+    protected $data = [];
+    protected $title;
+    protected $page;
+    protected $pageURL;
 
-    /* end::developer date */
-
-    public $data = [];
-    public $title = null;
-    public $page = null;
-    public $pageURL = null;
-    public $sistema = 'Sistema Veterinario';
     public function __construct()
     {
         $this->loadMenus();
@@ -39,60 +33,49 @@ class Controller extends BaseController
 
     protected function loadMenus()
     {
-        // Cargar los menús y almacenarlos en la variable de sesión
-        // PersonaController
+        // Implementar la carga de menús si es necesario
         // session(['menus' => MenuGenerator::generate()]);
     }
+
     public function render($view)
     {
-        // $users = UsuarioModel::where('id_usuario', Auth::id())->first();
+        $user = $this->getCurrentUser();
+        $this->data['usuario'] = $user;
+
+        $viewData = [
+            'data' => $this->data,
+            'title' => $this->title,
+            'sistema' => self::SISTEMA,
+            'menu' => $this->getMenu(),
+            'icon' => $this->getIconMenu(),
+            'page' => $this->page,
+            'pageURL' => $this->pageURL
+        ];
+
+        return view('backend.' . $view, $viewData);
+    }
+
+    protected function getCurrentUser()
+    {
         $user = UsuarioModel::getUser(Auth::id());
         $user->image = Helpers::getImage($user->ruta_archivo);
-        // dd(UsuarioModel::getUser());
-        $this->data['usuario'] = $user;
-        // dd($this->data['usuario']);
-        // $this->data['notificaciones'] = ContactoModel::whereIn('estado', ['1'])->orderByDesc('fecha_creacion')->get();
-        // $this->data['cantidad'] = ContactoModel::whereIn('estado', ['1'])->get()->count();
-
-        // $user =  new UserModel();
-        // $user = $user->getUsers(Auth::user()->id);
-        // $this->data['rol'] = $user->rol;
-        // $this->data['title'] = $this->title;
-        // $this->data['page'] = $this->page;
-        $menu  = $this->menu();
-        $icon  = $this->iconMenu();
-        // dd($menu);
-
-        $title = $this->title;
-        $data = $this->data;
-        $sistema = $this->sistema;
-        $page = $this->page;
-        $pageURL = $this->pageURL;
-
-        return view('backend.' . $view, compact('data', 'title', 'sistema', 'menu', 'icon', 'page', 'pageURL'));
+        return $user;
     }
 
-    protected function menu()
+    protected function getMenu(): array
     {
-        $data = [];
-        /* init::Menu del sistemas */
-        // if (Auth::user()->rol == 'ADMIN') {
-        $data["administración"] = [
-            "usuarios" => "admin-usuario",
-        ];
-        // }
-        $data = array_merge($data, [
+        return [
+            "administración" => [
+                "usuarios" => "admin-usuario",
+            ],
             "propietarios" => 'admin-propietario',
             "mascotas" => 'admin-mascota',
-        ]);
-
-        return $data;
+        ];
     }
-    protected function iconMenu()
+
+    protected function getIconMenu(): array
     {
-        /* init::Iconos del menu */
-        $iconos = [
-            // 'titulo vista' =>'icono'
+        return [
             'panel principal' => 'dashboard',
             'marines' => 'image',
             'estudiantes' => 'group_add',
@@ -110,6 +93,5 @@ class Controller extends BaseController
             "videos" => 'play_circle',
             'resultados' => 'fact_check'
         ];
-        return $iconos;
     }
 }

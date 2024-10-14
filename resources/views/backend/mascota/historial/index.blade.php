@@ -27,8 +27,7 @@
                     </a>
                 </li>
                 <li class="nav-item pt-2">
-                    <a class="nav-link text-dark d-flex" data-scroll href="#examen-general" target="_blank"
-                        data-bs-toggle="modal" data-bs-target="#modal-main">
+                    <a class="nav-link text-dark d-flex" data-scroll href="#examen-general">
                         <i class="material-icons text-lg me-2">local_hospital</i>
                         <span class="text-sm">Examen general </span>
                     </a>
@@ -61,7 +60,7 @@
         </div>
     </div>
     <div class="col-lg-9 mt-lg-0 mt-4 az-information">
-        <div class="card" id="profile">
+        <div class="card" id="profile" data-id="{{$data['info']->id_historial}}">
             <div class="card-header p-3 pt-3 pb-1">
                 <div
                     class="icon icon-lg icon-shape bg-gradient-dark shadow text-center border-radius-xl mt-n4 me-3 float-start">
@@ -187,32 +186,25 @@
                             <span class="h6 mb-1 text-gradient text-info">
                                 Enfermedades anteriores:
                             </span>
-                            <span>
-
-                            </span>
+                            <span id="enf_ant"></span>
                         </div>
                         <div class="col-12 mt-2">
                             <span class="h6 mb-1 text-gradient text-info">
                                 Tratamientos recientes:
                             </span>
-                            <span>
-
-                            </span>
-                        </div>
-                        <div class="col-12 mt-2">
-                            <span class="h6 mb-1 text-gradient text-info">
-                                Ultima desparacitación:
-                            </span>
-                            <span>
-                            </span>
+                            <span id="tra_rec"></span>
                         </div>
                         <div class="col-12 mt-2">
                             <span class="h6 mb-1 text-gradient text-info">
                                 Vacunas:
                             </span>
-                            <span>
-
+                            <span id="vac"></span>
+                        </div>
+                        <div class="col-12 mt-2">
+                            <span class="h6 mb-1 text-gradient text-info">
+                                Ultima desparacitación:
                             </span>
+                            <span id="ult_des"></span>
                         </div>
                     </div>
                 </div>
@@ -236,9 +228,12 @@
             </div>
             <div class="card-body pt-0">
                 <div class="table-responsive">
-                    <table class="table align-items-center mb-0">
+                    <table class="table align-items-center mb-0" id="table-examen">
                         <thead>
                             <tr>
+                                <th class="w-5 text-uppercase text-xxs font-weight-bolder opacity-7">
+                                    N°
+                                </th>
                                 <th class="text-uppercase text-xxs font-weight-bolder opacity-7">
                                     Fecha
                                 </th>
@@ -260,42 +255,7 @@
                             </tr>
                         </thead>
                         <tbody>
-                            <tr>
-                                <td>
-                                    <div class="d-flex px-2 py-1">
-                                        <div>
-                                            <img src="../../../assets/img/team-2.jpg" class="avatar avatar-sm me-3"
-                                                alt="avatar image" />
-                                        </div>
-                                        <div class="d-flex flex-column justify-content-center">
-                                            <h6 class="mb-0 font-weight-normal text-sm">
-                                                John Michael
-                                            </h6>
-                                        </div>
-                                    </div>
-                                </td>
-                                <td>
-                                    <p class="text-sm font-weight-normal mb-0">Manager</p>
-                                </td>
-                                <td>
-                                    <span class="badge badge-dot me-4">
-                                        <i class="bg-info"></i>
-                                        <span class="text-dark text-xs">positive</span>
-                                    </span>
-                                </td>
-                                <td class="align-middle text-center text-sm">
-                                    <p class="mb-0 font-weight-normal text-sm">
-                                        <a href="/cdn-cgi/l/email-protection" class="__cf_email__"
-                                            data-cfemail="e882878086a89d9b8d9ac68b8785">[email&#160;protected]</a>
-                                    </p>
-                                </td>
-                                <td class="align-middle text-center">
-                                    <p class="text-sm font-weight-normal mb-0">23/04/18</p>
-                                </td>
-                                <td class="align-middle text-center">
-                                    <p class="text-sm font-weight-normal mb-0">43431</p>
-                                </td>
-                            </tr>
+                        
                         </tbody>
                     </table>
                 </div>
@@ -333,10 +293,13 @@
             </div>
             <div class="card-body pt-0">
                 <div class="table-responsive">
-                    <table class="table align-items-center mb-0">
+                    <table class="table align-items-center mb-0" id="table-sintomas">
                         <thead>
                             <tr>
-                                <th class="text-uppercase text-xxs font-weight-bolder opacity-7">
+                                <th class="w-5 text-uppercase text-xxs font-weight-bolder opacity-7">
+                                    N°
+                                </th>
+                                <th class="w-10 text-uppercase text-xxs font-weight-bolder opacity-7">
                                     Fecha
                                 </th>
                                 <th class="text-uppercase text-xxs font-weight-bolder opacity-7 ps-2">
@@ -345,24 +308,6 @@
                             </tr>
                         </thead>
                         <tbody>
-                            <tr>
-                                <td>
-                                    <div class="d-flex px-2 py-1">
-                                        <div>
-                                            <img src="../../../assets/img/team-2.jpg" class="avatar avatar-sm me-3"
-                                                alt="avatar image" />
-                                        </div>
-                                        <div class="d-flex flex-column justify-content-center">
-                                            <h6 class="mb-0 font-weight-normal text-sm">
-                                                John Michael
-                                            </h6>
-                                        </div>
-                                    </div>
-                                </td>
-                                <td>
-                                    <p class="text-sm font-weight-normal mb-0">Manager</p>
-                                </td>
-                            </tr>
                         </tbody>
                     </table>
                 </div>
@@ -384,10 +329,13 @@
             </div>
             <div class="card-body pt-0">
                 <div class="table-responsive">
-                    <table class="table align-items-center mb-0">
+                    <table class="table align-items-center mb-0" id="table-diagnostico">
                         <thead>
                             <tr>
-                                <th class="text-uppercase text-xxs font-weight-bolder opacity-7">
+                                <th class="w-5 text-uppercase text-xxs font-weight-bolder opacity-7">
+                                    N°
+                                </th>
+                                <th class="w-10 text-uppercase text-xxs font-weight-bolder opacity-7">
                                     Fecha
                                 </th>
                                 <th class="text-uppercase text-xxs font-weight-bolder opacity-7 ps-2">
@@ -396,24 +344,6 @@
                             </tr>
                         </thead>
                         <tbody>
-                            <tr>
-                                <td>
-                                    <div class="d-flex px-2 py-1">
-                                        <div>
-                                            <img src="../../../assets/img/team-2.jpg" class="avatar avatar-sm me-3"
-                                                alt="avatar image" />
-                                        </div>
-                                        <div class="d-flex flex-column justify-content-center">
-                                            <h6 class="mb-0 font-weight-normal text-sm">
-                                                John Michael
-                                            </h6>
-                                        </div>
-                                    </div>
-                                </td>
-                                <td>
-                                    <p class="text-sm font-weight-normal mb-0">Manager</p>
-                                </td>
-                            </tr>
                         </tbody>
                     </table>
                 </div>
@@ -435,10 +365,13 @@
             </div>
             <div class="card-body pt-0">
                 <div class="table-responsive">
-                    <table class="table align-items-center mb-0">
+                    <table class="table align-items-center mb-0" id="table-tratamiento">
                         <thead>
                             <tr>
-                                <th class="text-uppercase text-xxs font-weight-bolder opacity-7">
+                                <th class="w-5 text-uppercase text-xxs font-weight-bolder opacity-7">
+                                    N°
+                                </th>
+                                <th class="w-10 text-uppercase text-xxs font-weight-bolder opacity-7">
                                     Fecha
                                 </th>
                                 <th class="text-uppercase text-xxs font-weight-bolder opacity-7 ps-2">
@@ -447,24 +380,6 @@
                             </tr>
                         </thead>
                         <tbody>
-                            <tr>
-                                <td>
-                                    <div class="d-flex px-2 py-1">
-                                        <div>
-                                            <img src="../../../assets/img/team-2.jpg" class="avatar avatar-sm me-3"
-                                                alt="avatar image" />
-                                        </div>
-                                        <div class="d-flex flex-column justify-content-center">
-                                            <h6 class="mb-0 font-weight-normal text-sm">
-                                                John Michael
-                                            </h6>
-                                        </div>
-                                    </div>
-                                </td>
-                                <td>
-                                    <p class="text-sm font-weight-normal mb-0">Manager</p>
-                                </td>
-                            </tr>
                         </tbody>
                     </table>
                 </div>
@@ -486,10 +401,13 @@
             </div>
             <div class="card-body pt-0">
                 <div class="table-responsive">
-                    <table class="table align-items-center mb-0">
+                    <table class="table align-items-center mb-0" id="table-evolucion">
                         <thead>
                             <tr>
-                                <th class="text-uppercase text-xxs font-weight-bolder opacity-7">
+                                <th class="w-5 text-uppercase text-xxs font-weight-bolder opacity-7">
+                                    N°
+                                </th>
+                                <th class="w-10 text-uppercase text-xxs font-weight-bolder opacity-7">
                                     Fecha y hora
                                 </th>
                                 <th class="text-uppercase text-xxs font-weight-bolder opacity-7 ps-2">
@@ -498,24 +416,6 @@
                             </tr>
                         </thead>
                         <tbody>
-                            <tr>
-                                <td>
-                                    <div class="d-flex px-2 py-1">
-                                        <div>
-                                            <img src="../../../assets/img/team-2.jpg" class="avatar avatar-sm me-3"
-                                                alt="avatar image" />
-                                        </div>
-                                        <div class="d-flex flex-column justify-content-center">
-                                            <h6 class="mb-0 font-weight-normal text-sm">
-                                                John Michael
-                                            </h6>
-                                        </div>
-                                    </div>
-                                </td>
-                                <td>
-                                    <p class="text-sm font-weight-normal mb-0">Manager</p>
-                                </td>
-                            </tr>
                         </tbody>
                     </table>
                 </div>

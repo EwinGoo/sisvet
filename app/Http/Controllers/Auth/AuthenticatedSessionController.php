@@ -30,9 +30,9 @@ class AuthenticatedSessionController extends Controller
     {
         $user = UsuarioModel::where('email', $request->email)->first();
 
-        // if (!$this->validateReCaptcha($request)) {
-        //     return back()->withErrors(['captcha' => 'Error en la validación de reCAPTCHA.'])->onlyInput('email');
-        // }
+        if (!$this->validateReCaptcha($request)) {
+            return back()->withErrors(['captcha' => 'Error en la validación de reCAPTCHA.'])->onlyInput('email');
+        }
         if (!$user || !$user->estado) {
             return back()->withErrors([
                 'email' => 'Su cuenta está inactiva. Por favor, contacte con el administrador.',
@@ -64,7 +64,7 @@ class AuthenticatedSessionController extends Controller
         $client = new Client();
         $response = $client->post('https://www.google.com/recaptcha/api/siteverify', [
             'form_params' => [
-                'secret' => env('RECAPTCHA_SECRET_KEY'),
+                'secret' => '6Lebr1YqAAAAAGFXyN5Otx43rC2W_wRwpdmadFM0',
                 'response' => $request->input('g-recaptcha-response'),
             ]
         ]);

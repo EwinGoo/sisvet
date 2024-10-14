@@ -27,5 +27,8 @@ use App\Http\Controllers\TestController as Test;
 Route::get('/', function () {
     return redirect()->action([PropietarioController::class, 'index']);
 })->middleware('auth');
+Route::get('/404', function () {
+    return view('backend.errors.404');
+})->name('error-404');
 
 require __DIR__ . '/auth.php';

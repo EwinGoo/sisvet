@@ -23,18 +23,25 @@ Route::prefix('admin')->middleware(['auth'])->group(function () {
 
     Route::resource('mascota', MascotaController::class)->names('admin-mascota');
     // Route::get('/historial', [MascotaController::class, 'historialClinico'])->name('admin-mascota.historial-clinico');
-    Route::post('/historial', [MascotaController::class, 'historialClinicoSave'])->name('admin-mascota.historial-clinico');
+    Route::post('/mascota/historial', [MascotaController::class, 'historialClinicoSave'])->name('admin-mascota.historial-save');
+    Route::get('/mascota/{id}/historial', [MascotaController::class, 'historialIndex'])->name('admin-mascota.historial.index');
+    Route::get('/mascota/historiales/{id}', [MascotaController::class, 'getAllHistorial']);
+    Route::get('/mascota/historial/{id}/data', [MascotaController::class, 'getFullDataHistorial']);
 
-    Route::post('/anamnesis', [MascotaController::class, 'anamnesisSave']);
-    Route::post('/examen', [MascotaController::class, 'examenSave']);
-    Route::post('/sintomas', [MascotaController::class, 'sintomasSave']);
-    Route::post('/diagnostico', [MascotaController::class, 'diagnosticoSave']);
-    Route::post('/tratamiento', [MascotaController::class, 'tratamientoSave']);
-    Route::post('/evolucion', [MascotaController::class, 'evolucionSave']);
+    Route::prefix('mascota')->group(function () {
+        Route::post('/anamnesis', [MascotaController::class, 'anamnesisUpdate']);
+        Route::post('/examen', [MascotaController::class, 'examenSave']);
+        Route::post('/sintomas', [MascotaController::class, 'handleHistorialData']);
+        Route::post('/diagnostico', [MascotaController::class, 'handleHistorialData']);
+        Route::post('/tratamiento', [MascotaController::class, 'handleHistorialData']);
+        Route::post('/evolucion', [MascotaController::class, 'handleHistorialData']);
+    });
+
 
     Route::resource('usuario', UsuarioController::class)->names('admin-usuario');
     Route::post('/change-state-user', [UsuarioController::class, 'changeStatus'])->name('change-state');
     Route::get('/usuario/{id}/image', [UsuarioController::class, 'getImage'])->name('admin-usuario.get-image');
 });
+
 
 /* end::Rutas del sistema de administración*/

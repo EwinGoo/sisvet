@@ -9,7 +9,7 @@
                 </button>
             </div>
             <div class="modal-body pt-1">
-                <form id="form-historial" target="_blank" action="{{ route('admin-mascota.historial-clinico') }}"
+                <form id="form-historial" target="_blank" action="{{ route('admin-mascota.historial-save') }}"
                     method="POST">
                     @csrf
                     <input type="hidden" id="input-mascota-id" name="id_mascota" value="">
@@ -20,18 +20,21 @@
                         <thead>
                             <tr>
                                 <th class="text-uppercase text-xxs font-weight-bolder opacity-7">
+                                    N°
+                                </th>
+                                <th class="text-uppercase text-xxs font-weight-bolder opacity-7">
                                     Fecha y hora
                                 </th>
                                 <th class="text-uppercase text-xxs font-weight-bolder opacity-7 ps-2">
                                     estado
                                 </th>
                                 <th class="text-uppercase text-xxs font-weight-bolder opacity-7 ps-2">
-                                    accion
+                                    acción
                                 </th>
                             </tr>
                         </thead>
                         <tbody>
-                            @foreach ($data['historiales'] as $item)
+                            {{-- @foreach ($data['historiales'] as $item)
                                 <tr>
                                     <td>
                                         <div class="d-flex px-2 py-1">
@@ -49,13 +52,13 @@
                                         </p>
                                     </td>
                                     <td>
-                                        <a data-id="${id}" class="btn btn-sm btn-info m-0" data-bs-toggle="tooltip"
-                                            data-bs-original-title="Historial ${name}" target='_blank'>
+                                        <a href="{{ route('admin-mascota.historial.index', ['id' => $item->id_mascota]) }}"
+                                            class="btn btn-sm btn-info m-0" target='_blank'>
                                             <i class="material-icons position-relative text-lg">visibility</i> revisar
                                         </a>
                                     </td>
                                 </tr>
-                            @endforeach
+                            @endforeach --}}
                         </tbody>
                     </table>
                 </div>

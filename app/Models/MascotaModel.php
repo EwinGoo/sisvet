@@ -35,8 +35,8 @@ class MascotaModel extends Model
             ->join('propietarios as p', 'p.id_propietario', '=', 'mascotas.id_propietario')
             ->join('animales as a', 'a.id_animal', '=', 'mascotas.id_animal')
             ->where('id_mascota', $id)
+            // ->orderBy('desc', 'id_historial')
             ->first();
-
         return $results;
     }
 }

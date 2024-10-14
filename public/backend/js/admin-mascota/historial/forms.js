@@ -1,6 +1,6 @@
 export function anamnesisForm() {
     return `
-        <form action="modal-main">
+        <form action="form-main">
         <div class="row">
             <div class="col-12 col-md-6">
                 <label for="enfermedades_anteriores" class="form-control ms-0 mb-0">Enfermedades
@@ -21,19 +21,18 @@ export function anamnesisForm() {
                 </div>
             </div>
             <div class="col-12 col-md-6">
-                <label for="ultima_desparasitacion" class="form-control ms-0 mb-0">Ultima
-                    desparacitación</label>
-                <div class="input-group input-group-static az-input-group-outline ">
-                    <textarea id="ultima_desparasitacion" name="ultima_desparasitacion" class="form-control az-area p-3" rows="2"
-                        placeholder="Descripción de ultima desparacitación" spellcheck="false"></textarea>
-                    <small>Error message</small>
-                </div>
-            </div>
-            <div class="col-12 col-md-6">
                 <label for="vacunas" class="form-control ms-0 mb-0">Vacunas</label>
                 <div class="input-group input-group-static az-input-group-outline ">
                     <textarea id="vacunas" name="vacunas" class="form-control az-area p-3" rows="2" placeholder=""
                         spellcheck="false"></textarea>
+                    <small>Error message</small>
+                </div>
+            </div>
+            <div class="col-12 col-md-6">
+                <label for="ultima_desparasitacion" class="form-control ms-0 mb-0">Ultima
+                    desparacitación</label>
+                <div class="input-group input-group-static">
+                    <input type="date" name="ultima_desparasitacion" id="ultima_desparasitacion" class="form-control" placeholder="" />
                     <small>Error message</small>
                 </div>
             </div>
@@ -128,8 +127,8 @@ export function evolucionForm() {
         <div class="row mt-3">
             <div class="col-12 col-sm-12 mt-3 mt-sm-0">
                 <div class="input-group input-group-static">
-                    <label for="fecha">Fecha</label>
-                    <input type="datetime-local" name="fecha" id="fecha" class="form-control" placeholder="" />
+                    <label for="fecha_hora">Fecha y hora</label>
+                    <input type="datetime-local" name="fecha_hora" id="fecha_hora" class="form-control" placeholder="" />
                 </div>
             </div>
             <div class="col-12 col-sm-12 mt-3 ">

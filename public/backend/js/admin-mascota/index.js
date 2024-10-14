@@ -96,52 +96,63 @@ $(document).ready(function () {
         },
         handleHistorial(event) {
             const id = $(event.currentTarget).data("id");
-            this.elements.modalHistorial.modal("show");
+            setTimeout(() => {
+                this.elements.modalHistorial.modal("show");
+            }, 100);
             this.elements.inputMascotaId.val(id);
             this.elements.btnNewHistorial.off("click").on("click", (e) => {
                 e.preventDefault();
                 this.submitHistorialForm();
             });
-
+            // listHistorial(id, this.elements);
             this.loadHistoriales(id);
         },
         submitHistorialForm() {
             $.ajax({
-                url: this.elements.formHistorial.attr('action'),
-                method: 'POST',
+                url: this.elements.formHistorial.attr("action"),
+                method: "POST",
                 data: this.elements.formHistorial.serialize(),
                 success: (response) => {
                     if (response.redirectUrl) {
                         // Abrir nueva pestaña con la URL de redirección
-                        window.open(response.redirectUrl, '_blank');
-                        
+                        window.open(response.redirectUrl, "_blank");
                         // Recargar los historiales en la pestaña actual
-                        this.loadHistoriales(this.elements.inputMascotaId.val());
+                        // this.loadHistoriales(this.elements.inputMascotaId.val());
+                        this.loadHistoriales(response.id_mascota);
                     }
                 },
                 error: (xhr) => {
-                    console.error("Error al crear nuevo historial:", xhr.responseText);
-                    this.showError("Error", "No se pudo crear el nuevo historial. Por favor, intente de nuevo.");
-                }
+                    console.error(
+                        "Error al crear nuevo historial:",
+                        xhr.responseText
+                    );
+                    this.showError(
+                        "Error",
+                        "No se pudo crear el nuevo hist orial. Por favor, intente de nuevo."
+                    );
+                },
             });
         },
-
         loadHistoriales(id) {
             $.ajax({
                 url: `/admin/mascota/historiales/${id}`,
                 method: "GET",
+                dataType: "json",
                 success: (response) => {
-                    if (response && response.historiales) {
-                        listHistorial(response.historiales, this.elements);
+                    if (response) {
+                        console.log(response);
+                        listHistorial(response.data, this.elements);
+                        // this.listHistorial(response.historiales);
                     } else {
-                        console.error("Respuesta inesperada del servidor", response);
-                        this.showError("Error al cargar los historiales", "La respuesta del servidor no contiene los datos esperados. Por favor, intente de nuevo.");
+                        console.error(
+                            "Respuesta inesperada del servidor",
+                            response
+                        );
                     }
                 },
                 error: (xhr, status, error) => {
                     console.error("Error al cargar historiales:", error);
-                    this.showError("Error de carga", "No se pudieron cargar los historiales. Por favor, intente de nuevo más tarde.");
-                }
+                },
             });
         },
 
@@ -219,8 +230,7 @@ $(document).ready(function () {
             //         confirmButton: "btn btn-primary",
             //     },
             // });
-            console.log('error');
-            
+            console.log("error");
         },
     };
 
