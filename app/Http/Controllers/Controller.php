@@ -62,31 +62,37 @@ class Controller extends BaseController
 
     protected function getMenu($user): array
     {
-        // Menús específicos para el grupo vendedor
-        $grupoVendedor = ($user->rol == 'vendedor') ? [
-            "inventario" => 'admin-inventario',
-            "ventas" => 'admin-venta',
-        ] : [];
-
-        // Menús específicos para el grupo médico
-        $grupoMedico = ($user->rol == 'medico') ? [
-            "propietarios" => 'admin-propietario',
-            "mascotas" => 'admin-mascota',
-        ]:[];
-
-        // Menú completo para el grupo administrador
-        $grupoAdministrador = ($user->rol == 'administrador') ? [
+         // Menú completo para el grupo administrador
+         $grupoAdministrador = ($user->rol == 'administrador') ? [
             "administración" => [
                 "usuarios" => "admin-usuario",
             ],
-            "propietarios" => 'admin-propietario',
-            "mascotas" => 'admin-mascota',
-            "inventario" => 'admin-inventario',
-            "ventas" => 'admin-venta',
         ]:[];
 
+          // Menús específicos para el grupo médico
+          $grupoMedico = ($user->rol == 'medico' || $user->rol == 'administrador') ? [
+            '<hr>',
+            'CONSULTORIO',
+            "propietarios" => 'admin-propietario',
+            "mascotas" => 'admin-mascota',
+        ]:[];
+
+
+        // Menús específicos para el grupo vendedor
+        $grupoVendedor = ($user->rol == 'vendedor' || $user->rol == 'administrador') ? [
+            '<hr>',
+            'TIENDA',
+            "inventario" => 'admin-inventario',
+            "ventas" => 'admin-venta',
+            "productos" => 'admin-producto',
+            "clientes" => 'admin-cliente',
+        ] : [];
+
+      
+       
+
         // Retornar los menús agrupados
-        return array_merge($grupoVendedor,$grupoMedico,$grupoAdministrador);
+        return array_merge($grupoAdministrador,$grupoMedico,$grupoVendedor);
     }
 
     protected function getIconMenu(): array
@@ -110,6 +116,8 @@ class Controller extends BaseController
             'resultados' => 'fact_check',
             "inventario" => 'inventory',
             "ventas" => 'store',
+            "productos" => 'production_quantity_limits',
+            "clientes" => 'groups',
         ];
     }
 }

@@ -63,7 +63,7 @@
                     @if ($mVal == '<hr>')
                         <hr class="horizontal light mt-0" />
                     @elseif (gettype($mKey) == 'integer')
-                        <h6 class="ps-4 ms-2 text-uppercase text-xs font-weight-bolder text-white">
+                        <h6 class="ps-4 ms-2 text-uppercase text-xs font-weight-bolder text-white mt-1">
                             {{ $mVal }}
                         </h6>
                     @elseif (gettype($mVal) == 'string')

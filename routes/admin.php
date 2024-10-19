@@ -2,6 +2,10 @@
 
 use App\Http\Controllers\Backend\PropietarioController;
 use App\Http\Controllers\Backend\MascotaController;
+use App\Http\Controllers\Backend\Tienda\ClienteController;
+use App\Http\Controllers\Backend\Tienda\InventarioController;
+use App\Http\Controllers\Backend\Tienda\ProductoController;
+use App\Http\Controllers\Backend\Tienda\VentaController;
 use App\Http\Controllers\Backend\UsuarioController;
 // use App\Http\Controllers\TestingController;
 use Illuminate\Support\Facades\Route;
@@ -45,8 +49,10 @@ Route::prefix('admin')->middleware(['auth'])->group(function () {
     });
     
     Route::middleware(['role:administrador,vendedor'])->group(function () {
-        Route::resource('inventario', MascotaController::class)->names('admin-inventario');
-        Route::resource('venta', MascotaController::class)->names('admin-venta');
+        Route::resource('inventario', InventarioController::class)->names('admin-inventario');
+        Route::resource('cliente', ClienteController::class)->names('admin-cliente');
+        Route::resource('producto', ProductoController::class)->names('admin-producto');
+        Route::resource('venta', VentaController::class)->names('admin-venta');
     });
 });
 
