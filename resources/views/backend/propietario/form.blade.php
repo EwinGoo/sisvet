@@ -1,4 +1,4 @@
-<form id='form-main'>
+<form id='form-main' autocomplete="off">
     <div class="row mt-3">
         <div class="col-12 col-sm-6">
             <div class="input-group input-group-outline">
@@ -10,7 +10,7 @@
         <div class="col-12 col-sm-6">
             <div class="input-group input-group-outline">
                 <label for="nombre" class="form-label">Nombres</label>
-                <input id="nombre" name="nombre" class="form-control" type="text" />
+                <input id="nombre" name="nombre" class="form-control" type="text" autocomplete="off" />
                 <small>Error message</small>
             </div>
         </div>

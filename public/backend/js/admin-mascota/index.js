@@ -3,6 +3,7 @@ import { ACTIONS, listHistorial } from "./actions.js";
 $(document).ready(function () {
     const MascotaManager = {
         elements: {
+            csrf: $('meta[name="csrf-token"]'),
             form: $("#form-main"),
             formHistorial: $("#form-historial"),
             modalEl: $("#modal-main"),
@@ -95,17 +96,14 @@ $(document).ready(function () {
             az.showSwal("warning-message-delete", `/admin/mascota/${id}`);
         },
         handleHistorial(event) {
-            const id = $(event.currentTarget).data("id");
-            setTimeout(() => {
-                this.elements.modalHistorial.modal("show");
-            }, 100);
-            this.elements.inputMascotaId.val(id);
-            this.elements.btnNewHistorial.off("click").on("click", (e) => {
-                e.preventDefault();
-                this.submitHistorialForm();
-            });
-            // listHistorial(id, this.elements);
-            this.loadHistoriales(id);
+            event.preventDefault();
+            let form = $(event.target).closest('form')[0];
+            let csrfInput = document.createElement('input');
+            csrfInput.type = 'hidden';
+            csrfInput.name = '_token';
+            csrfInput.value = this.elements.csrf.attr("content");
+            form.appendChild(csrfInput);
+            form.submit();
         },
         submitHistorialForm() {
             $.ajax({

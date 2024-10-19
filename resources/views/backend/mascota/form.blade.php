@@ -1,4 +1,4 @@
-<form id='form-main'>
+<form id='form-main' autocomplete="off">
     <div class="row mt-3">
         <div class="col-12 col-sm-12">
             <label class="form-control ms-0 p-0">Propietario:</label>

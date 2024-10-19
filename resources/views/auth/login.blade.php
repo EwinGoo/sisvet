@@ -52,7 +52,7 @@
             </div>
         </div>
     </div>
-    <main class="main-content  mt-0">
+    <main class="main-content  mt-0 main-content">
         <section>
             <div class="page-header min-vh-100">
                 <div class="container">
@@ -110,7 +110,9 @@
             </div>
         </section>
     </main>
-
+    <script src="{{ asset('material-dashboard/assets/js/core/jquery.min.js') }}"></script>
+    <script src="{{ asset('material-dashboard/assets/js/plugins/perfect-scrollbar.min.js') }}"></script>
+    <script src="{{ asset('material-dashboard/assets/js/plugins/smooth-scrollbar.min.js') }}"></script>
     <script src="{{ asset('material-dashboard/assets/js/core/popper.min.js') }}"></script>
     <script src="{{ asset('material-dashboard/assets/js/core/bootstrap.min.js') }}"></script>
 

@@ -36,17 +36,15 @@ class Controller extends BaseController
         // Implementar la carga de menús si es necesario
         // session(['menus' => MenuGenerator::generate()]);
     }
-
     public function render($view)
     {
         $user = $this->getCurrentUser();
         $this->data['usuario'] = $user;
-
         $viewData = [
             'data' => $this->data,
             'title' => $this->title,
             'sistema' => self::SISTEMA,
-            'menu' => $this->getMenu(),
+            'menu' => $this->getMenu($user),
             'icon' => $this->getIconMenu(),
             'page' => $this->page,
             'pageURL' => $this->pageURL
@@ -62,15 +60,33 @@ class Controller extends BaseController
         return $user;
     }
 
-    protected function getMenu(): array
+    protected function getMenu($user): array
     {
-        return [
+        // Menús específicos para el grupo vendedor
+        $grupoVendedor = ($user->rol == 'vendedor') ? [
+            "inventario" => 'admin-inventario',
+            "ventas" => 'admin-venta',
+        ] : [];
+
+        // Menús específicos para el grupo médico
+        $grupoMedico = ($user->rol == 'medico') ? [
+            "propietarios" => 'admin-propietario',
+            "mascotas" => 'admin-mascota',
+        ]:[];
+
+        // Menú completo para el grupo administrador
+        $grupoAdministrador = ($user->rol == 'administrador') ? [
             "administración" => [
                 "usuarios" => "admin-usuario",
             ],
             "propietarios" => 'admin-propietario',
             "mascotas" => 'admin-mascota',
-        ];
+            "inventario" => 'admin-inventario',
+            "ventas" => 'admin-venta',
+        ]:[];
+
+        // Retornar los menús agrupados
+        return array_merge($grupoVendedor,$grupoMedico,$grupoAdministrador);
     }
 
     protected function getIconMenu(): array
@@ -91,7 +107,9 @@ class Controller extends BaseController
             "áreas carreras" => 'school',
             "baremo" => 'format_list_numbered',
             "videos" => 'play_circle',
-            'resultados' => 'fact_check'
+            'resultados' => 'fact_check',
+            "inventario" => 'inventory',
+            "ventas" => 'store',
         ];
     }
 }

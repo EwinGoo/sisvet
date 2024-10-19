@@ -263,17 +263,13 @@
                     <span class="h6 mb-1 text-gradient text-info">
                         Inspección:
                     </span>
-                    <span>
-
-                    </span>
+                    <span id="inspeccion-info"></span>
                 </div>
                 <div class="col-12">
                     <span class="h6 mb-1 text-gradient text-info">
-                        Palpitación:
+                        Palpación:
                     </span>
-                    <span>
-
-                    </span>
+                    <span id='palpacion-info'></span>
                 </div>
             </div>
             <hr class="horizontal dark m-0" />

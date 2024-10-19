@@ -195,24 +195,21 @@ class MascotaController extends Controller
 
     public function historialClinicoSave(Request $request)
     {
-        try {
-            $historialClinico = HistorialClinicoModel::create([
-                'id_mascota' => $request->id_mascota,
-                'id_usuario' => Auth::id(),
-            ]);
-            $redirectUrl = route('admin-mascota.historial.index', ['id' => $historialClinico->id_historial]);
-            return response()->json([
-                'message' => 'Historial clínico guardado con éxito',
-                'id_mascota' => $request->id_mascota,
-                'data' => $historialClinico,
-                'redirectUrl' => $redirectUrl
-            ], 201);
-        } catch (\Exception $e) {
-            return response()->json([
-                'message' => 'Error al guardar el historial clínico',
-                'error' => $e->getMessage()
-            ], 500);
+        $existingHistorial  =   HistorialClinicoModel::where('id_mascota', $request->id_mascota)->first();
+        if (!$existingHistorial) {
+            try {
+                $historialClinico = HistorialClinicoModel::create([
+                    'id_mascota' => $request->id_mascota,
+                    'id_usuario' => Auth::id(),
+                ]);
+            } catch (\Exception $e) {
+                return response()->json([
+                    'message' => 'Error al guardar el historial clínico',
+                    'error' => $e->getMessage()
+                ], 500);
+            }
         }
+        return redirect()->route('admin-mascota.historial.index', ['id' => $existingHistorial->id_historial ?? $historialClinico->id_historial]);
     }
     public function getFullDataHistorial($id)
     {
@@ -291,7 +288,7 @@ class MascotaController extends Controller
     public function examenSave(Request $request)
     {
         $validator = Validator::make($request->all(), [
-            'id_mascota' => 'required|exists:mascotas,id',
+            'id_historial' => 'required|exists:historial_clinico,id_historial',
             'fecha' => 'required|date',
             'temperatura' => 'required|numeric',
             'frecuencia_cardiaca' => 'required|integer',
@@ -299,7 +296,7 @@ class MascotaController extends Controller
             'mucosa' => 'required|string',
             'rc' => 'required|string',
             'inspeccion' => 'required|string',
-            'palpitacion' => 'required|string',
+            'palpacion' => 'required|string',
         ]);
 
         if ($validator->fails()) {
@@ -310,8 +307,8 @@ class MascotaController extends Controller
         }
 
         try {
-            $id = DB::table('examenes')->insertGetId([
-                'id_mascota' => $request->id_mascota,
+            $id = DB::table('examen_general')->insertGetId([
+                'id_historial' => $request->id_historial,
                 'fecha' => $request->fecha,
                 'temperatura' => $request->temperatura,
                 'frecuencia_cardiaca' => $request->frecuencia_cardiaca,
@@ -319,12 +316,10 @@ class MascotaController extends Controller
                 'mucosa' => $request->mucosa,
                 'rc' => $request->rc,
                 'inspeccion' => $request->inspeccion,
-                'palpitacion' => $request->palpitacion,
-                'created_at' => now(),
-                'updated_at' => now(),
+                'palpacion' => $request->palpacion,
             ]);
 
-            $examen = DB::table('examenes')->where('id', $id)->first();
+            $examen = DB::table('examen_general')->where('id_examen', $id)->first();
 
             return response()->json([
                 'message' => 'Examen guardado con éxito',

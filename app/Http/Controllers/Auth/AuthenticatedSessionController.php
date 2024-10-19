@@ -20,6 +20,7 @@ class AuthenticatedSessionController extends Controller
      */
     public function create(): View
     {
+        session()->regenerateToken();
         return view('auth.login');
     }
 

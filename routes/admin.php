@@ -19,28 +19,35 @@ Route::get('/dashboard', [PropietarioController::class, 'index'])->middleware(['
 //     Route::resource('persona', PersonaController::class)->names('admin-persona');
 // });
 Route::prefix('admin')->middleware(['auth'])->group(function () {
-    Route::resource('propietario', PropietarioController::class)->names('admin-propietario');
 
-    Route::resource('mascota', MascotaController::class)->names('admin-mascota');
-    // Route::get('/historial', [MascotaController::class, 'historialClinico'])->name('admin-mascota.historial-clinico');
-    Route::post('/mascota/historial', [MascotaController::class, 'historialClinicoSave'])->name('admin-mascota.historial-save');
-    Route::get('/mascota/{id}/historial', [MascotaController::class, 'historialIndex'])->name('admin-mascota.historial.index');
-    Route::get('/mascota/historiales/{id}', [MascotaController::class, 'getAllHistorial']);
-    Route::get('/mascota/historial/{id}/data', [MascotaController::class, 'getFullDataHistorial']);
-
-    Route::prefix('mascota')->group(function () {
-        Route::post('/anamnesis', [MascotaController::class, 'anamnesisUpdate']);
-        Route::post('/examen', [MascotaController::class, 'examenSave']);
-        Route::post('/sintomas', [MascotaController::class, 'handleHistorialData']);
-        Route::post('/diagnostico', [MascotaController::class, 'handleHistorialData']);
-        Route::post('/tratamiento', [MascotaController::class, 'handleHistorialData']);
-        Route::post('/evolucion', [MascotaController::class, 'handleHistorialData']);
+    Route::middleware(['role:administrador'])->group(function () {
+        Route::resource('usuario', UsuarioController::class)->names('admin-usuario');
+        Route::post('/change-state-user', [UsuarioController::class, 'changeStatus'])->name('change-state');
+        Route::get('/usuario/{id}/image', [UsuarioController::class, 'getImage'])->name('admin-usuario.get-image');
     });
+    Route::middleware(['role:administrador,medico'])->group(function () {
 
+        Route::resource('propietario', PropietarioController::class)->names('admin-propietario');
+        Route::resource('mascota', MascotaController::class)->names('admin-mascota');
 
-    Route::resource('usuario', UsuarioController::class)->names('admin-usuario');
-    Route::post('/change-state-user', [UsuarioController::class, 'changeStatus'])->name('change-state');
-    Route::get('/usuario/{id}/image', [UsuarioController::class, 'getImage'])->name('admin-usuario.get-image');
+        Route::prefix('mascota')->group(function () {
+            Route::post('/anamnesis', [MascotaController::class, 'anamnesisUpdate']);
+            Route::post('/examen', [MascotaController::class, 'examenSave']);
+            Route::post('/sintomas', [MascotaController::class, 'handleHistorialData']);
+            Route::post('/diagnostico', [MascotaController::class, 'handleHistorialData']);
+            Route::post('/tratamiento', [MascotaController::class, 'handleHistorialData']);
+            Route::post('/evolucion', [MascotaController::class, 'handleHistorialData']);
+        });
+        Route::post('/mascota/historial', [MascotaController::class, 'historialClinicoSave']);
+        Route::get('/mascota/{id}/historial', [MascotaController::class, 'historialIndex'])->name('admin-mascota.historial.index');
+        Route::get('/mascota/historiales/{id}', [MascotaController::class, 'getAllHistorial']);
+        Route::get('/mascota/historial/{id}/data', [MascotaController::class, 'getFullDataHistorial']);
+    });
+    
+    Route::middleware(['role:administrador,vendedor'])->group(function () {
+        Route::resource('inventario', MascotaController::class)->names('admin-inventario');
+        Route::resource('venta', MascotaController::class)->names('admin-venta');
+    });
 });
 
 

@@ -126,6 +126,11 @@ utilities = {
         loader.addClass("oculto");
         loader.hide();
     },
+    showToast() {
+        var toastElement = $('#infoToast');
+        var toast = new bootstrap.Toast(toastElement);
+        toast.show();
+    }
 };
 window.languageTable = {
     search: "_INPUT_",

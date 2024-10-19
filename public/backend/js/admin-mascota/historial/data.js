@@ -29,7 +29,7 @@ export function anamnesisChange(element, data) {
                 input.trigger('select2:select');
             }
         } else {
-            console.warn(`Campo '${key}' no encontrado en el formulario`);
+            // console.warn(`Campo '${key}' no encontrado en el formulario`);
         }
     });
 

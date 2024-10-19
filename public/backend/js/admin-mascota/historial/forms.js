@@ -47,14 +47,14 @@ export function examenForm() {
             <div class="col-12 col-sm-6 mt-3 mt-sm-0">
                 <div class="input-group input-group-static">
                     <label for="fecha">Fecha</label>
-                    <input type="date" name="fecha" id="fecha" class="form-control" placeholder="" />
+                    <input type="date" name="fecha" id="fecha" class="form-control" placeholder="" value="${getFecha().date}" />
                 </div>
             </div>
             <div class="col-12 col-sm-6 mt-3 mt-sm-0 mt-3 mt-sm-0">
                 <div class="input-group input-group-static">
                     <label for="temperatura">Temperatura</label>
                     <input type="number" name="temperatura" id="temperatura" step="00.1" class="form-control"
-                        placeholder="00.0" />
+                        placeholder="00.0" value="38.0"/>
                 </div>
             </div>
             <div class="col-12 col-sm-6 mt-3 ">
@@ -91,8 +91,8 @@ export function examenForm() {
             </div>
             <div class="col-12 col-sm-12 mt-3">
                 <div class="input-group input-group-static">
-                    <label for="palpitacion">Palpitación</label>
-                    <input type="text" name="palpitacion" id="palpitacion" class="form-control" placeholder="" />
+                    <label for="palpacion">Palpación</label>
+                    <input type="text" name="palpacion" id="palpacion" class="form-control" placeholder="" />
                 </div>
             </div>
         </div>
@@ -106,7 +106,7 @@ export function genericForm() {
             <div class="col-12 col-sm-12 mt-3 mt-sm-0">
                 <div class="input-group input-group-static">
                     <label for="fecha">Fecha</label>
-                    <input type="date" name="fecha" id="fecha" class="form-control" placeholder="" />
+                    <input type="date" name="fecha" id="fecha" class="form-control" placeholder="" value="${getFecha().date}" />
                 </div>
             </div>
             <div class="col-12 col-sm-12 mt-3 ">
@@ -128,7 +128,7 @@ export function evolucionForm() {
             <div class="col-12 col-sm-12 mt-3 mt-sm-0">
                 <div class="input-group input-group-static">
                     <label for="fecha_hora">Fecha y hora</label>
-                    <input type="datetime-local" name="fecha_hora" id="fecha_hora" class="form-control" placeholder="" />
+                    <input type="datetime-local" name="fecha_hora" id="fecha_hora" class="form-control" placeholder="" value="${getFecha().date+' '+getFecha().time}"/>
                 </div>
             </div>
             <div class="col-12 col-sm-12 mt-3 ">
@@ -142,4 +142,16 @@ export function evolucionForm() {
         </div>
     </form>
     `;
+}
+function getFecha() {
+    var today = new Date();
+    var year = today.getFullYear();
+    var month = (today.getMonth() + 1).toString().padStart(2, "0");
+    var day = today.getDate().toString().padStart(2, "0");
+    var hours = today.getHours().toString().padStart(2, '0');
+    var minutes = today.getMinutes().toString().padStart(2, '0');
+    return {
+        date: `${year}-${month}-${day}`,
+        time: `${hours}:${minutes}`
+    };
 }

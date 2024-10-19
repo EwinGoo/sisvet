@@ -43,6 +43,19 @@
             @include('backend.layouts.footer')
         </div>
     </main>
+    <div class="position-fixed top-1 end-1 z-index-1030">
+        <div class="toast fade hide p-2 mt-2 bg-gradient-info" role="alert" aria-live="assertive" id="infoToast"
+            aria-atomic="true">
+            <div class="toast-header bg-transparent border-0">
+                <i class="material-icons text-white me-2"> notifications </i>
+                <span class="me-auto text-white font-weight-bold">Notificación</span>
+                <i class="fas fa-times text-md text-white ms-3 cursor-pointer" data-bs-dismiss="toast"
+                    aria-label="Close"></i>
+            </div>
+            <hr class="horizontal light m-0" />
+            <div class="toast-body text-white"></div>
+        </div>
+    </div>
     {{-- <div class="fixed-plugin">
         <a class="fixed-plugin-button text-dark position-fixed px-3 py-2">
             <i class="material-icons py-2">settings</i>

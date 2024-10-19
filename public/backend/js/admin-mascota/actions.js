@@ -13,10 +13,11 @@ export function ACTIONS(name = "", id = null) {
             data-bs-original-title="Eliminar ${name}">
             <i class="material-icons text-danger position-relative text-lg">delete</i>
         </a>
-        <a data-id="${id}" class="ms-3 btn btn-sm btn-info historial" data-bs-toggle="tooltip"
-            data-bs-original-title="Historial ${name}" target='_blank'>
-            HISTORIAL
-        </a>
+        <form class="d-inline historial" id="form-historial" action="/admin/mascota/historial" method="POST">
+            <input type="hidden" id="input-mascota-id" name="id_mascota" value="${id}">
+            <button type="button" class="ms-3 btn btn-sm btn-info" data-bs-toggle="tooltip"
+            data-bs-original-title="Historial ${name}">HISTORIAL</button>
+        </form>
     </td>
     `;
 }
