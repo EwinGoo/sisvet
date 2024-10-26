@@ -16,6 +16,8 @@ class InventarioController extends Controller
         $this->title = 'Inventario';
         $this->page = 'admin-inventario';
         $this->pageURL = 'tienda/admin-inventario';
+        $this->area = 'Tienda';
+
     }
     public function index()
     {

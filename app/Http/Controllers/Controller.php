@@ -25,6 +25,7 @@ class Controller extends BaseController
     protected $title;
     protected $page;
     protected $pageURL;
+    protected $area;
 
     public function __construct()
     {
@@ -47,6 +48,7 @@ class Controller extends BaseController
             'menu' => $this->getMenu($user),
             'icon' => $this->getIconMenu(),
             'page' => $this->page,
+            'area' => $this->area,
             'pageURL' => $this->pageURL
         ];
 

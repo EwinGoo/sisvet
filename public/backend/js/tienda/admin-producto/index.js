@@ -1,7 +1,4 @@
 import { ACTIONS } from "../../components/actions.js";
-// import { languageTable } from "../../config/datatables-config.js";
-// import { utilities } from "../../utils/utilities.js";
-// import { az } from "../../utils/az.js";
 
 class ClientManager {
     constructor() {
@@ -12,8 +9,10 @@ class ClientManager {
         this.btnSubmit = $("#btn-submit");
         this.table = null;
         this.currentId = null;
+        this.dataSelect = null;
 
         this.initializeDataTable();
+        this.initChoices();
         this.initializeEventListeners();
         this.initializeUtilities();
     }
@@ -25,17 +24,17 @@ class ClientManager {
             language: languageTable,
             lengthMenu: [[5, 25, 50, -1], [10, 25, 50, "Todos"]],
             pagingType: "full_numbers",
-            ajax: { url: "/admin/cliente" },
+            ajax: { url: "/admin/producto" },
             columns: [
-                { data: "id_propietario" },
-                { data: "ci" },
-                { data: "nombre_completo" },
-                { data: "celular" },
+                { data: "id_producto" },
+                { data: "nombre_producto" },
+                { data: "precio" },
+                { data: "fecha_vencimiento" },
                 {
                     data: null,
                     targets: -1,
                     orderable: false,
-                    render: (data, type, row) => ACTIONS("propietario", row.id_propietario)
+                    render: (data, type, row) => ACTIONS("producto", row.id_producto)
                 }
             ],
             drawCallback: () => {
@@ -43,6 +42,11 @@ class ClientManager {
                 utilities.loaderTool();
             }
         });
+    }
+
+    initChoices(){
+        // this.queryFetch('admin/producto/create','GET', this.dataSelect); 
+        // $('.choice name=[categiras]')
     }
 
     initializeEventListeners() {
@@ -63,18 +67,20 @@ class ClientManager {
     }
 
     handleEdit(e) {
-        const id = $(e.target).data("id");
+        const target = $(e.target).closest('.edit');
+        const id = target.data("id");
         this.editForm(id,'editar producto');
     }
 
     handleDelete(e) {
-        const id = $(e.target).data("id");
-        az.showSwal("warning-message-delete", `/admin/propietario/${id}`);
+        const target = $(e.target).closest('.delete');
+        const id = target.data("id");
+        az.showSwal("warning-message-delete", `/admin/producto/${id}`);
     }
 
     handleSubmit() {
         this.btnSubmit.prop("disabled", true);
-        const url = this.currentId ? `/admin/propietario/${this.currentId}` : "/admin/propietario";
+        const url = this.currentId ? `/admin/producto/${this.currentId}` : "/admin/producto";
         const method = this.currentId ? "PUT" : "POST";
         this.saveRegister(url, method);
     }
@@ -88,8 +94,9 @@ class ClientManager {
     }
 
     editForm(id,title) {
+        const reg = utilities.getByID(id, this.table, "id_producto");
         this.currentId = id;
-              const reg = utilities.getByID(id, this.table, "id_propietario");
+        this.modalTitle.text(title);
         this.modalEl.modal("show");
         utilities.reloadStyle();
         this.populateForm(reg);
@@ -100,7 +107,7 @@ class ClientManager {
             const name = $(this).attr("name");
             if ($(this).prop("tagName") === "SELECT") {
                 const choice = choiceInstances.find(el => el._baseId === `choices--${name}`);
-                if (choice) choice.setChoiceByValue(data[name]);
+                if (choice) choice.setChoiceByValue(data[name].toString());
             } else {
                 $(this).parent().addClass("is-filled");
                 $(this).val(data[name]);
@@ -117,8 +124,17 @@ class ClientManager {
             error: (error) => this.handleSaveError(error)
         });
     }
+    queryFetch(url, method, data) {
+        $.ajax({
+            type: method,
+            url,
+            success: (response) => (data = response.data),
+            error: (error) => this.handleSaveError(error)
+        });
+    }
 
     handleSaveSuccess(response) {
+        this.btnSubmit.prop("disabled", false);
         this.modalEl.modal("hide");
         this.table.ajax.reload();
         az.showSwal("success-message", null, response.message);

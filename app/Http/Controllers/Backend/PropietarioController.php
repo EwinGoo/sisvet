@@ -15,6 +15,7 @@ class PropietarioController extends Controller
     {
         $this->title = 'Propietarios';
         $this->page = 'admin-propietario';
+        $this->area = 'Consultorio';
     }
     public function index()
     {

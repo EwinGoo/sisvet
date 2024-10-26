@@ -1,7 +1,4 @@
 import { ACTIONS } from "../../components/actions.js";
-// import { languageTable } from "../../config/datatables-config.js";
-// import { utilities } from "../../utils/utilities.js";
-// import { az } from "../../utils/az.js";
 
 class ClientManager {
     constructor() {
@@ -25,7 +22,7 @@ class ClientManager {
             language: languageTable,
             lengthMenu: [[5, 25, 50, -1], [10, 25, 50, "Todos"]],
             pagingType: "full_numbers",
-            ajax: { url: "/admin/cliente" },
+            ajax: { url: "/admin/venta" },
             columns: [
                 { data: "id_propietario" },
                 { data: "ci" },

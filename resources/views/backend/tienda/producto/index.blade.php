@@ -84,6 +84,7 @@
                                 <th>id</th>
                                 <th>nombre producto</th>
                                 <th>precio</th>
+                                <th>fecha vencimiento</th>
                                 <th>acción</th>
                             </tr>
                         </thead>

@@ -8,19 +8,26 @@
                     <div class="col-xl-5 col-lg-5 position-relative px-4">
                         <h6 class="mb-4 d-flex align-items-center"><i class="material-icons mx-3">person</i> Datos cliente
                         </h6>
+                        <div class="row d-none">
+                            <input type="text" name="client_code" id="client_code" placeholder="Código del cliente">
+                            <input type="text" name="client_name" id="client_name" readonly>
+
+                            <input type="text" name="product_code" id="product_code" placeholder="Código del producto">
+                            <input type="text" name="product_name" id="product_name" readonly>
+                            <input type="number" name="price" id="price" readonly>
+                            <input type="number" name="quantity" id="quantity">
+                        </div>
                         <div class="row">
                             <div class="col-lg-4">
                                 <div class="input-group input-group-dynamic mb-4">
                                     <span class="input-group-text" id="basic-addon1">Codigo</span>
-                                    <input type="text" class="form-control" placeholder="Username" aria-label="Username"
-                                        aria-describedby="basic-addon1">
+                                    <input name="id_cliente" id="id_cliente" type="text" class="form-control" placeholder="Buscar por codigo.">
                                 </div>
                             </div>
                             <div class="col-lg-8">
                                 <div class="input-group input-group-dynamic mb-4">
-                                    <span class="input-group-text" id="basic-addon1">Cliente</span>
-                                    <input type="text" class="form-control" placeholder="Username" aria-label="Username"
-                                        aria-describedby="basic-addon1">
+                                    <span class="input-group-text" id="nombre">Cliente</span>
+                                    <input name="nombre" id="nombre" type="text" class="form-control" placeholder="Nombre Completo">
                                 </div>
                             </div>
                         </div>
@@ -29,34 +36,30 @@
                         <div class="row">
                             <div class="col-lg-4">
                                 <div class="input-group input-group-dynamic mb-4">
-                                    <span class="input-group-text" id="basic-addon1">Codigo</span>
-                                    <input type="text" class="form-control" placeholder="Username" aria-label="Username"
-                                        aria-describedby="basic-addon1">
+                                    <span class="input-group-text" id="id_producto">Codigo</span>
+                                    <input name="id_producto" id="id_producto" type="text" class="form-control" placeholder="Buscar por codigo">
                                 </div>
                             </div>
                             <div class="col-lg-8">
                                 <div class="input-group input-group-dynamic mb-4">
-                                    <span class="input-group-text" id="basic-addon1">Producto</span>
-                                    <input type="text" class="form-control" placeholder="Username" aria-label="Username"
-                                        aria-describedby="basic-addon1">
+                                    <span class="input-group-text" id="nombre_producto">Producto</span>
+                                    <input name="nombre_producto" id="nombre_producto" type="text" class="form-control" placeholder="Producto">
                                 </div>
                             </div>
                             <div class="col-lg-6">
                                 <div class="input-group input-group-dynamic mb-4">
-                                    <span class="input-group-text" id="basic-addon1">Precio</span>
-                                    <input type="number" class="form-control" placeholder="Username" aria-label="Username"
-                                        aria-describedby="basic-addon1">
+                                    <span class="input-group-text" id="precio">Precio</span>
+                                    <input name="precio" id="precio" type="number" class="form-control" placeholder="Precio">
                                 </div>
                             </div>
                             <div class="col-lg-6">
                                 <div class="input-group input-group-dynamic mb-4">
                                     <span class="input-group-text" id="basic-addon1">Cantidad</span>
-                                    <input type="number" class="form-control" placeholder="Username" aria-label="Username"
-                                        aria-describedby="basic-addon1">
+                                    <input  type="number" class="form-control" placeholder="Cantidad">
                                 </div>
                             </div>
                             <div class="col-lg-6">
-                                <button type="button" class="btn bg-gradient-primary">+ Agregar</button>
+                                <button id="btn-add-product" type="button" class="btn bg-gradient-primary">+ Agregar</button>
                             </div>
                         </div>
                         <hr class="vertical dark">
@@ -64,7 +67,7 @@
                     <div class="col-lg-7 mx-auto">
                         <h6 class="ms-3">Detalles de venta</h6>
                         <div class="table table-responsive">
-                            <table class="table align-items-center mb-0">
+                            <table id="sales-details" class="table align-items-center mb-0">
                                 <thead>
                                     <tr>
                                         <th
@@ -185,7 +188,7 @@
                                         <td>
                                             <p class="text-sm text-secondary mb-0">Bs. 59.99</p>
                                         </td>
-                                        <td  class="text-center">
+                                        <td class="text-center">
                                             <p class="text-sm text-secondary mb-0">10</p>
                                         </td>
                                         </td>
@@ -205,16 +208,20 @@
                                     </tr>
                                 </tbody>
                                 <tfoot>
-                                    <tr class=""> 
+                                    <tr class="">
                                         <td colspan="4">
-                                            <button type="button" class="btn btn-sm bg-gradient-success m-0"><i class="material-icons position-relative text-lg">new_label</i> Generar venta</button>
-                                            <button type="button" class="btn btn-sm btn-outline-danger m-0"><i class="material-icons position-relative text-lg">cancel</i> cancelar</button>
+                                            <button id="btn-generate-sale" type="button" class="btn btn-sm bg-gradient-success m-0"><i
+                                                    class="material-icons position-relative text-lg">new_label</i> Generar
+                                                venta</button>
+                                            <button id="btn-cancel-sale" type="button" class="btn btn-sm btn-outline-danger m-0"><i
+                                                    class="material-icons position-relative text-lg">cancel</i>
+                                                cancelar</button>
                                         </td>
                                         <td>
                                             <p class="text-sm text-bold text-center mb-0">Total a pagar:</p>
                                         </td>
                                         <td>
-                                            <p class="text-sm text-bold text-center mb-0">Bs. 300</p>
+                                            <p id="total-amount" class="text-sm text-bold text-center mb-0">Bs. 300</p>
                                         </td>
                                     </tr>
                                 </tfoot>
@@ -226,4 +233,9 @@
         </div>
     </div>
     @include('backend.tienda.ventas.modal')
+    {{-- <link rel="stylesheet" href="{{ asset('assets/lib/css/tom-select.css') }}">
+    <script src="{{ asset('assets/lib//js/tom-select.complete.min.js') }}"></script> --}}
+    <link rel="stylesheet" href="//code.jquery.com/ui/1.13.2/themes/base/jquery-ui.css">
+<script src="https://code.jquery.com/ui/1.13.2/jquery-ui.js"></script>
+    {{-- <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script> --}}
 @endsection

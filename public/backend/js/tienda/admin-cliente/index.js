@@ -1,7 +1,4 @@
 import { ACTIONS } from "../../components/actions.js";
-// import { languageTable } from "../../config/datatables-config.js";
-// import { utilities } from "../../utils/utilities.js";
-// import { az } from "../../utils/az.js";
 
 class ClientManager {
     constructor() {
@@ -27,7 +24,7 @@ class ClientManager {
             pagingType: "full_numbers",
             ajax: { url: "/admin/cliente" },
             columns: [
-                { data: "id_propietario" },
+                { data: "id_cliente" },
                 { data: "ci" },
                 { data: "nombre_completo" },
                 { data: "celular" },
@@ -35,7 +32,7 @@ class ClientManager {
                     data: null,
                     targets: -1,
                     orderable: false,
-                    render: (data, type, row) => ACTIONS("propietario", row.id_propietario)
+                    render: (data, type, row) => ACTIONS("cliente", row.id_cliente)
                 }
             ],
             drawCallback: () => {
@@ -63,18 +60,22 @@ class ClientManager {
     }
 
     handleEdit(e) {
-        const id = $(e.target).data("id");
-        this.editForm(id);
+        e.preventDefault(); // Previene la acción por defecto del enlace
+        const target = $(e.target).closest('.edit');
+        const id = target.data("id");
+        this.editForm(id,"editar cliente");
     }
 
     handleDelete(e) {
-        const id = $(e.target).data("id");
-        az.showSwal("warning-message-delete", `/admin/propietario/${id}`);
+        e.preventDefault(); // Previene la acción por defecto del enlace
+        const target = $(e.target).closest('.delete');
+        const id = target.data("id");
+        az.showSwal("warning-message-delete", `/admin/cliente/${id}`);
     }
 
     handleSubmit() {
         this.btnSubmit.prop("disabled", true);
-        const url = this.currentId ? `/admin/propietario/${this.currentId}` : "/admin/propietario";
+        const url = this.currentId ? `/admin/cliente/${this.currentId}` : "/admin/cliente";
         const method = this.currentId ? "PUT" : "POST";
         this.saveRegister(url, method);
     }
@@ -87,9 +88,10 @@ class ClientManager {
         this.currentId = null;
     }
 
-    editForm(id) {
+    editForm(id,title) {
+        const reg = utilities.getByID(id, this.table, "id_cliente");
         this.currentId = id;
-              const reg = utilities.getByID(id, this.table, "id_propietario");
+        this.modalTitle.text(title);
         this.modalEl.modal("show");
         utilities.reloadStyle();
         this.populateForm(reg);
@@ -119,6 +121,7 @@ class ClientManager {
     }
 
     handleSaveSuccess(response) {
+        this.btnSubmit.prop("disabled", false);
         this.modalEl.modal("hide");
         this.table.ajax.reload();
         az.showSwal("success-message", null, response.message);

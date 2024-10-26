@@ -14,15 +14,15 @@ use Illuminate\Support\Facades\Route;
 /* init::Rutas del sistema de administración*/
 
 // Route::get('/test', [TestingController::class, 'index'])->name('/test');
-Route::get('/dashboard', [PropietarioController::class, 'index'])->middleware(['auth'])->name('dashboard');
 // Route::get('/dashboard', [DashboardController::class, 'index'])->middleware(['auth'])->name('dashboard');
 
 // Route::resource('admin/persona', PersonaController::class)->middleware(['auth'])->names('admin-persona');
 
 // Route::prefix('admin')->middleware(['auth'])->group(function () {
-//     Route::resource('persona', PersonaController::class)->names('admin-persona');
-// });
-Route::prefix('admin')->middleware(['auth'])->group(function () {
+    //     Route::resource('persona', PersonaController::class)->names('admin-persona');
+    // });
+    Route::prefix('admin')->middleware(['auth'])->group(function () {
+    Route::get('/dashboard', [PropietarioController::class, 'index'])->middleware(['auth'])->name('dashboard');
 
     Route::middleware(['role:administrador'])->group(function () {
         Route::resource('usuario', UsuarioController::class)->names('admin-usuario');

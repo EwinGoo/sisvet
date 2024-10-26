@@ -22,6 +22,7 @@ class MascotaController extends Controller
     {
         $this->title = 'Mascotas';
         $this->page = 'admin-mascota';
+        $this->area = 'Consultorio';
     }
     public function index()
     {

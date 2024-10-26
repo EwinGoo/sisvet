@@ -429,3 +429,21 @@ table.dataTable.dtr-inline.collapsed > tbody > tr > th.dtr-control:before {
     padding: 5px !important;
 }
 .z-index-1030{z-index:1030!important}
+
+.ts-wrapper.form-control.single.full.has-items.input-hidden,
+.ts-wrapper.form-control.single.focus.input-active.full.has-items
+{
+    background-image:none;
+}
+.ts-wrapper.form-control.single.has-options{padding: 0 !important;}
+.az-label-sale{
+    align-content: end;
+    display: flex;
+    align-items: center;
+    margin: 0;
+    margin-right: 14px;
+}
+
+.input-group.input-group-dynamic span{
+    color: #e91e63;
+}

@@ -4,7 +4,10 @@ namespace App\Http\Controllers\Backend\Tienda;
 
 use App\Http\Controllers\Controller;
 use App\Models\PropietarioModel;
+use App\Models\Tienda\CategoriaModel;
+use App\Models\Tienda\ProductoModel;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Validation\Rule;
 
@@ -16,15 +19,19 @@ class ProductoController extends Controller
         $this->title = 'Productos';
         $this->page = 'admin-producto';
         $this->pageURL = 'tienda/admin-producto';
+        $this->area = 'Tienda';
+
     }
-    public function index()
+    public function index(Request $request)
     {
         if (request()->ajax()) {
             /* init::Listar propietarios */
-            // $data = PropietarioModel::select('*')->selectRaw("CONCAT_WS(' ', nombre, paterno, IFNULL(materno, '')) as nombre_completo")->orderBy('id_propietario', 'desc')->get();
-            $data= [];
+            if ($request->get('query'))  $data = ProductoModel::getProducto($request->get('query'));
+            else $data = ProductoModel::getProducto();
+
             return response()->json(['data' => $data], 200);
         }
+        $this->data['categorias'] = CategoriaModel::get();
         return $this->render("tienda.producto.index");
     }
 
@@ -32,14 +39,15 @@ class ProductoController extends Controller
     {
         /* init::Guardar propietario */
         $validator = Validator::make($request->all(), [
-            'ci' => 'required|unique:propietarios,ci',
-            'nombre' => 'required',
-            'paterno' => 'required',
-            'celular' => 'required|numeric|digits:8',
-            'direccion' => 'required',
+            'nombre_producto' => 'required|string|max:90',
+            'id_categoria'    => 'required|integer|exists:categorias,id_categoria',
+            'descripcion'     => 'nullable|string|max:200',
+            'precio'          => 'required|numeric|min:0',
+            'fecha_vencimiento' => 'required|date|after:today',
         ], [
-            'ci.required' => 'Campo cedula es requerido',
-            'ci.unique' => 'La cedula ya ha sido tomado.',
+            'nombre_producto.required' => 'El producto es requerido',
+            'id_categoria.required' => 'El campo categoria es requerido.',
+            'fecha_vencimiento.after' => 'El campo fecha vencimiento debe ser una fecha posterior a hoy.',
         ]);
         if ($validator->fails()) {
             $data = [
@@ -49,15 +57,15 @@ class ProductoController extends Controller
             ];
             return response()->json($data, 400);
         }
-        $propietario = PropietarioModel::create([
-            'nombre' => $request->nombre,
-            'paterno' => $request->paterno,
-            'materno' => $request->materno,
-            'ci' => $request->ci,
-            'celular' => $request->celular,
-            'direccion' => $request->direccion,
+        $producto = ProductoModel::create([
+            'nombre_producto' => $request->nombre_producto,
+            'id_categoria' => $request->id_categoria,
+            'id_usuario' => Auth::id(),
+            'descripcion' => $request->descripcion,
+            'precio' => $request->precio,
+            'fecha_vencimiento' => $request->fecha_vencimiento,
         ]);
-        if (!$propietario) {
+        if (!$producto) {
             $data = [
                 'message' => 'Error al registrar',
                 'status' => 500
@@ -65,34 +73,35 @@ class ProductoController extends Controller
             return response()->json($data, 500);
         }
         $data = [
-            'propietario' => $propietario,
+            'producto' => $producto,
+            'message' => 'Producto guardado exitosamente',
             'status' => 201
         ];
         return response()->json($data, 201);
     }
     public function update(Request $request, $id)
     {
-        $propietario = PropietarioModel::find($id);
-        if (!$propietario) {
+        $producto = ProductoModel::find($id);
+        if (!$producto) {
             $data = [
-                'message' => 'propietario no encontrada',
+                'message' => 'Producto no encontrado',
                 'status' => 404
             ];
             return response()->json($data, 404);
         }
 
         $validator = Validator::make($request->all(), [
-            'ci' => [
-                'required',
-                Rule::unique('propietarios')->ignore($propietario->id_propietario, 'id_propietario'),
-            ],
-            'nombre' => 'required',
-            'paterno' => 'required',
-            'celular' => 'nullable|numeric|digits:8',
+            'nombre_producto' => 'required|string|max:90',
+            'id_categoria'    => 'required|integer|exists:categorias,id_categoria',
+            'descripcion'     => 'nullable|string|max:200',
+            'precio'          => 'required|numeric|min:0',
+            'fecha_vencimiento' => 'required|date|after:today',
         ], [
-            'ci.required' => 'Campo cedula es requerido',
-            'ci.unique' => 'La cedula ya ha sido tomado.',
+            'nombre_producto.required' => 'El producto es requerido',
+            'id_categoria.required' => 'El campo categoria es requerido.',
+            'fecha_vencimiento.after' => 'El campo fecha vencimiento debe ser una fecha posterior a hoy.',
         ]);
+
         if ($validator->fails()) {
             $data = [
                 'message' => 'Error en la validación de los datos',
@@ -101,15 +110,15 @@ class ProductoController extends Controller
             ];
             return response()->json($data, 400);
         }
-        $propietario->update([
-            'nombre' => $request->nombre, //eliminar espacios
-            'paterno' => $request->paterno,
-            'materno' => $request->materno,
-            'ci' => $request->ci,
-            'celular' => $request->celular,
-            'direccion' => $request->direccion,
+        $producto->update([
+            'nombre_producto' => $request->nombre_producto,
+            'id_categoria' => $request->id_categoria,
+            'id_usuario' => Auth::id(),
+            'descripcion' => $request->descripcion,
+            'precio' => $request->precio,
+            'fecha_vencimiento' => $request->fecha_vencimiento,
         ]);
-        if (!$propietario) {
+        if (!$producto) {
             $data = [
                 'message' => 'Error al actualizar',
                 'status' => 500
@@ -117,25 +126,25 @@ class ProductoController extends Controller
             return response()->json($data, 500);
         }
         $data = [
-            'message' => 'Propietario actualizado exitosamente',
-            'propietario' => $propietario,
+            'message' => 'Producto actualizado exitosamente',
+            'producto' => $producto,
             'status' => 200
         ];
         return response()->json($data, 200);
     }
     public function destroy($id = null)
     {
-        $propietario = PropietarioModel::find($id);
-        if (!$propietario) {
+        $producto = ProductoModel::find($id);
+        if (!$producto) {
             $data = [
-                'message' => 'Propietario no encontrado',
+                'message' => 'Producto no encontrado',
                 'status' => 404
             ];
             return response()->json($data, 404);
         }
-        $propietario->delete();
+        $producto->delete();
         $data = [
-            'message' => 'Propietario eliminado exitosamente',
+            'message' => 'Producto eliminado exitosamente',
             'status' => 200
         ];
         return response()->json($data, 200);

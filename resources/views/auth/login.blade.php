@@ -91,8 +91,12 @@
                                             <input type="password" name="password" required
                                                 autocomplete="current-password" class="form-control">
                                         </div>
-                                        <div class="g-recaptcha d-flex justify-content-center"
-                                            data-sitekey="6Lebr1YqAAAAAAhJFxXnfF8CWdkbJel_FZdX_1it">
+                                        <div class="row">
+                                            <div class="col-md-12">
+                                                <div class="g-recaptcha d-flex justify-content-center"
+                                                    data-sitekey="6Lebr1YqAAAAAAhJFxXnfF8CWdkbJel_FZdX_1it">
+                                                </div>
+                                            </div>
                                         </div>
                                         <p id="captcha-error" class="text-danger">
                                             {{ $errors->first('captcha') ? $errors->first('captcha') : '' }}

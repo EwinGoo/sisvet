@@ -4,7 +4,9 @@ namespace App\Http\Controllers\Backend\Tienda;
 
 use App\Http\Controllers\Controller;
 use App\Models\PropietarioModel;
+use App\Models\Tienda\ClienteModel;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Validation\Rule;
 
@@ -16,13 +18,17 @@ class ClienteController extends Controller
         $this->title = 'Clientes';
         $this->page = 'admin-cliente';
         $this->pageURL = 'tienda/admin-cliente';
+        $this->area = 'Tienda';
     }
-    public function index()
+    public function index(Request $request)
     {
-        if (request()->ajax()) {
+        if (request()->ajax() || $request->get('query')) {
             /* init::Listar propietarios */
-            // $data = PropietarioModel::select('*')->selectRaw("CONCAT_WS(' ', nombre, paterno, IFNULL(materno, '')) as nombre_completo")->orderBy('id_propietario', 'desc')->get();
-            $data= [];
+            if ($request->get('query')) {
+                $data = ClienteModel::getCliente($request->get('query'));
+            } else {
+                $data = ClienteModel::getCliente();
+            }
             return response()->json(['data' => $data], 200);
         }
         return $this->render("tienda.cliente.index");
@@ -30,13 +36,14 @@ class ClienteController extends Controller
 
     public function store(Request $request)
     {
-        /* init::Guardar propietario */
+        /* init::Guardar cliente */
         $validator = Validator::make($request->all(), [
-            'ci' => 'required|unique:propietarios,ci',
+            'ci' => 'required|unique:clientes,ci',
             'nombre' => 'required',
             'paterno' => 'required',
-            'celular' => 'required|numeric|digits:8',
-            'direccion' => 'required',
+            'celular' => 'nullable|numeric|digits:8',
+            'direccion' => 'nullable|string',
+            // 'email' => 'nullable|email|unique:clientes,email',
         ], [
             'ci.required' => 'Campo cedula es requerido',
             'ci.unique' => 'La cedula ya ha sido tomado.',
@@ -49,15 +56,16 @@ class ClienteController extends Controller
             ];
             return response()->json($data, 400);
         }
-        $propietario = PropietarioModel::create([
+        $cliente = ClienteModel::create([
             'nombre' => $request->nombre,
+            'id_usuario' => Auth::id(),
             'paterno' => $request->paterno,
             'materno' => $request->materno,
             'ci' => $request->ci,
             'celular' => $request->celular,
             'direccion' => $request->direccion,
         ]);
-        if (!$propietario) {
+        if (!$cliente) {
             $data = [
                 'message' => 'Error al registrar',
                 'status' => 500
@@ -65,17 +73,18 @@ class ClienteController extends Controller
             return response()->json($data, 500);
         }
         $data = [
-            'propietario' => $propietario,
+            'cliente' => $cliente,
+            'message' => 'Cliente registrado exitosamente',
             'status' => 201
         ];
         return response()->json($data, 201);
     }
     public function update(Request $request, $id)
     {
-        $propietario = PropietarioModel::find($id);
-        if (!$propietario) {
+        $cliente = ClienteModel::find($id);
+        if (!$cliente) {
             $data = [
-                'message' => 'propietario no encontrada',
+                'message' => 'cliente no encontrado',
                 'status' => 404
             ];
             return response()->json($data, 404);
@@ -84,11 +93,12 @@ class ClienteController extends Controller
         $validator = Validator::make($request->all(), [
             'ci' => [
                 'required',
-                Rule::unique('propietarios')->ignore($propietario->id_propietario, 'id_propietario'),
+                Rule::unique('clientes')->ignore($cliente->id_cliente, 'id_cliente'),
             ],
             'nombre' => 'required',
             'paterno' => 'required',
             'celular' => 'nullable|numeric|digits:8',
+            // 'email' => 'nullable|email|unique:clientes,email',
         ], [
             'ci.required' => 'Campo cedula es requerido',
             'ci.unique' => 'La cedula ya ha sido tomado.',
@@ -101,15 +111,16 @@ class ClienteController extends Controller
             ];
             return response()->json($data, 400);
         }
-        $propietario->update([
-            'nombre' => $request->nombre, //eliminar espacios
+        $cliente->update([
+            'ci' => $request->ci,
+            'nombre' => $request->nombre,
+            'id_usuario' => Auth::id(),
             'paterno' => $request->paterno,
             'materno' => $request->materno,
-            'ci' => $request->ci,
             'celular' => $request->celular,
             'direccion' => $request->direccion,
         ]);
-        if (!$propietario) {
+        if (!$cliente) {
             $data = [
                 'message' => 'Error al actualizar',
                 'status' => 500
@@ -117,25 +128,25 @@ class ClienteController extends Controller
             return response()->json($data, 500);
         }
         $data = [
-            'message' => 'Propietario actualizado exitosamente',
-            'propietario' => $propietario,
+            'message' => 'cliente actualizado exitosamente',
+            'cliente' => $cliente,
             'status' => 200
         ];
         return response()->json($data, 200);
     }
     public function destroy($id = null)
     {
-        $propietario = PropietarioModel::find($id);
-        if (!$propietario) {
+        $cliente = ClienteModel::find($id);
+        if (!$cliente) {
             $data = [
-                'message' => 'Propietario no encontrado',
+                'message' => 'Cliente no encontrado',
                 'status' => 404
             ];
             return response()->json($data, 404);
         }
-        $propietario->delete();
+        $cliente->delete();
         $data = [
-            'message' => 'Propietario eliminado exitosamente',
+            'message' => 'Cliente eliminado exitosamente',
             'status' => 200
         ];
         return response()->json($data, 200);

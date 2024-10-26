@@ -16,6 +16,8 @@ class VentaController extends Controller
         $this->title = 'Ventas';
         $this->page = 'admin-venta';
         $this->pageURL = 'tienda/admin-venta';
+        $this->area = 'Tienda';
+
     }
     public function index()
     {
@@ -29,6 +31,8 @@ class VentaController extends Controller
     }
     public function create()
     {
+        $this->title = "Detalle venta";
+        $this->pageURL = 'tienda/admin-venta/detalle-venta';
         return $this->render("tienda.ventas.detalle-venta");
     }
 

@@ -48,12 +48,5 @@
                 <small>Error message</small>
             </div>
         </div>
-        <div class="col-12 col-sm-12 mt-3 mt-sm-0 mt-3 mt-md-3">
-            <div class="input-group input-group-outline">
-                <label for="email" class="form-label">Correo</label>
-                <input id="email" name="email" class="form-control" type="text" />
-                <small>Error message</small>
-            </div>
-        </div>
     </div>
 </form>
