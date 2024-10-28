@@ -19,10 +19,10 @@ use Illuminate\Support\Facades\Route;
 // Route::resource('admin/persona', PersonaController::class)->middleware(['auth'])->names('admin-persona');
 
 // Route::prefix('admin')->middleware(['auth'])->group(function () {
-    //     Route::resource('persona', PersonaController::class)->names('admin-persona');
-    // });
-    Route::prefix('admin')->middleware(['auth'])->group(function () {
-    Route::get('/dashboard', [PropietarioController::class, 'index'])->middleware(['auth'])->name('dashboard');
+//     Route::resource('persona', PersonaController::class)->names('admin-persona');
+// });
+Route::prefix('admin')->middleware(['auth'])->group(function () {
+    Route::get('/dashboard', [PropietarioController::class, 'index'])->name('dashboard');
 
     Route::middleware(['role:administrador'])->group(function () {
         Route::resource('usuario', UsuarioController::class)->names('admin-usuario');
@@ -47,7 +47,7 @@ use Illuminate\Support\Facades\Route;
         Route::get('/mascota/historiales/{id}', [MascotaController::class, 'getAllHistorial']);
         Route::get('/mascota/historial/{id}/data', [MascotaController::class, 'getFullDataHistorial']);
     });
-    
+
     Route::middleware(['role:administrador,vendedor'])->group(function () {
         Route::resource('inventario', InventarioController::class)->names('admin-inventario');
         Route::resource('cliente', ClienteController::class)->names('admin-cliente');
