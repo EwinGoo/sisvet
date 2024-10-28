@@ -83,8 +83,11 @@
                         <thead class="thead-light">
                             <tr>
                                 <th>id</th>
+                                <th>vendedor</th>
                                 <th>cliente</th>
                                 <th>fecha</th>
+                                <th>hora</th>
+                                <th>monto total</th>
                                 <th>acción</th>
                             </tr>
                         </thead>

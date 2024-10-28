@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Backend\Tienda;
 
 use App\Http\Controllers\Controller;
 use App\Models\PropietarioModel;
+use App\Models\Tienda\CompraModel;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Validation\Rule;
@@ -23,8 +24,11 @@ class InventarioController extends Controller
     {
         if (request()->ajax()) {
             /* init::Listar propietarios */
-            // $data = PropietarioModel::select('*')->selectRaw("CONCAT_WS(' ', nombre, paterno, IFNULL(materno, '')) as nombre_completo")->orderBy('id_propietario', 'desc')->get();
-            $data= [];
+            $data = CompraModel::select('*')
+            // ->selectRaw("CONCAT_WS(' ', nombre, paterno, IFNULL(materno, '')) as nombre_completo")
+            ->orderBy('id_compra', 'desc')
+            ->leftJoin('productos as p','p.id_producto','=','compras.id_producto')
+            ->get();
             return response()->json(['data' => $data], 200);
         }
         return $this->render("tienda.inventario.index");

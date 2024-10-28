@@ -1,14 +1,17 @@
 class SalesManager {
     constructor() {
         // Elementos del formulario
-        this.form = {
+        this.form = $('#ventaForm');
+        this.formFields = {
             clientCode: document.querySelector('[name="id_cliente"]'),
             clientName: document.querySelector('[name="nombre"]'),
             productCode: document.querySelector('[name="id_producto"]'),
             productName: document.querySelector('[name="nombre_producto"]'),
             price: document.querySelector('[name="precio"]'),
-            quantity: document.querySelector('[name="quantity"]')
+            quantity: document.querySelector('[name="cantidad"]'),
+            
         };
+        this.hiddenProductsContainer = document.getElementById('productos-hidden');
 
         // Botones
         this.buttons = {
@@ -33,7 +36,7 @@ class SalesManager {
 
     initializeComponents() {
         // Inicializar Autocomplete para cliente
-        $(this.form.clientCode).autocomplete({
+        $(this.formFields.clientCode).autocomplete({
             source: (request, response) => {
                 $.ajax({
                     url: '/admin/cliente',
@@ -50,15 +53,15 @@ class SalesManager {
             minLength: 2,
             select: (event, ui) => {
                 event.preventDefault();
-                this.form.clientCode.value = ui.item.value;
-                if (this.form.clientName) {
-                    this.form.clientName.value = ui.item.item.nombre_completo;
+                this.formFields.clientCode.value = ui.item.value;
+                if (this.formFields.clientName) {
+                    this.formFields.clientName.value = ui.item.item.nombre_completo;
                 }
             }
         });
 
         // Inicializar Autocomplete para producto
-        $(this.form.productCode).autocomplete({
+        $(this.formFields.productCode).autocomplete({
             source: (request, response) => {
                 $.ajax({
                     url: '/admin/producto',
@@ -75,11 +78,10 @@ class SalesManager {
             minLength: 2,
             select: (event, ui) => {
                 event.preventDefault();
-                this.form.productCode.value = ui.item.value;
-                this.form.productName.value = ui.item.item.nombre_producto;
-                this.form.price.value = ui.item.item.precio;
-                // this.form.quantity.value = "1";
-                // this.form.quantity.max = ui.item.item.stock;
+                this.formFields.productCode.value = ui.item.value;
+                this.formFields.productName.value = ui.item.item.nombre_producto;
+                this.formFields.price.value = ui.item.item.precio;
+                this.formFields.quantity.value = 1;
             }
         });
     }
@@ -97,18 +99,14 @@ class SalesManager {
 
     addProduct() {
         // Validar campos
-        // if (!this.validateProductForm()) return;
-        console.log(this.form.productCode.value);
+        if (!this.validateProductForm()) return;
 
         const product = {
-            code: this.form.productCode.value,
-            name: this.form.productName.value,
-            price: parseFloat(this.form.price.value),
-            quantity: 22,
-            subtotal: 33
-            // price: parseFloat(this.form.price.value),
-            // quantity: parseInt(this.form.quantity.value),
-            // subtotal: parseFloat(this.form.price.value) * parseInt(this.form.quantity.value)
+            code: this.formFields.productCode.value,
+            name: this.formFields.productName.value,
+            price: parseFloat(this.formFields.price.value),
+            quantity: parseInt(this.formFields.quantity.value),
+            subtotal: parseFloat(this.formFields.price.value) * parseInt(this.formFields.quantity.value)
         };
 
         // Agregar a la lista
@@ -117,29 +115,30 @@ class SalesManager {
         // Actualizar tabla y total
         this.updateDetailsTable();
         this.updateTotal();
-        
+        this.updateHiddenInputs();
+
         // Resetear campos de producto
         this.resetProductFields();
     }
 
-    // validateProductForm() {
-    //     const required = ['productCode', 'productName', 'price', 'quantity'];
-    //     let isValid = true;
+    validateProductForm() {
+        const required = ['productCode', 'productName'];
+        let isValid = true;
 
-    //     required.forEach(field => {
-    //         if (!this.form[field].value) {
-    //             Swal.fire('Error', 'Todos los campos son requeridos', 'error');
-    //             isValid = false;
-    //         }
-    //     });
+        required.forEach(field => {
+            if (!this.formFields[field].value) {
+                Swal.fire('Error', 'Seleccione un producto.', 'error');
+                isValid = false;
+            }
+        });
 
-    //     if (parseInt(this.form.quantity.value) <= 0) {
-    //         Swal.fire('Error', 'La cantidad debe ser mayor a 0', 'error');
-    //         isValid = false;
-    //     }
+        if (parseInt(this.formFields.quantity.value) <= 0) {
+            Swal.fire('Error', 'La cantidad debe ser mayor a 0', 'error');
+            isValid = false;
+        }
 
-    //     return isValid;
-    // }
+        return isValid;
+    }
 
     updateDetailsTable() {
         this.detailsTable.innerHTML = this.saleDetails.map((item, index) => `
@@ -174,25 +173,43 @@ class SalesManager {
         `).join('');
     }
 
+    updateHiddenInputs() {
+        // Limpiar contenedor de productos hidden
+        this.hiddenProductsContainer.innerHTML = '';
+        
+        // Crear inputs hidden para cada producto
+        this.saleDetails.forEach((product, index) => {
+            const productInputs = `
+                <input type="hidden" name="productos[${index}][codigo]" value="${product.code}">
+                <input type="hidden" name="productos[${index}][nombre]" value="${product.name}">
+                <input type="hidden" name="productos[${index}][precio]" value="${product.price}">
+                <input type="hidden" name="productos[${index}][cantidad]" value="${product.quantity}">
+                <input type="hidden" name="productos[${index}][subtotal]" value="${product.subtotal}">
+            `;
+            this.hiddenProductsContainer.insertAdjacentHTML('beforeend', productInputs);
+        });
+
+        // Actualizar total
+        document.getElementById('total_venta').value = this.total;
+    }
+
     updateTotal() {
         this.total = this.saleDetails.reduce((sum, item) => sum + item.subtotal, 0);
         this.totalAmount.textContent = `Bs. ${this.total.toFixed(2)}`;
     }
 
     removeProduct(index) {
-        alert(index);
-        console.log(index);
-        
         this.saleDetails.splice(index, 1);
         this.updateDetailsTable();
         this.updateTotal();
+        this.updateHiddenInputs();
     }
 
     resetProductFields() {
-        this.form.productCode.value = '';
-        this.form.productName.value = '';
-        this.form.price.value = '';
-        this.form.quantity.value = '';
+        this.formFields.productCode.value = '';
+        this.formFields.productName.value = '';
+        this.formFields.price.value = '';
+        this.formFields.quantity.value = '';
     }
 
     confirmCancel() {
@@ -223,9 +240,9 @@ class SalesManager {
     }
 
     resetAll() {
-        this.form.clientCode.value = '';
-        if (this.form.clientName) {
-            this.form.clientName.value = '';
+        this.formFields.clientCode.value = '';
+        if (this.formFields.clientName) {
+            this.formFields.clientName.value = '';
         }
         this.resetProductFields();
         this.saleDetails = [];
@@ -239,19 +256,25 @@ class SalesManager {
             return;
         }
 
-        const saleData = {
-            client_code: this.form.clientCode.value,
-            client_name: this.form.clientName?.value,
-            total: this.total,
-            details: this.saleDetails
-        };
+        // const saleData = {
+        //     client_code: this.formFields.clientCode.value,
+        //     client_name: this.formFields.clientName?.value,
+        //     total: this.total,
+        //     details: this.saleDetails
+        // };
+        console.log( this.form);
+        
+        const saleData  = this.form.serialize();
 
         // Enviar datos via AJAX
         $.ajax({
-            url: '/api/sales',
+            url: '/admin/venta',
             method: 'POST',
-            data: JSON.stringify(saleData),
-            contentType: 'application/json',
+            headers: {
+                'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+            },
+            data: saleData,
+            // contentType: 'application/json',
             success: (response) => {
                 Swal.fire('Éxito', 'Venta generada correctamente', 'success');
                 this.resetAll();

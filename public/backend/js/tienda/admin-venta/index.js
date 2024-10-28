@@ -1,4 +1,4 @@
-import { ACTIONS } from "../../components/actions.js";
+import { ACTIONS } from "./actions.js";
 
 class ClientManager {
     constructor() {
@@ -24,15 +24,17 @@ class ClientManager {
             pagingType: "full_numbers",
             ajax: { url: "/admin/venta" },
             columns: [
-                { data: "id_propietario" },
-                { data: "ci" },
-                { data: "nombre_completo" },
-                { data: "celular" },
+                { data: "id_venta" },
+                { data: "vendedor" },
+                { data: "cliente" },
+                { data: "fecha" },
+                { data: "hora" },
+                { data: "total_venta" },
                 {
                     data: null,
                     targets: -1,
                     orderable: false,
-                    render: (data, type, row) => ACTIONS("propietario", row.id_propietario)
+                    render: (data, type, row) => ACTIONS("venta", row.id_venta)
                 }
             ],
             drawCallback: () => {
@@ -65,8 +67,9 @@ class ClientManager {
     }
 
     handleDelete(e) {
-        const id = $(e.target).data("id");
-        az.showSwal("warning-message-delete", `/admin/propietario/${id}`);
+        const target = $(e.target).closest('.delete');
+        const id = target.data("id");
+        az.showSwal("warning-message-delete", `/admin/venta/${id}`);
     }
 
     handleSubmit() {

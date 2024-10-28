@@ -16,7 +16,7 @@
                                 type="button" name="button">
                                 Exportar
                             </button>
-                            <button id="btn-new" type="button" class="btn bg-gradient-primary btn-sm mb-0"
+                            <button id="btn-new" type="button" class="btn bg-gradient-primary btn-sm mb-0 d-none"
                                 target="_blank" data-bs-toggle="modal" data-bs-target="#modal-main">+&nbsp;
                                 Nuevo inventario</button>
                             {{-- <button type="button" class="btn btn-outline-primary btn-sm mb-0" data-bs-toggle="modal"

@@ -25,18 +25,19 @@ class ClientManager {
             language: languageTable,
             lengthMenu: [[5, 25, 50, -1], [10, 25, 50, "Todos"]],
             pagingType: "full_numbers",
-            ajax: { url: "/admin/cliente" },
+            ajax: { url: "/admin/inventario" },
             columns: [
-                { data: "id_propietario" },
-                { data: "ci" },
-                { data: "nombre_completo" },
-                { data: "celular" },
-                {
-                    data: null,
-                    targets: -1,
-                    orderable: false,
-                    render: (data, type, row) => ACTIONS("propietario", row.id_propietario)
-                }
+                { data: "id_producto" },
+                { data: "nombre_producto" },
+                { data: "precio_venta" },
+                { data: "cantidad_compra" },
+                { data: "fecha_vencimiento" },
+                // {
+                //     data: null,
+                //     targets: -1,
+                //     orderable: false,
+                //     render: (data, type, row) => ACTIONS("propietario", row.id_propietario)
+                // }
             ],
             drawCallback: () => {
                 utilities.tooltip();

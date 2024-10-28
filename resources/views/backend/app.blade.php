@@ -13,6 +13,8 @@
 
     <meta name="csrf-token" content="{{ csrf_token() }}">
 
+    {{-- <link rel="stylesheet" type="text/css"
+        href="{{ asset('assets/css/typography.css') }}" /> --}}
     <link rel="stylesheet" type="text/css"
         href="https://fonts.googleapis.com/css?family=Roboto:300,400,500,700,900|Roboto+Slab:400,700" />
 
@@ -20,8 +22,10 @@
     <link href="{{ asset('material-dashboard/assets/css/nucleo-svg.css') }}" rel="stylesheet" />
 
     <script src="https://kit.fontawesome.com/42d5adcbca.js" crossorigin="anonymous"></script>
+    {{-- <script src="{{ asset('assets/js/42d5adcbca.js') }}" crossorigin="anonymous"></script> --}}
 
-    <link href="https://fonts.googleapis.com/icon?family=Material+Icons+Round" rel="stylesheet" />
+    {{-- <link href="https://fonts.googleapis.com/icon?family=Material+Icons+Round" rel="stylesheet" /> --}}
+    <link href="{{ asset('assets/css/icon.css') }}" rel="stylesheet" />
     <link id="pagestyle"
         href="{{ asset('material-dashboard/assets/css/material-dashboard.min.css?v=3.0.6') }}"rel="stylesheet" />
     <link id="pagestyle" href="{{ asset('material-dashboard/assets/css/datatable.responsive.css') }}"rel="stylesheet" />

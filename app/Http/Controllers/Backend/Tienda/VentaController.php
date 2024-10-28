@@ -4,7 +4,10 @@ namespace App\Http\Controllers\Backend\Tienda;
 
 use App\Http\Controllers\Controller;
 use App\Models\PropietarioModel;
+use App\Models\Tienda\DetalleVentaModel;
+use App\Models\Tienda\VentaModel;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Validation\Rule;
 
@@ -17,14 +20,22 @@ class VentaController extends Controller
         $this->page = 'admin-venta';
         $this->pageURL = 'tienda/admin-venta';
         $this->area = 'Tienda';
-
     }
     public function index()
     {
         if (request()->ajax()) {
             /* init::Listar propietarios */
-            // $data = PropietarioModel::select('*')->selectRaw("CONCAT_WS(' ', nombre, paterno, IFNULL(materno, '')) as nombre_completo")->orderBy('id_propietario', 'desc')->get();
-            $data= [];
+            $data = VentaModel::select('*')
+                ->selectRaw("CONCAT_WS(' ', c.nombre, c.paterno, IFNULL(c.materno, '')) as cliente")
+                ->selectRaw("CONCAT_WS(' ', u.nombre, u.paterno, IFNULL(u.materno, '')) as vendedor")
+                ->selectRaw("DATE_FORMAT(fecha_venta, '%d de %M del %Y') as fecha")
+                ->selectRaw("DATE_FORMAT(fecha_venta, '%h:%i %p') as hora")
+                ->orderBy('id_venta', 'desc')
+                ->leftJoin('clientes as c', 'c.id_cliente', '=', 'ventas.id_cliente')
+                ->leftJoin('usuarios as u', 'u.id_usuario', '=', 'ventas.id_usuario')
+                ->get();
+            // dd($data);
+            // $data = [];
             return response()->json(['data' => $data], 200);
         }
         return $this->render("tienda.ventas.index");
@@ -40,14 +51,12 @@ class VentaController extends Controller
     {
         /* init::Guardar propietario */
         $validator = Validator::make($request->all(), [
-            'ci' => 'required|unique:propietarios,ci',
-            'nombre' => 'required',
-            'paterno' => 'required',
-            'celular' => 'required|numeric|digits:8',
-            'direccion' => 'required',
+            'id_cliente' => 'nullable|exists:clientes,id_cliente',
+            'total_venta' => 'required|numeric',
+            'productos' => 'required|array',
+
         ], [
-            'ci.required' => 'Campo cedula es requerido',
-            'ci.unique' => 'La cedula ya ha sido tomado.',
+            'productos.required' => 'Debe agregar al menos un producto.',
         ]);
         if ($validator->fails()) {
             $data = [
@@ -57,15 +66,27 @@ class VentaController extends Controller
             ];
             return response()->json($data, 400);
         }
-        $propietario = PropietarioModel::create([
-            'nombre' => $request->nombre,
-            'paterno' => $request->paterno,
-            'materno' => $request->materno,
-            'ci' => $request->ci,
-            'celular' => $request->celular,
-            'direccion' => $request->direccion,
+        $venta = VentaModel::create([
+            'id_usuario' => Auth::id(),
+            'fecha_venta' => date("Y-m-d H:i:s"),
+            'total_venta' => $request->total_venta,
+            'id_cliente' => $request->id_cliente,
         ]);
-        if (!$propietario) {
+
+        $detallesVenta = array_map(function ($producto) use ($venta) {
+            return [
+                'id_venta' => $venta->id_venta,
+                'id_producto' => $producto['codigo'],
+                'cantidad' => $producto['cantidad'],
+                'precio_unitario' => $producto['precio'],
+                'subtotal' => $producto['subtotal'],
+            ];
+        }, $request->productos);
+
+        // Inserción masiva
+        DetalleVentaModel::insert($detallesVenta);
+
+        if (!$venta) {
             $data = [
                 'message' => 'Error al registrar',
                 'status' => 500
@@ -73,7 +94,7 @@ class VentaController extends Controller
             return response()->json($data, 500);
         }
         $data = [
-            'propietario' => $propietario,
+            'venta' => $venta,
             'status' => 201
         ];
         return response()->json($data, 201);
@@ -120,6 +141,7 @@ class VentaController extends Controller
         if (!$propietario) {
             $data = [
                 'message' => 'Error al actualizar',
+                'message' => 'Venta realizada exitosamente',
                 'status' => 500
             ];
             return response()->json($data, 500);
@@ -133,17 +155,17 @@ class VentaController extends Controller
     }
     public function destroy($id = null)
     {
-        $propietario = PropietarioModel::find($id);
-        if (!$propietario) {
+        $venta = VentaModel::find($id);
+        if (!$venta) {
             $data = [
-                'message' => 'Propietario no encontrado',
+                'message' => 'Venta no encontrada',
                 'status' => 404
             ];
             return response()->json($data, 404);
         }
-        $propietario->delete();
+        $venta->delete();
         $data = [
-            'message' => 'Propietario eliminado exitosamente',
+            'message' => 'Venta eliminada exitosamente',
             'status' => 200
         ];
         return response()->json($data, 200);
