@@ -8,7 +8,7 @@ use App\Models\Tienda\CompraModel;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Validation\Rule;
-
+use Barryvdh\DomPDF\Facade\Pdf;
 
 class InventarioController extends Controller
 {
@@ -18,17 +18,16 @@ class InventarioController extends Controller
         $this->page = 'admin-inventario';
         $this->pageURL = 'tienda/admin-inventario';
         $this->area = 'Tienda';
-
     }
     public function index()
     {
         if (request()->ajax()) {
             /* init::Listar propietarios */
             $data = CompraModel::select('*')
-            // ->selectRaw("CONCAT_WS(' ', nombre, paterno, IFNULL(materno, '')) as nombre_completo")
-            ->orderBy('id_compra', 'desc')
-            ->leftJoin('productos as p','p.id_producto','=','compras.id_producto')
-            ->get();
+                // ->selectRaw("CONCAT_WS(' ', nombre, paterno, IFNULL(materno, '')) as nombre_completo")
+                ->orderBy('id_compra', 'desc')
+                ->leftJoin('productos as p', 'p.id_producto', '=', 'compras.id_producto')
+                ->get();
             return response()->json(['data' => $data], 200);
         }
         return $this->render("tienda.inventario.index");
@@ -145,5 +144,18 @@ class InventarioController extends Controller
             'status' => 200
         ];
         return response()->json($data, 200);
+    }
+    public function reporte() {
+        $data = ['nombre' => 'Ejemplo'];
+        $pdf = Pdf::loadView('backend.reportes.inventario-reporte', $data);
+        $pdf->setPaper('letter', 'portrait');
+        // return $pdf->download('reporte.pdf');
+
+        $pdf->setOptions([
+            'isHtml5ParserEnabled' => true,
+            'isPhpEnabled' => true,  // Habilitar PHP dentro de la vista
+        ]);
+
+        return $pdf->stream('reporte.pdf');
     }
 }

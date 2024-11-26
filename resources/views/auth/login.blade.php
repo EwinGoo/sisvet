@@ -14,7 +14,6 @@
 
     <meta name="keywords" content="">
     <meta name="description" content="">
-    <meta name="csrf-token" content="{{ csrf_token() }}">
     <link rel="stylesheet" type="text/css"
         href="https://fonts.googleapis.com/css?family=Roboto:300,400,500,700,900|Roboto+Slab:400,700" />
 
@@ -80,6 +79,7 @@
                                         {{ $errors->first('password') ? $errors->first('password') : '' }}</p>
                                     <form method="POST" action="{{ route('login') }}">
                                         @csrf
+                                        @method('POST')
                                         <div
                                             class="input-group input-group-outline mb-3 {{ $errors->first('email') || $errors->first('captcha') ? 'is-filled' : '' }}">
                                             <label class="form-label">Correo electrónico</label>

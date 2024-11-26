@@ -31,10 +31,10 @@
         </div>
         <div class="collapse navbar-collapse mt-sm-0 mt-2 me-md-0 me-sm-4" id="navbar">
             <div class="ms-md-auto pe-md-3 d-flex align-items-center">
-                <div class="input-group input-group-outline">
+                {{-- <div class="input-group input-group-outline">
                     <label class="form-label" for="search">Busque aqui</label>
                     <input type="text" class="form-control" id="search" />
-                </div>
+                </div> --}}
             </div>
             <ul class="navbar-nav justify-content-end">
                 <li class="nav-item">

@@ -21,6 +21,20 @@ export function ACTIONS(name = "", id = null) {
     </td>
     `;
 }
+export function __IMAGE(url = null) {
+
+    if(!url) url = '/assets/images/silueta-dog-cat.jpg'
+    else url =  `/storage/${url}`;
+
+    return `
+    <div class="d-flex px-2 py-1">
+        <div>
+            <img src="${url}"
+                class="avatar avatar-md me-3" alt="table image" />
+        </div>
+    </div>
+    `;
+}
 
 export function listHistorial(historiales, elements) {
     if (!Array.isArray(historiales) || !elements || !elements.modalHistorial) {

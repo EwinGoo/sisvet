@@ -1,4 +1,4 @@
-import { ACTIONS, listHistorial } from "./actions.js";
+import { ACTIONS, listHistorial,__IMAGE } from "./actions.js";
 
 $(document).ready(function () {
     const MascotaManager = {
@@ -29,9 +29,7 @@ $(document).ready(function () {
             this.table = this.elements.dataTable.DataTable({
                 order: [[0, "desc"]],
                 responsive: true,
-                language: {
-                    searchPlaceholder: "Buscar...",
-                },
+                language: languageTable,
                 lengthMenu: [
                     [5, 25, 50, -1],
                     [10, 25, 50, "Todos"],
@@ -48,6 +46,14 @@ $(document).ready(function () {
                     //     render: (data, type, row, meta) => meta.row + 1
                     // },
                     { data: "id_mascota" },
+                    {
+                        data: null,
+                        targets: 1,
+                        orderable: false,
+                        render: (data, type, row) => 
+                            __IMAGE(row.ruta_archivo)
+                        ,
+                    },
                     { data: "nombre_mascota" },
                     { data: "nombre_completo" },
                     { data: "animal" },
@@ -55,9 +61,10 @@ $(document).ready(function () {
                         data: null,
                         targets: -1,
                         orderable: false,
-                        render: (data, type, row) =>
+                        render: (data, type, row) => 
                             ACTIONS("mascota", row.id_mascota),
                     },
+                   
                 ],
                 drawCallback: () => {
                     utilities.tooltip();
@@ -97,10 +104,10 @@ $(document).ready(function () {
         },
         handleHistorial(event) {
             event.preventDefault();
-            let form = $(event.target).closest('form')[0];
-            let csrfInput = document.createElement('input');
-            csrfInput.type = 'hidden';
-            csrfInput.name = '_token';
+            let form = $(event.target).closest("form")[0];
+            let csrfInput = document.createElement("input");
+            csrfInput.type = "hidden";
+            csrfInput.name = "_token";
             csrfInput.value = this.elements.csrf.attr("content");
             form.appendChild(csrfInput);
             form.submit();
@@ -172,6 +179,7 @@ $(document).ready(function () {
 
         editMascota(id) {
             const mascota = utilities.getByID(id, this.table, "id_mascota");
+            const url = mascota.ruta_archivo && '/storage/'+ mascota.ruta_archivo;
             console.log(mascota);
 
             this.populateForm(mascota);
@@ -179,6 +187,7 @@ $(document).ready(function () {
             this.elements.btnSubmit.prop("disabled", false);
             this.currentId = id;
             this.elements.modalEl.modal("show");
+            imageUploader.loadImageFromURL(url);
         },
 
         populateForm(mascota) {
@@ -199,17 +208,25 @@ $(document).ready(function () {
         resetForm() {
             utilities.resetForm(this.elements.form);
             this.elements.btnSubmit.prop("disabled", false);
+            imageUploader.removeImage();
         },
 
         saveRegister(url, method) {
+
+            let formData = new FormData(this.elements.form[0]);
+            formData.append("_method", method);
+
             $.ajax({
-                type: method,
+                type: 'POST',
                 url,
-                data: this.elements.form.serialize(),
+                data: formData,
+                contentType: false, // Para que jQuery no establezca el tipo de contenido
+                processData: false,
                 success: (response) => {
                     this.elements.modalEl.modal("hide");
                     this.table.ajax.reload();
                     az.showSwal("success-message", null, response.message);
+                    this.elements.btnSubmit.prop("disabled", false);
                 },
                 error: (xhr) => {
                     this.elements.btnSubmit.prop("disabled", false);

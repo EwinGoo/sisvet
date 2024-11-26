@@ -82,6 +82,7 @@
                         <thead class="thead-light">
                             <tr>
                                 <th>id</th>
+                                <th>foto</th>
                                 <th>nombre mascota</th>
                                 <th>propietario</th>
                                 <th>tipo mascota</th>

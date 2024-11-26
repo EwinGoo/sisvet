@@ -21,7 +21,7 @@
     <link href="{{ asset('material-dashboard/assets/css/nucleo-icons.css') }}" rel="stylesheet" />
     <link href="{{ asset('material-dashboard/assets/css/nucleo-svg.css') }}" rel="stylesheet" />
 
-    <script src="https://kit.fontawesome.com/42d5adcbca.js" crossorigin="anonymous"></script>
+    {{-- <script src="https://kit.fontawesome.com/42d5adcbca.js" crossorigin="anonymous"></script> --}}
     {{-- <script src="{{ asset('assets/js/42d5adcbca.js') }}" crossorigin="anonymous"></script> --}}
 
     {{-- <link href="https://fonts.googleapis.com/icon?family=Material+Icons+Round" rel="stylesheet" /> --}}
@@ -30,6 +30,7 @@
         href="{{ asset('material-dashboard/assets/css/material-dashboard.min.css?v=3.0.6') }}"rel="stylesheet" />
     <link id="pagestyle" href="{{ asset('material-dashboard/assets/css/datatable.responsive.css') }}"rel="stylesheet" />
     <link href="{{ asset('assets/css/global.styles.css') }}" rel="stylesheet" />
+    <link href="{{ asset('assets/css/image-preview.css') }}" rel="stylesheet" />
 
 </head>
 <script src="{{ asset('material-dashboard/assets/js/core/jquery.min.js') }}"></script>
@@ -512,6 +513,7 @@
     <script src="{{ asset('material-dashboard/assets/js/material-dashboard.min.js?v=3.0.6') }}"></script>
 
     <script src="{{ asset('assets/js/global.scripts.js') }}"></script>
+    {{-- <script src="{{ asset('assets/js/image-preview.js') }}"></script> --}}
     <script src="{{ asset('backend/js/components/alerts.js') }}"></script>
     @if ($pageURL)
         {{-- @vite('public/backend/js/' . $page . '/index.js') --}}

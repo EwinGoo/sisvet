@@ -104,7 +104,7 @@
                                             <strong class="text-dark">Celular:</strong> {{ $data['info']->celular }}
                                         </li>
                                         <li class="list-group-item border-0 ps-0  pt-0 text-sm">
-                                            <strong class="text-dark">Dirección:</strong>{{ $data['info']->direccion }}
+                                            <strong class="text-dark">Dirección:</strong> {{ $data['info']->direccion }}
                                         </li>
                                         <li class="list-group-item border-0 ps-0  pt-0 pb-0">
                                             <strong class="text-dark text-sm">Social:</strong>
@@ -125,7 +125,9 @@
                                     <div class="row justify-content-center align-items-center">
                                         <div class="col-sm-auto col-4">
                                             <div class="avatar avatar-xl position-relative">
-                                                <img src="{{ asset('assets/images/dog-cat.png') }}" alt="bruce"
+                                                {{-- <img src="{{ asset('assets/images/dog-cat.png') }}" alt="bruce"
+                                                    class="w-100 rounded-circle shadow-sm" /> --}}
+                                                <img src="{{ Storage::url($data['info']->ruta_archivo) }}" alt="bruce"
                                                     class="w-100 rounded-circle shadow-sm" />
                                             </div>
                                         </div>

@@ -30,7 +30,6 @@ Route::prefix('admin')->middleware(['auth'])->group(function () {
         Route::get('/usuario/{id}/image', [UsuarioController::class, 'getImage'])->name('admin-usuario.get-image');
     });
     Route::middleware(['role:administrador,medico'])->group(function () {
-
         Route::resource('propietario', PropietarioController::class)->names('admin-propietario');
         Route::resource('mascota', MascotaController::class)->names('admin-mascota');
 
@@ -50,6 +49,7 @@ Route::prefix('admin')->middleware(['auth'])->group(function () {
 
     Route::middleware(['role:administrador,vendedor'])->group(function () {
         Route::resource('inventario', InventarioController::class)->names('admin-inventario');
+        Route::get('inventario-reporte', [InventarioController::class, 'reporte'])->name('admin-inventario.reporte');
         Route::resource('cliente', ClienteController::class)->names('admin-cliente');
         Route::resource('producto', ProductoController::class)->names('admin-producto');
         Route::resource('venta', VentaController::class)->names('admin-venta');

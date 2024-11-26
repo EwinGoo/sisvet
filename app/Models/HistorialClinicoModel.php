@@ -34,6 +34,7 @@ class HistorialClinicoModel extends Model
             ->join('mascotas as m', 'm.id_mascota', '=', 'historial_clinico.id_mascota')
             ->join('animales as a', 'a.id_animal', '=', 'm.id_animal')
             ->join('propietarios as p', 'p.id_propietario', '=', 'm.id_propietario')
+            ->leftJoin('multimedia as mu', 'mu.id_multimedia', '=', 'm.id_multimedia')
             ->where('id_historial', $id)
             ->first();
         return $results;

@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\Backend;
 
+use App\Helpers\Helpers;
 use App\Http\Controllers\Controller;
 use App\Models\MascotaModel;
 use App\Models\PropietarioModel;
@@ -27,7 +28,11 @@ class MascotaController extends Controller
     public function index()
     {
         /* init::Listar Mascotas */
-        $this->data['propietarios'] = PropietarioModel::select('*')->selectRaw("CONCAT_WS(' ', nombre, paterno, IFNULL(materno, '')) as nombre_completo")->orderBy('id_propietario', 'desc')->get();
+        $this->data['propietarios'] = PropietarioModel::select('*')
+                                        ->selectRaw("CONCAT_WS(' ', nombre, paterno, IFNULL(materno, '')) as nombre_completo")
+                                        ->orderBy('id_propietario', 'desc')
+                                        ->get();
+
         $this->data['razas'] =  RazaModel::get();
         $this->data['animales'] =  AnimalModel::get();
         $this->data['historiales'] =  HistorialClinicoModel::get();
@@ -45,6 +50,7 @@ class MascotaController extends Controller
             'nombre_mascota' => 'required',
             'id_propietario' => 'required',
             'id_animal' => 'required',
+            'image' => 'nullable|file|max:5000|mimes:png,jpg,jpeg',
             'years' => 'nullable|numeric|max:99',
             'meses' => 'nullable|numeric|max:12',
         ], [
@@ -61,6 +67,13 @@ class MascotaController extends Controller
             ];
             return response()->json($data, 400);
         }
+        if (!($idImage = Helpers::__fileUpload($request, 'image', 'mascotas')) && $request->hasFile('image')) {
+            $data = [
+                'message' => 'Error al subir la imagen.',
+                'status' => 500
+            ];
+            return response()->json($data, 500);
+        }
         $mascota = MascotaModel::create([
             'nombre_mascota' => $request->nombre_mascota,
             'id_propietario' => $request->id_propietario,
@@ -71,6 +84,7 @@ class MascotaController extends Controller
             'years' => $request->years,
             'meses' => $request->meses,
             'id_animal' => $request->id_animal,
+            'id_multimedia' => $idImage,
         ]);
         if (!$mascota) {
             $data = [
@@ -101,6 +115,7 @@ class MascotaController extends Controller
             'nombre_mascota' => 'required',
             'id_propietario' => 'required',
             'id_animal' => 'required',
+            'image' => 'nullable|file|max:5000|mimes:png,jpg,jpeg',
             'years' => 'nullable|integer|min:0|max:99',
             'meses' => 'nullable|integer|min:0|max:99',
         ], [
@@ -119,6 +134,17 @@ class MascotaController extends Controller
             ];
             return response()->json($data, 400);
         }
+
+        if ($request->image) {
+            if (!($idImage = Helpers::__fileUpload($request, 'image', 'mascotas', $mascota->id_multimedia))) {
+                $data = [
+                    'message' => 'Error al subir la imagen.',
+                    'status' => 500
+                ];
+                return response()->json($data, 500);
+            }
+        }
+
         $mascota->update([
             'nombre_mascota' => $request->nombre_mascota,
             'id_propietario' => $request->id_propietario,

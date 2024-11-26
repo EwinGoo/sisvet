@@ -41,13 +41,18 @@ class Helpers
             $carpetaAlmacenamiento = $file;
             $nameFile =  $imagen->getClientOriginalName();
             $nameFileSave = time() . '_' . $imagen->getClientOriginalName();
-            $url =  Storage::putFileAs($carpetaAlmacenamiento, $imagen, $nameFileSave);
+            // $url =  Storage::putFileAs($carpetaAlmacenamiento, $imagen, $nameFileSave);
+
+            $url = $imagen->storeAs($file,$nameFileSave,'public');
             $size = $imagen->getSize();
+            
             if ($id == null) {
                 $id = MultimediaModel::insertGetId([
                     'nombre_archivo' => $nameFile,
                     'ruta_archivo' => $url,
                     'size' => $size,
+                    'created_at' => now(),
+                    'updated_at' => now(),
                 ]);
             } else {
                 DB::table('multimedia')
@@ -56,6 +61,7 @@ class Helpers
                         'nombre_archivo' => $nameFile,
                         'ruta_archivo' => $url,
                         'size' => $size,
+                        'updated_at' => now(),
                     ]);
             }
             return $id;

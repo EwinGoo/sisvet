@@ -13,7 +13,7 @@ class MascotaModel extends Model
     use SoftDeletes;
     protected $table = 'mascotas';
     protected $primaryKey = 'id_mascota';
-    protected $fillable = ['nombre_mascota', 'id_propietario', 'vacunas', 'genero', 'color', 'years', 'meses', 'id_animal', 'id_raza'];
+    protected $fillable = ['nombre_mascota', 'id_propietario', 'vacunas', 'genero', 'color', 'years', 'meses', 'id_animal', 'id_raza','id_multimedia'];
     protected $guarded = [];
     public $timestamps = true;
     protected $dates = ['deleted_at'];
@@ -24,6 +24,7 @@ class MascotaModel extends Model
             ->selectRaw("CONCAT_WS(' ', p.nombre, p.paterno, IFNULL(p.materno, '')) as nombre_completo")
             ->join('propietarios as p', 'p.id_propietario', '=', 'mascotas.id_propietario')
             ->join('animales as a', 'a.id_animal', '=', 'mascotas.id_animal')
+            ->leftJoin('multimedia as m', 'm.id_multimedia', '=', 'mascotas.id_multimedia')
             ->get();
 
         return $results;
