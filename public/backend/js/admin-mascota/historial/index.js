@@ -24,7 +24,9 @@ $(document).ready(function () {
             tables: {
                 examen: $("#table-examen"),
                 sintomas: $("#table-sintomas"),
-                diagnostico: $("#table-diagnostico"),
+                metodos_complementarios: $("#table-metodos-complementarios"),
+                diagnosticos_presuntivos: $("#table-diagnostico-presuntivo"),
+                diagnosticos_definitivos: $("#table-diagnostico-definitivo"),
                 tratamiento: $("#table-tratamiento"),
                 evolucion: $("#table-evolucion"),
             },
@@ -33,7 +35,9 @@ $(document).ready(function () {
             anamnesis: [],
             examen: [],
             sintomas: [],
-            diagnostico: [],
+            metodos_complementarios: [],
+            diagnosticos_presuntivos: [],
+            diagnosticos_definitivos: [],
             tratamiento: [],
             evolucion: [],
         },
@@ -57,11 +61,23 @@ $(document).ready(function () {
                 size: "md",
                 id: "id_sintoma",
             },
-            diagnostico: {
-                generator: genericForm,
-                title: "Diagnóstico",
+            metodos_complementarios: {
+                generator: (isConfirmed = 1) => genericForm(isConfirmed),
+                title: "Metodos Complementarios",
                 size: "md",
-                id: "id_diagnostico",
+                id: "id_metodo",
+            },
+            diagnosticos_presuntivos: {
+                generator: genericForm,
+                title: "Diagnóstico Presuntivo",
+                size: "md",
+                id: "id_diagnostico_presuntivo",
+            },
+            diagnosticos_definitivos: {
+                generator: genericForm,
+                title: "Diagnóstico Definitivo",
+                size: "md",
+                id: "id_diagnostico_definitivo",
             },
             tratamiento: {
                 generator: genericForm,
@@ -81,7 +97,9 @@ $(document).ready(function () {
             anamnesis: "/admin/mascota/anamnesis",
             examen: "/admin/mascota/examen",
             sintomas: "/admin/mascota/sintomas",
-            diagnostico: "/admin/mascota/diagnostico",
+            metodos_complementarios: "/admin/mascota/metodos_complementarios",
+            diagnosticos_presuntivos: "/admin/mascota/diagnosticos_presuntivos",
+            diagnosticos_definitivos: "/admin/mascota/diagnosticos_definitivos",
             tratamiento: "/admin/mascota/tratamiento",
             evolucion: "/admin/mascota/evolucion",
         },
@@ -102,7 +120,9 @@ $(document).ready(function () {
                     this.loadAnamnesis(this.data.data);
                     this.loadExamenGeneral(this.data.data);
                     this.loadSintomas(this.data.data);
-                    this.loadDiagnostico(this.data.data);
+                    this.loadMetodosComplemetarios(this.data.data);
+                    this.loadDiagnosticoPresuntivo(this.data.data);
+                    this.loadDiagnosticoDefinitivo(this.data.data);
                     this.loadEvolucion(this.data.data);
                     this.loadTratamiento(this.data.data);
                     // this.updateUI();
@@ -130,25 +150,28 @@ $(document).ready(function () {
             $("#enf_ant").text(anamnesis.enfermedades_anteriores);
         },
         loadExamenGeneral(data) {
-            console.log(data.examen);
-            $("#palpacion").text(data.examen[0].palpacion);
-            $("#inspeccion").text(data.examen[0].inspeccion);
-            listData(data.examen, this.elements.tables.examen, 1);
+            // console.log(this.data.data.anamnesis.inspeccion);
+            $("#inspeccion-info").text(this.data.data.anamnesis.inspeccion);
+            $("#palpacion-info").text(this.data.data.anamnesis.palpacion);
+            listData(data.examen, this.elements.tables.examen, 'examen');
         },
         loadSintomas(data) {
-            // console.log(data.examen);
             listData(data.sintomas, this.elements.tables.sintomas);
         },
-        loadDiagnostico(data) {
-            // console.log(data.examen);
-            listData(data.diagnostico, this.elements.tables.diagnostico);
+        loadMetodosComplemetarios(data) {
+            // console.log(Object.keys(data));
+            listData(data.metodos_complementarios, this.elements.tables.metodos_complementarios,'metodo');
+        },
+        loadDiagnosticoPresuntivo(data) {
+            listData(data.diagnosticos_presuntivos, this.elements.tables.diagnosticos_presuntivos);
+        },
+        loadDiagnosticoDefinitivo(data) {
+            listData(data.diagnosticos_definitivos, this.elements.tables.diagnosticos_definitivos);
         },
         loadTratamiento(data) {
-            // console.log(data.examen);
             listData(data.tratamiento, this.elements.tables.tratamiento);
         },
         loadEvolucion(data) {
-            // console.log(data.examen);
             listData(data.evolucion, this.elements.tables.evolucion);
         },
 
@@ -185,8 +208,8 @@ $(document).ready(function () {
                     anamnesisChange(this.elements, this.data);
                     break;
                 case "examen":
-                    $("#palpacion").val(data.examen[0].palpacion);
-                    $("#inspeccion").val(data.examen[0].inspeccion);
+                    $("#palpacion").val(this.data.data.anamnesis.palpacion);
+                    $("#inspeccion").val(this.data.data.anamnesis.inspeccion);
                     // Inicialización específica para examen
                     break;
                 case "sintomas":
@@ -221,11 +244,16 @@ $(document).ready(function () {
                     this.elements.btnSubmit.prop('disabled',false);
                 },
                 error: (xhr, status, error) => {
-                    console.error(
-                        "Error al enviar el formulario:",
-                        this.currentFormType,
-                        error
-                    );
+                    // console.error(
+                    //     "Error al enviar el formulario:",
+                    //     this.currentFormType,
+                    //     error
+                    // );
+                    let data ="";
+                    Object.values(xhr.responseJSON.errors).forEach((value) => {
+                        data += `<span class="text-danger text-md">${value[0]}</span><br>`
+                    });
+                    az_new.showSwal({ e: 'errors', message: data });
                     this.elements.btnSubmit.prop('disabled',false);
                 },
             });
@@ -235,16 +263,25 @@ $(document).ready(function () {
                 "anamnesis",
                 "examen",
                 "sintomas",
-                "diagnostico",
+                "metodos_complementarios",
+                "diagnosticos_presuntivos",
+                "diagnosticos_definitivos",
                 "tratamiento",
                 "evolucion",
             ];
+            console.log(dataType,newData);
+
 
             if (validTypes.includes(dataType)) {
-                if (dataType === "anamnesis") {
+                if (dataType === "anamnesis" || dataType == 'examen') {
                     // console.log(this.data.data[dataType]);
                     // Anamnesis es un objeto, no un array
-                    this.data.data[dataType] = newData;
+                    // console.log(newData);
+
+                    // this.data.data[dataType] = newData;
+                    this.data.data['anamnesis'] = newData;
+                    console.log(this.data.data.anamnesis);
+
                 } else {
                     // Verificar si el nuevo dato ya existe en el array
                     const existingIndex = this.data.data[dataType].findIndex(
@@ -266,10 +303,13 @@ $(document).ready(function () {
                     }
                 }
                 this.loadSintomas(this.data.data);
-                this.loadDiagnostico(this.data.data);
+                this.loadMetodosComplemetarios(this.data.data);
+                this.loadDiagnosticoPresuntivo(this.data.data);
+                this.loadDiagnosticoDefinitivo(this.data.data);
                 this.loadTratamiento(this.data.data);
                 this.loadEvolucion(this.data.data);
                 this.loadAnamnesis(this.data.data);
+                this.loadExamenGeneral(this.data.data);
             } else {
                 console.error(`Tipo de dato '${dataType}' no válido`);
             }

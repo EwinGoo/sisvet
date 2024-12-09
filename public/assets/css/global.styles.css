@@ -459,3 +459,30 @@ table.dataTable.dtr-inline.collapsed > tbody > tr > th.dtr-control:before {
     background-size: contain;
     transition: all .2s ease-in-out;
 }
+
+.form-check:not(.form-switch) .form-check-input[type="checkbox"]:after {
+    transition: opacity 0.25s ease-in-out;
+    font-family: 'Material Icons';  /* Usar la fuente de Material Icons */
+    content: 'check';  /* El icono que deseas usar */
+    width: 100%;
+    height: 100%;
+    color: #fff;
+    position: absolute;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    font-size: 1rem;  /* Ajusta el tamaño según lo que necesites */
+    opacity: 0;
+}
+.choices[data-type*="select-one"]:after {
+    content: '';
+    display: inline-block;
+    margin-left: auto;
+    width: 8.75px;  /* Ajusta según necesites */
+    height: 22.39px; /* Ajusta según necesites */
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 320 512'%3E%3Cpath fill='rgba(206, 212, 218, 0.7)' d='M143 352.3L7 216.3c-9.4-9.4-9.4-24.6 0-33.9l22.6-22.6c9.4-9.4 24.6-9.4 33.9 0l96.4 96.4 96.4-96.4c9.4-9.4 24.6-9.4 33.9 0l22.6 22.6c9.4 9.4 9.4 24.6 0 33.9l-136 136c-9.2 9.4-24.4 9.4-33.8 0z'/%3E%3C/svg%3E");
+    background-repeat: no-repeat;
+    background-position: center;
+    background-size: contain;
+    transition: all .2s ease-in-out;
+}

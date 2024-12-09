@@ -1,4 +1,4 @@
-import { ACTIONS } from "../../components/actions.js";
+import { ACTIONS, __bgFormat, __imageLoad } from "../../components/actions.js";
 
 class ClientManager {
     constructor() {
@@ -10,7 +10,6 @@ class ClientManager {
         this.table = null;
         this.currentId = null;
         this.dataSelect = null;
-
         this.initializeDataTable();
         this.initChoices();
         this.initializeEventListeners();
@@ -22,30 +21,54 @@ class ClientManager {
             order: [[0, "desc"]],
             responsive: true,
             language: languageTable,
-            lengthMenu: [[5, 25, 50, -1], [10, 25, 50, "Todos"]],
+            lengthMenu: [
+                [5, 25, 50, -1],
+                [10, 25, 50, "Todos"],
+            ],
             pagingType: "full_numbers",
             ajax: { url: "/admin/producto" },
             columns: [
                 { data: "id_producto" },
+                {
+                    data: null,
+                    targets: 1,
+                    orderable: false,
+                    render: (data, type, row) => __imageLoad(row.ruta_archivo),
+                    createdCell: function (td) {
+                        td.style.padding = "0.3rem 1.5rem"; // Establece el padding en 0
+                    },
+                },
                 { data: "nombre_producto" },
-                { data: "precio" },
-                { data: "fecha_vencimiento" },
+                {
+                    data: null,
+                    targets: -1,
+                    orderable: true,
+                    render: (data, type, row) => row.precio + " Bs.",
+                },
+                {
+                    data: null,
+                    targets: -1,
+                    orderable: true,
+                    render: (data, type, row) =>
+                        __bgFormat(row.fecha_vencimiento),
+                },
                 {
                     data: null,
                     targets: -1,
                     orderable: false,
-                    render: (data, type, row) => ACTIONS("producto", row.id_producto)
-                }
+                    render: (data, type, row) =>
+                        ACTIONS("producto", row.id_producto),
+                },
             ],
             drawCallback: () => {
                 utilities.tooltip();
                 utilities.loaderTool();
-            }
+            },
         });
     }
 
-    initChoices(){
-        // this.queryFetch('admin/producto/create','GET', this.dataSelect); 
+    initChoices() {
+        // this.queryFetch('admin/producto/create','GET', this.dataSelect);
         // $('.choice name=[categiras]')
     }
 
@@ -67,20 +90,22 @@ class ClientManager {
     }
 
     handleEdit(e) {
-        const target = $(e.target).closest('.edit');
+        const target = $(e.target).closest(".edit");
         const id = target.data("id");
-        this.editForm(id,'editar producto');
+        this.editForm(id, "editar producto");
     }
 
     handleDelete(e) {
-        const target = $(e.target).closest('.delete');
+        const target = $(e.target).closest(".delete");
         const id = target.data("id");
         az.showSwal("warning-message-delete", `/admin/producto/${id}`);
     }
 
     handleSubmit() {
         this.btnSubmit.prop("disabled", true);
-        const url = this.currentId ? `/admin/producto/${this.currentId}` : "/admin/producto";
+        const url = this.currentId
+            ? `/admin/producto/${this.currentId}`
+            : "/admin/producto";
         const method = this.currentId ? "PUT" : "POST";
         this.saveRegister(url, method);
     }
@@ -93,20 +118,25 @@ class ClientManager {
         this.currentId = null;
     }
 
-    editForm(id,title) {
+    editForm(id, title) {
         const reg = utilities.getByID(id, this.table, "id_producto");
+        const url = reg.ruta_archivo && "/storage/" + reg.ruta_archivo;
         this.currentId = id;
         this.modalTitle.text(title);
         this.modalEl.modal("show");
         utilities.reloadStyle();
         this.populateForm(reg);
+
+        imageUploader.loadImageFromURL(url);
     }
 
     populateForm(data) {
-        this.form.find(":input").each(function() {
+        this.form.find(":input").each(function () {
             const name = $(this).attr("name");
             if ($(this).prop("tagName") === "SELECT") {
-                const choice = choiceInstances.find(el => el._baseId === `choices--${name}`);
+                const choice = choiceInstances.find(
+                    (el) => el._baseId === `choices--${name}`
+                );
                 if (choice) choice.setChoiceByValue(data[name].toString());
             } else {
                 $(this).parent().addClass("is-filled");
@@ -116,12 +146,17 @@ class ClientManager {
     }
 
     saveRegister(url, method) {
+        let dataForm = new FormData(this.form[0]);
+        dataForm.append("_method", method);
+
         $.ajax({
-            type: method,
-            url,
-            data: this.form.serialize(),
+            type: "POST",
+            url: url,
+            data: dataForm,
+            contentType: false,
+            processData: false,
             success: (response) => this.handleSaveSuccess(response),
-            error: (error) => this.handleSaveError(error)
+            error: (error) => this.handleSaveError(error),
         });
     }
     queryFetch(url, method, data) {
@@ -129,7 +164,7 @@ class ClientManager {
             type: method,
             url,
             success: (response) => (data = response.data),
-            error: (error) => this.handleSaveError(error)
+            error: (error) => this.handleSaveError(error),
         });
     }
 

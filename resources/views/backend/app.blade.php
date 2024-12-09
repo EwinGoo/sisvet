@@ -32,10 +32,12 @@
     <link href="{{ asset('assets/css/global.styles.css') }}" rel="stylesheet" />
     <link href="{{ asset('assets/css/image-preview.css') }}" rel="stylesheet" />
 
+    {{-- <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet"> --}}
+    <script src="{{ asset('material-dashboard/assets/js/core/jquery.min.js') }}"></script>
+    <script src="{{ asset('material-dashboard/assets/js/plugins/datatables.js') }}"></script>
+    <script src="{{ asset('material-dashboard/assets/js/plugins/datatables.responsive.js') }}"></script>
+
 </head>
-<script src="{{ asset('material-dashboard/assets/js/core/jquery.min.js') }}"></script>
-<script src="{{ asset('material-dashboard/assets/js/plugins/datatables.js') }}"></script>
-<script src="{{ asset('material-dashboard/assets/js/plugins/datatables.responsive.js') }}"></script>
 
 <body class="g-sidenav-show bg-gray-200">
     @include('backend.layouts.menu')
@@ -513,14 +515,22 @@
     <script src="{{ asset('material-dashboard/assets/js/material-dashboard.min.js?v=3.0.6') }}"></script>
 
     <script src="{{ asset('assets/js/global.scripts.js') }}"></script>
-    {{-- <script src="{{ asset('assets/js/image-preview.js') }}"></script> --}}
+    @if (!$pageURL || $page == 'admin-producto')
+    <script src="{{ asset('assets/js/image-preview.js') }}"></script>
+    @endif
     <script src="{{ asset('backend/js/components/alerts.js') }}"></script>
     @if ($pageURL)
         {{-- @vite('public/backend/js/' . $page . '/index.js') --}}
-        <script src="{{ asset('backend/js/' . $pageURL . '/index.js') }}" type="module"></script>
+    <script src="{{ asset('backend/js/' . $pageURL . '/index.js') }}" type="module"></script>
     @elseif($page && $page !== 'dashboard' && $pageURL == null)
-        <script src="{{ asset('backend/js/' . $page . '/index.js') }}" type="module"></script>
+    <script src="{{ asset('backend/js/' . $page . '/index.js') }}" type="module"></script>
     @endif
+
+    @if (strpos($pageURL, "detalle-venta") !== false)
+    <script src="{{ asset('backend/js/tienda/admin-cliente/index.js') }}" type="module"></script>
+
+    @endif
+
 </body>
 
 </html>

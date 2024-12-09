@@ -21,7 +21,7 @@ export function ACTIONS(name = "", id = null) {
     </td>
     `;
 }
-export function __IMAGE(url = null) {
+export function __imageLoad(url = null) {
 
     if(!url) url = '/assets/images/silueta-dog-cat.jpg'
     else url =  `/storage/${url}`;
@@ -59,6 +59,9 @@ export function listHistorial(historiales, elements) {
     // Reinicializar tooltips si estás usando Bootstrap
     $('[data-bs-toggle="tooltip"]').tooltip();
 }
+export function changeSelect(data,) {
+
+}
 
 function createHistorialRow(historial, index, length) {
     const fecha = new Date(historial.created_at).toLocaleString();
@@ -81,10 +84,10 @@ function createHistorialRow(historial, index, length) {
                 <p class="text-sm font-weight-normal mb-0">${estado}</p>
             </td>
             <td>
-                <a href="/admin/mascota/${historial.id_historial}/historial" 
-                   class="btn btn-sm btn-info m-0" 
+                <a href="/admin/mascota/${historial.id_historial}/historial"
+                   class="btn btn-sm btn-info m-0"
                    data-bs-toggle="tooltip"
-                   data-bs-original-title="Revisar historial" 
+                   data-bs-original-title="Revisar historial"
                    target='_blank'>
                     <i class="material-icons position-relative text-lg">visibility</i> Revisar
                 </a>

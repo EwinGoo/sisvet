@@ -1,8 +1,8 @@
 export function anamnesisChange(element, data) {
     // console.log(data);
-    
+
     const form = element.modalContent.find('form');
-    
+
     if (!form.length) {
         console.error('Formulario no encontrado');
         return;

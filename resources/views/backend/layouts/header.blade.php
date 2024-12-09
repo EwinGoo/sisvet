@@ -19,7 +19,7 @@
             <h6 class="font-weight-bolder mb-0">{{$title}}</h6>
         </nav>
         @endif
-       
+
         <div class="sidenav-toggler sidenav-toggler-inner d-xl-block d-none">
             <a href="javascript:;" class="nav-link text-body p-0">
                 <div class="sidenav-toggler-inner">

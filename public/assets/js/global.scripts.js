@@ -1,10 +1,13 @@
 var utilities;
-var choiceInstances = [];
+const choiceInstances = {};
 var loader = $(".az-spinner");
 var table = $(".table-responsive");
 // $(document).ready(function () {
 utilities = {
-    tooltip: function () {
+    tooltip: function ($dispose = "") {
+        // $dispose
+        //     ? $('[data-bs-toggle="tooltip"]').tooltip('dispose')
+        //     : $('[data-bs-toggle="tooltip"]').tooltip();
         $('[data-bs-toggle="tooltip"]').tooltip();
     },
     styleTable: function () {
@@ -47,46 +50,56 @@ utilities = {
         $("form#form-main :input").each(function () {
             let name = $(this).attr("name");
             let value = $(this).val();
-            // console.log(name);
+
             if ($(this).prop("tagName") === "SELECT") {
                 if (errors.hasOwnProperty(name)) {
-                    showError($(`[error-name="${name}"`)[0], errors[name]);
+                    showError($(`[error-name="${name}"]`)[0], errors[name]);
                 }
             } else if ($(this).is(":radio")) {
-                // console.log("radio");
+                // Si necesitas manejar radios, descomenta lo siguiente
+                // if (errors.hasOwnProperty(name)) {
+                //     showError($(`[error-name="${name}"]`)[0], errors[name]);
+                // }
             } else if ($(this).attr("type") === "file") {
-                // console.log("error", name);
-                if (errors.hasOwnProperty(name) || errors["image"]) {
-                    $("#error-image").text(`${errors["image"]}`);
+                if (errors.hasOwnProperty(name)) {
+                    showError($(`[name="${name}"]`)[0], errors[name]);
+                } else if (errors.hasOwnProperty("image")) {
+                    $("#error-image").text(errors["image"]);
                 }
             } else {
                 if (errors.hasOwnProperty(name) && name !== "image") {
                     errors[name].length > 1
-                        ? showError($(`[name="${name}"`)[0], errors[name][0])
-                        : showError($(`[name="${name}"`)[0], errors[name]);
-                } else if (value.trim() !== "" && name && name != "change") {
-                    showSucces($(`[name="${name}"`)[0]);
+                        ? showError($(`[name="${name}"]`)[0], errors[name][0])
+                        : showError($(`[name="${name}"]`)[0], errors[name]);
+                } else if (value.trim() !== "" && name && name !== "change") {
+                    showSucces($(`[name="${name}"]`)[0]);
                 }
             }
         });
     },
     initChoice: function (search = false) {
-        if (document.querySelectorAll(".choices")) {
-            var elements = document.querySelectorAll(".choices");
-            elements.forEach(function (element) {
-                var instance = new Choices(element, {
-                    // searchEnabled: search,
-                    // allowHTML: search,
-                });
-                instance.setChoiceByValue("");
-                choiceInstances.push(instance);
+        document.querySelectorAll(".choices").forEach((element, index) => {
+            // Use a meaningful key, like the element's ID or a generated unique identifier
+            const key = element.id || `choice-${index}`;
+
+            const instance = new Choices(element, {
+                // Configuration options
+                noChoicesText: 'No hay opciones para elegir',
+                noResultsText: 'No se encontraron resultados',
+                shouldSort: false
             });
-        }
+
+            // Store instance with a meaningful key
+            choiceInstances[key] = instance;
+        });
     },
     resetChoice: function () {
-        choiceInstances.forEach(function (choice) {
+        Object.values(choiceInstances).forEach(choice => {
             choice.setChoiceByValue("");
         });
+    },
+    getChoiceInstance: function(key) {
+        return choiceInstances[key];
     },
     resetForm: function (form) {
         // form.trigger("reset");
@@ -127,10 +140,10 @@ utilities = {
         loader.hide();
     },
     showToast() {
-        var toastElement = $('#infoToast');
+        var toastElement = $("#infoToast");
         var toast = new bootstrap.Toast(toastElement);
         toast.show();
-    }
+    },
 };
 window.languageTable = {
     search: "_INPUT_",

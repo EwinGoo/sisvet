@@ -1,8 +1,8 @@
-export function listData(data, elements, isConfirmed = 0) {
+export function listData(data, elements, name = '') {
     // console.log(Array.isArray(data));
     // console.log(data);
-    
-    
+
+
     if (!Array.isArray(data) || !elements) {
         console.error("Argumentos inválidos para listHistorial");
         return;
@@ -20,7 +20,7 @@ export function listData(data, elements, isConfirmed = 0) {
 
     data.forEach((row,index) => {
         tableBody.append(
-            isConfirmed ? createRow(row, index): createRowTwo(row, index)
+            name == 'examen' ? createRow(row, index): createRowTwo(row, index, name)
         );
     });
 
@@ -31,7 +31,7 @@ export function listData(data, elements, isConfirmed = 0) {
 function createRow(data, index) {
     // const fecha = new Date(historial.created_at).toLocaleString();
     // const estado = getEstadoBadge(historial.estado);
-    return `
+    return /*html*/`
         <tr class="text-center">
             <td >
                 <div class="d-flex px-2 py-1">
@@ -63,8 +63,10 @@ function createRow(data, index) {
         </tr>
     `;
 }
-function createRowTwo(data, index) {
-    return `
+function createRowTwo(data, index, name) {
+    // console.log({data,index});
+
+    return /*html*/`
         <tr>
             <td>
                 <div class="d-flex px-2 py-1">
@@ -76,9 +78,22 @@ function createRowTwo(data, index) {
                     <span class="text-white badge bg-gradient-success mb-0">${data.fecha || data.fecha_hora}</span>
                 </div>
             </td>
-            <td>
-                <p class="text-sm font-weight-normal mb-0">${data.descripcion}</p>
-            </td>
+            ${
+                name == 'metodo' ?
+                /*html*/`
+                <td>
+                    <p class="text-sm font-weight-normal mb-0">${data.examen ?? ''}</p>
+                </td>
+                <td>
+                    <p class="text-sm font-weight-normal mb-0">${data.resultados ?? ''}</p>
+                </td>
+                `:
+                /*html*/`
+                <td>
+                    <p class="text-sm font-weight-normal mb-0">${data.descripcion}</p>
+                </td>
+                `
+            }
         </tr>
     `;
 }

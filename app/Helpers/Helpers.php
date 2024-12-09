@@ -43,9 +43,9 @@ class Helpers
             $nameFileSave = time() . '_' . $imagen->getClientOriginalName();
             // $url =  Storage::putFileAs($carpetaAlmacenamiento, $imagen, $nameFileSave);
 
-            $url = $imagen->storeAs($file,$nameFileSave,'public');
+            $url = $imagen->storeAs($file, $nameFileSave, 'public');
             $size = $imagen->getSize();
-            
+
             if ($id == null) {
                 $id = MultimediaModel::insertGetId([
                     'nombre_archivo' => $nameFile,
@@ -55,6 +55,7 @@ class Helpers
                     'updated_at' => now(),
                 ]);
             } else {
+                self::deleteImage($id);
                 DB::table('multimedia')
                     ->where('id_multimedia', $id)
                     ->update([
@@ -67,5 +68,16 @@ class Helpers
             return $id;
         }
         return 0;
+    }
+    public static function deleteImage($id)
+    {
+        $reg = DB::table('multimedia')->where('id_multimedia', $id)->first();
+        if ($reg && $reg->ruta_archivo) {
+            // Construye la ruta relativa
+            $filePath = str_replace('storage/', '', 'public/' . $reg->ruta_archivo);
+            if (Storage::exists($filePath)) {
+                Storage::delete($filePath); // Elimina el archivo
+            }
+        }
     }
 }

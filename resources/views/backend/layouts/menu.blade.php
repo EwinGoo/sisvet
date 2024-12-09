@@ -23,27 +23,27 @@
                         <span class="nav-link-text ms-2 ps-1">
                             {{ $usuario->nombre . ' ' . $usuario->paterno }}
                         </span>
-                        <div class="text-center">
+                        <div class="text-center" style="margin-left: 0.4rem;">
                             <span class="text-center badge bg-gradient-success">{{ $usuario->rol }}</span>
                         </div>
                     </div>
                 </a>
                 <div class="collapse" id="ProfileNav" style>
                     <ul class="nav">
-                        {{-- <li class="nav-item">
+                        <li class="nav-item">
                             <a class="nav-link text-white" href="../../pages/pages/profile/overview.html">
-                                <span class="sidenav-mini-icon"> MP </span>
-                                <span class="sidenav-normal ms-3 ps-1"> My Profile </span>
+                                <span class="sidenav-mini-icon"> P </span>
+                                <span class="sidenav-normal ms-3 ps-1">Perfil</span>
                             </a>
                         </li>
-                        <li class="nav-item">
+                        {{-- <li class="nav-item">
                             <a class="nav-link text-white" href="../../pages/pages/account/settings.html">
                                 <span class="sidenav-mini-icon"> S </span>
                                 <span class="sidenav-normal ms-3 ps-1"> Settings </span>
                             </a>
                         </li> --}}
                         <li class="nav-item">
-                            <form action="{{ route('logout') }}" method="post">
+                            <form action="{{ route('logout') }}" method="post" style="margin: 0 16px">
                                 @csrf
                                 <button type="submit" class="btn btn-primary nav-link text-white">
                                     <span class="sidenav-mini-icon"> CS </span>

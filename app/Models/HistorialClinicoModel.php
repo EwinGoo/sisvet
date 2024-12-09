@@ -44,15 +44,17 @@ class HistorialClinicoModel extends Model
         try {
             // Verificar si el historial existe
             $historial = DB::table('historial_clinico')->where('id_historial', $id)->first();
-            
+
             if (!$historial) {
-                return null; 
+                return null;
             }
             return [
                 'anamnesis' => $historial,
                 'examen' => DB::table('examen_general')->where('id_historial', $id)->get(),
                 'sintomas' => DB::table('sintomas')->where('id_historial', $id)->get(),
-                'diagnostico' => DB::table('diagnostico')->where('id_historial', $id)->get(),
+                'metodos_complementarios' => DB::table('metodos_complementarios')->where('id_historial', $id)->get(),
+                'diagnosticos_presuntivos' => DB::table('diagnosticos_presuntivos')->where('id_historial', $id)->get(),
+                'diagnosticos_definitivos' => DB::table('diagnosticos_definitivos')->where('id_historial', $id)->get(),
                 'tratamiento' => DB::table('tratamiento')->where('id_historial', $id)->get(),
                 'evolucion' => DB::table('evolucion')->where('id_historial', $id)->get(),
             ];

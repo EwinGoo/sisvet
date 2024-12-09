@@ -82,6 +82,7 @@
                         <thead class="thead-light">
                             <tr>
                                 <th>id</th>
+                                <th>Imagen</th>
                                 <th>nombre producto</th>
                                 <th>precio</th>
                                 <th>fecha vencimiento</th>

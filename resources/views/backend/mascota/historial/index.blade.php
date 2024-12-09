@@ -5,7 +5,9 @@
         #examen-general,
         #anamnesis-info,
         #sintomas,
-        #diagnostico,
+        #metodos-complementarios,
+        #diagnostico-presuntivo,
+        #diagnostico-definitivo,
         #tratamiento,
         #evolucion {
             scroll-margin-top: 100px;
@@ -39,9 +41,21 @@
                     </a>
                 </li>
                 <li class="nav-item pt-2">
-                    <a class="nav-link text-dark d-flex" data-scroll href="#diagnostico">
+                    <a class="nav-link text-dark d-flex" data-scroll href="#metodos-complementarios">
+                        <i class="material-icons text-lg me-2">emoji_objects</i>
+                        <span class="text-sm">Metodos complementarios</span>
+                    </a>
+                </li>
+                <li class="nav-item pt-2">
+                    <a class="nav-link text-dark d-flex" data-scroll href="#diagnostico-presuntivo">
                         <i class="material-icons text-lg me-2">content_paste_search</i>
-                        <span class="text-sm">Diagnostico</span>
+                        <span class="text-sm">Diagnostico presuntivo</span>
+                    </a>
+                </li>
+                <li class="nav-item pt-2">
+                    <a class="nav-link text-dark d-flex" data-scroll href="#diagnostico-definitivo">
+                        <i class="material-icons text-lg me-2">content_paste_search</i>
+                        <span class="text-sm">Diagnostico definitivo</span>
                     </a>
                 </li>
                 <li class="nav-item pt-2">
@@ -60,7 +74,7 @@
         </div>
     </div>
     <div class="col-lg-9 mt-lg-0 mt-4 az-information">
-        <div class="card" id="profile" data-id="{{$data['info']->id_historial}}">
+        <div class="card" id="profile" data-id="{{ $data['info']->id_historial }}">
             <div class="card-header p-3 pt-3 pb-1">
                 <div
                     class="icon icon-lg icon-shape bg-gradient-dark shadow text-center border-radius-xl mt-n4 me-3 float-start">
@@ -139,8 +153,12 @@
                                                 </p>
                                             </div>
                                         </div>
-                                        <div class="col-sm-auto ms-sm-auto mt-sm-0 mt-3 d-flex">
+                                        <div class="col-sm-auto ms-sm-auto mt-sm-0 mt-3">
                                             <span class="badge bg-gradient-info">{{ $data['info']->animal }}</span>
+                                            <br>
+                                            <p class="mb-0 font-weight-normal text-sm mt-2">
+                                                Tipo Mascota
+                                            </p>
                                         </div>
                                     </div>
                                 </div>
@@ -176,8 +194,7 @@
                         <a id="btn-new" href="javascript:;" class="btn btn-primary btn-sm new"
                             data-action="anamnesis">
                             <i class="fas fa-user-edit text-sm" data-bs-toggle="tooltip" data-bs-placement="top"
-                                title="Edit Profile"></i> Editar
-                        </a>
+                                title="Edit Profile"></i><i class="material-icons text-sm">edit</i> Editar</a>
                     </div>
                 </div>
             </div>
@@ -257,11 +274,11 @@
                             </tr>
                         </thead>
                         <tbody>
-                        
+
                         </tbody>
                     </table>
                 </div>
-                <div class="col-12">
+                <div class="col-12 mt-3">
                     <span class="h6 mb-1 text-gradient text-info">
                         Inspección:
                     </span>
@@ -311,14 +328,14 @@
                 </div>
             </div>
             <hr class="horizontal dark m-0" />
-            <div class="card-header pb-3" id="diagnostico">
+            <div class="card-header pb-3" id="metodos-complementarios">
                 <div class="d-lg-flex">
                     <div>
-                        <h6>DIAGNOSTICO PRESUNTIVO / DEFINITIVO</h6>
+                        <h6>METODOS COMPLEMENTARIOS</h6>
                     </div>
                     <div class="ms-auto my-auto mt-lg-0 mt-4">
                         <div class="ms-auto my-auto">
-                            <button data-action="diagnostico" id="btn-new" type="button"
+                            <button data-action="metodos_complementarios" id="btn-new" type="button"
                                 class="btn bg-gradient-secondary btn-sm mb-0 new">+
                                 Agregar</button>
                         </div>
@@ -327,7 +344,82 @@
             </div>
             <div class="card-body pt-0">
                 <div class="table-responsive">
-                    <table class="table align-items-center mb-0" id="table-diagnostico">
+                    <table class="table align-items-center mb-0" id="table-metodos-complementarios">
+                        <thead>
+                            <tr>
+                                <th class="w-5 text-uppercase text-xxs font-weight-bolder opacity-7">
+                                    N°
+                                </th>
+                                <th class="w-10 text-uppercase text-xxs font-weight-bolder opacity-7">
+                                    Fecha
+                                </th>
+                                <th class="text-uppercase text-xxs font-weight-bolder opacity-7 ps-2">
+                                    Examen
+                                </th>
+                                <th class="text-uppercase text-xxs font-weight-bolder opacity-7 ps-2">
+                                    Resultados
+                                </th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+            <hr class="horizontal dark m-0" />
+            <div class="card-header pb-3" id="diagnostico-presuntivo">
+                <div class="d-lg-flex">
+                    <div>
+                        <h6>DIAGNOSTICO PRESUNTIVO</h6>
+                    </div>
+                    <div class="ms-auto my-auto mt-lg-0 mt-4">
+                        <div class="ms-auto my-auto">
+                            <button data-action="diagnosticos_presuntivos" id="btn-new" type="button"
+                                class="btn bg-gradient-secondary btn-sm mb-0 new">+
+                                Agregar</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="card-body pt-0">
+                <div class="table-responsive">
+                    <table class="table align-items-center mb-0" id="table-diagnostico-presuntivo">
+                        <thead>
+                            <tr>
+                                <th class="w-5 text-uppercase text-xxs font-weight-bolder opacity-7">
+                                    N°
+                                </th>
+                                <th class="w-10 text-uppercase text-xxs font-weight-bolder opacity-7">
+                                    Fecha
+                                </th>
+                                <th class="text-uppercase text-xxs font-weight-bolder opacity-7 ps-2">
+                                    Descripción
+                                </th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+            <hr class="horizontal dark m-0" />
+            <div class="card-header pb-3" id="diagnostico-definitivo">
+                <div class="d-lg-flex">
+                    <div>
+                        <h6>DIAGNOSTICO DEFINITIVO</h6>
+                    </div>
+                    <div class="ms-auto my-auto mt-lg-0 mt-4">
+                        <div class="ms-auto my-auto">
+                            <button data-action="diagnosticos_definitivos" id="btn-new" type="button"
+                                class="btn bg-gradient-secondary btn-sm mb-0 new">+
+                                Agregar</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="card-body pt-0">
+                <div class="table-responsive">
+                    <table class="table align-items-center mb-0" id="table-diagnostico-definitivo">
                         <thead>
                             <tr>
                                 <th class="w-5 text-uppercase text-xxs font-weight-bolder opacity-7">

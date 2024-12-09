@@ -131,6 +131,22 @@ az = {
                 cancelButtonText: '<i class="fa fa-thumbs-down"></i>',
                 cancelButtonAriaLabel: "Thumbs down",
             });
+        } else if ("errors" == e) {
+            let l = Swal.mixin({
+                customClass: {
+                    confirmButton: "btn bg-gradient-success",
+                    cancelButton: "btn bg-gradient-danger",
+                },
+                buttonsStyling: !1,
+            });
+            l.fire({
+                title: "Error",
+                icon: "error",
+                // html: `${message.errors.examen}`,
+                html: `123`,
+                focusConfirm: !1,
+                confirmButton: "btn bg-gradient-info",
+            });
         } else if ("rtl-language" == e) {
             let s = Swal.mixin({
                 customClass: {
@@ -202,6 +218,29 @@ az = {
                         title: `${e.value.login}'s avatar`,
                         imageUrl: e.value.avatar_url,
                     });
+            });
+        }
+    },
+};
+az_new = {
+    showSwal: function ({ e, url, message } = {}) {
+        console.log(message);
+
+        if ("errors" == e) {
+            let l = Swal.mixin({
+                customClass: {
+                    confirmButton: "btn bg-gradient-success",
+                    cancelButton: "btn bg-gradient-danger",
+                },
+                buttonsStyling: !1,
+            });
+            l.fire({
+                title: "Error",
+                icon: "error",
+                html: `${message}`,
+                // html: `123`,
+                focusConfirm: !1,
+                confirmButton: "btn bg-gradient-info",
             });
         }
     },

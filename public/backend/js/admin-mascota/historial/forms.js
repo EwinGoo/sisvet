@@ -1,5 +1,5 @@
 export function anamnesisForm() {
-    return `
+    return /*html*/ `
         <form action="form-main">
         <div class="row">
             <div class="col-12 col-md-6">
@@ -41,13 +41,15 @@ export function anamnesisForm() {
     `;
 }
 export function examenForm() {
-    return `
+    return /*html*/ `
     <form id='form-main'>
         <div class="row mt-3">
             <div class="col-12 col-sm-6 mt-3 mt-sm-0">
                 <div class="input-group input-group-static">
                     <label for="fecha">Fecha</label>
-                    <input type="date" name="fecha" id="fecha" class="form-control" placeholder="" value="${getFecha().date}" />
+                    <input type="date" name="fecha" id="fecha" class="form-control" placeholder="" value="${
+                        getFecha().date
+                    }" />
                 </div>
             </div>
             <div class="col-12 col-sm-6 mt-3 mt-sm-0 mt-3 mt-sm-0">
@@ -83,6 +85,12 @@ export function examenForm() {
                     <input type="text" name="rc" id="rc" class="form-control" placeholder="" />
                 </div>
             </div>
+            <div class="form-check p-0 mt-4">
+                <label class="form-check-label text-warning" for="isUpdateTwoFields">
+                    ¿Actualizar estos campos?
+                </label>
+                <input type="checkbox" class="form-check-input" name="isUpdateTwoFields" id="isUpdateTwoFields" />
+            </div>
             <div class="col-12 col-sm-12 mt-3">
                 <div class="input-group input-group-static">
                     <label for="inspeccion">Inspección</label>
@@ -99,36 +107,63 @@ export function examenForm() {
     </form>
     `;
 }
-export function genericForm() {
-    return `
+export function genericForm(isConfirmed = 0) {
+    return /*html*/ `
    <form id='form-main'>
         <div class="row mt-3">
             <div class="col-12 col-sm-12 mt-3 mt-sm-0">
                 <div class="input-group input-group-static">
                     <label for="fecha">Fecha</label>
-                    <input type="date" name="fecha" id="fecha" class="form-control" placeholder="" value="${getFecha().date}" />
+                    <input type="date" name="fecha" id="fecha" class="form-control" placeholder="" value="${
+                        getFecha().date
+                    }" />
                 </div>
             </div>
-            <div class="col-12 col-sm-12 mt-3 ">
-                <label for="descripcion" class="form-control ms-0 mb-0">Descripción</label>
-                <div class="input-group input-group-static az-input-group-outline">
-                    <textarea id="descripcion" name="descripcion" class="form-control az-area p-3" rows="2" placeholder=""
-                        spellcheck="false"></textarea>
-                    <small>Error message</small>
-                </div>
-            </div>
+            ${
+                isConfirmed
+                    ? /*HTML */ `
+                    <div class="col-12 col-sm-12 mt-3 ">
+                        <label for="examen" class="form-control ms-0 mb-0">Examen</label>
+                        <div class="input-group input-group-static az-input-group-outline">
+                            <textarea id="examen" name="examen" class="form-control az-area p-3" rows="2" placeholder=""
+                                spellcheck="false"></textarea>
+                            <small>Error message</small>
+                        </div>
+                    </div>
+                    <div class="col-12 col-sm-12 mt-3 ">
+                        <label for="resultados" class="form-control ms-0 mb-0">Resultados</label>
+                        <div class="input-group input-group-static az-input-group-outline">
+                            <textarea id="resultados" name="resultados" class="form-control az-area p-3" rows="2" placeholder=""
+                                spellcheck="false"></textarea>
+                            <small>Error message</small>
+                        </div>
+                    </div>
+                    `
+                    : /*HTML*/ `
+                    <div class="col-12 col-sm-12 mt-3 ">
+                        <label for="descripcion" class="form-control ms-0 mb-0">Descripción</label>
+                        <div class="input-group input-group-static az-input-group-outline">
+                            <textarea id="descripcion" name="descripcion" class="form-control az-area p-3" rows="2" placeholder=""
+                                spellcheck="false"></textarea>
+                            <small>Error message</small>
+                        </div>
+                    </div>
+                    `
+            }
         </div>
     </form>
     `;
 }
 export function evolucionForm() {
-    return `
+    return /*html*/ `
     <form id='form-main'>
         <div class="row mt-3">
             <div class="col-12 col-sm-12 mt-3 mt-sm-0">
                 <div class="input-group input-group-static">
                     <label for="fecha_hora">Fecha y hora</label>
-                    <input type="datetime-local" name="fecha_hora" id="fecha_hora" class="form-control" placeholder="" value="${getFecha().date+' '+getFecha().time}"/>
+                    <input type="datetime-local" name="fecha_hora" id="fecha_hora" class="form-control" placeholder="" value="${
+                        getFecha().date + " " + getFecha().time
+                    }"/>
                 </div>
             </div>
             <div class="col-12 col-sm-12 mt-3 ">
@@ -148,10 +183,10 @@ function getFecha() {
     var year = today.getFullYear();
     var month = (today.getMonth() + 1).toString().padStart(2, "0");
     var day = today.getDate().toString().padStart(2, "0");
-    var hours = today.getHours().toString().padStart(2, '0');
-    var minutes = today.getMinutes().toString().padStart(2, '0');
+    var hours = today.getHours().toString().padStart(2, "0");
+    var minutes = today.getMinutes().toString().padStart(2, "0");
     return {
         date: `${year}-${month}-${day}`,
-        time: `${hours}:${minutes}`
+        time: `${hours}:${minutes}`,
     };
 }

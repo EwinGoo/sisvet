@@ -10,7 +10,7 @@
                 </button>
             </div>
             <div class="modal-body pt-1">
-                @include('backend.tienda.ventas.form')
+                @include('backend.tienda.cliente.form')
             </div>
             <div class="modal-footer">
                 <button id="btn-cancel" type="button" class="btn bg-gradient-secondary" data-bs-dismiss="modal"><i
