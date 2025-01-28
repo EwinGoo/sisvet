@@ -1,7 +1,6 @@
-export function listData(data, elements, name = '') {
+export function listData(data, elements, name = "") {
     // console.log(Array.isArray(data));
     // console.log(data);
-
 
     if (!Array.isArray(data) || !elements) {
         console.error("Argumentos inválidos para listHistorial");
@@ -18,20 +17,22 @@ export function listData(data, elements, name = '') {
         return;
     }
 
-    data.forEach((row,index) => {
+    data.forEach((row, index) => {
         tableBody.append(
-            name == 'examen' ? createRow(row, index): createRowTwo(row, index, name)
+            name == "examen"
+                ? createRow(row, index)
+                : createRowTwo(row, index, name)
         );
     });
 
     // Reinicializar tooltips si estás usando Bootstrap
-    // $('[data-bs-toggle="tooltip"]').tooltip();
+    $('[data-bs-toggle="tooltip"]').tooltip();
 }
 
 function createRow(data, index) {
     // const fecha = new Date(historial.created_at).toLocaleString();
     // const estado = getEstadoBadge(historial.estado);
-    return /*html*/`
+    return /*html*/ `
         <tr class="text-center">
             <td >
                 <div class="d-flex px-2 py-1">
@@ -42,58 +43,113 @@ function createRow(data, index) {
             </td>
             <td >
                 <div class="d-flex px-2 py-1">
-                    <span class="text-white badge bg-gradient-success mb-0">${data.fecha}</span>
+                    <span class="text-white badge bg-gradient-success mb-0">${
+                        data.fecha
+                    }</span>
                 </div>
             </td>
             <td>
-                <p class="text-sm font-weight-normal mb-0">${data.temperatura}</p>
+                <p class="text-sm font-weight-normal mb-0">${
+                    data.temperatura
+                }</p>
             </td>
             <td>
-                <p class="text-sm font-weight-normal mb-0">${data.frecuencia_cardiaca}</p>
+                <p class="text-sm font-weight-normal mb-0">${
+                    data.frecuencia_cardiaca
+                }</p>
             </td>
             <td>
-                <p class="text-sm font-weight-normal mb-0">${data.frecuencia_respiratoria}</p>
+                <p class="text-sm font-weight-normal mb-0">${
+                    data.frecuencia_respiratoria
+                }</p>
             </td>
             <td>
                 <p class="text-sm font-weight-normal mb-0">${data.mucosa}</p>
             </td>
             <td>
-                <p class="text-sm font-weight-normal mb-0">${data.rc}</p>
+                <p class="text-sm font-weight-normal mb-0">${data.rc} seg</p>
+            </td>
+            <td class="text-sm">
+            <!--
+                <a data-action="edit" data-id="${
+                    data.id_examen
+                }" href="javascript:;" data-bs-toggle="tooltip" data-bs-original-title="Editar registro">
+                    <i class="material-icons text-warning position-relative text-lg">drive_file_rename_outline</i>
+                </a>
+                -->
+                <a data-action="delete" data-id="${
+                    data.id_examen
+                }" href="javascript:;" class="ms-3" data-bs-toggle="tooltip" data-bs-original-title="Eliminar registro">
+                    <i class="material-icons text-danger position-relative text-lg">delete</i>
+                </a>
             </td>
         </tr>
     `;
 }
-function createRowTwo(data, index, name) {
-    // console.log({data,index});
 
-    return /*html*/`
-        <tr>
+function createRowTwo(data, index, name) {
+    // Lista de posibles claves para "data-id"
+    const possibleKeys = [
+        "id_sintoma",
+        "id_vacuna",
+        "id_metodo",
+        "id_diagnostico_presuntivo",
+        "id_diagnostico_definitivo",
+        "id_evolucion",
+        "id_tratamiento",
+    ];
+
+    // Encuentra la clave existente en el objeto `data`
+    const dynamicId = possibleKeys.find((key) => key in data) || null;
+
+    return /*html*/ `
+    <tr>
+        <td>
+            <div class="d-flex px-2 py-1">
+                <h6 class="mb-0 font-weight-normal text-sm">${index + 1}</h6>
+            </div>
+        </td>
+        <td>
+            <div class="d-flex px-2 py-1">
+                <span class="text-white badge bg-gradient-success mb-0">${
+                    data.fecha || data.fecha_hora
+                }</span>
+            </div>
+        </td>
+        ${
+            name == "metodo"
+                ? /*html*/ `
             <td>
-                <div class="d-flex px-2 py-1">
-                    <h6 class="mb-0 font-weight-normal text-sm">${index + 1}</h6>
-                </div>
+                <p class="text-sm font-weight-normal mb-0">${
+                    data.examen ?? ""
+                }</p>
             </td>
             <td>
-                <div class="d-flex px-2 py-1">
-                    <span class="text-white badge bg-gradient-success mb-0">${data.fecha || data.fecha_hora}</span>
-                </div>
+                <p class="text-sm font-weight-normal mb-0">${
+                    data.resultados ?? ""
+                }</p>
             </td>
-            ${
-                name == 'metodo' ?
-                /*html*/`
-                <td>
-                    <p class="text-sm font-weight-normal mb-0">${data.examen ?? ''}</p>
-                </td>
-                <td>
-                    <p class="text-sm font-weight-normal mb-0">${data.resultados ?? ''}</p>
-                </td>
-                `:
-                /*html*/`
-                <td>
-                    <p class="text-sm font-weight-normal mb-0">${data.descripcion}</p>
-                </td>
-                `
-            }
-        </tr>
-    `;
+            `
+                : /*html*/ `
+            <td>
+                <p class="text-sm font-weight-normal mb-0">${
+                    name === "vacunas" ? data.nombre_vacuna : data.descripcion
+                }</p>
+            </td>
+            `
+        }
+        <td class="text-sm">
+            <!--<a data-action="edit" data-id="${
+                data[dynamicId]
+            }" href="javascript:;" data-bs-toggle="tooltip" data-bs-original-title="Editar registro">
+                <i class="material-icons text-warning position-relative text-lg">drive_file_rename_outline</i>
+            </a>-->
+            <a data-action="delete" data-id="${
+                data[dynamicId]
+            }" href="javascript:;" class="ms-3" data-bs-toggle="tooltip" data-bs-original-title="Eliminar registro">
+                <i class="material-icons text-danger position-relative text-lg">delete</i>
+            </a>
+        </td>
+    </tr>
+`;
 }

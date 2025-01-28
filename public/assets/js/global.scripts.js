@@ -84,9 +84,10 @@ utilities = {
 
             const instance = new Choices(element, {
                 // Configuration options
-                noChoicesText: 'No hay opciones para elegir',
-                noResultsText: 'No se encontraron resultados',
-                shouldSort: false
+                noChoicesText: "No hay opciones para elegir",
+                noResultsText: "No se encontraron resultados",
+                shouldSort: false,
+                searchEnabled: search
             });
 
             // Store instance with a meaningful key
@@ -94,11 +95,11 @@ utilities = {
         });
     },
     resetChoice: function () {
-        Object.values(choiceInstances).forEach(choice => {
+        Object.values(choiceInstances).forEach((choice) => {
             choice.setChoiceByValue("");
         });
     },
-    getChoiceInstance: function(key) {
+    getChoiceInstance: function (key) {
         return choiceInstances[key];
     },
     resetForm: function (form) {
@@ -110,6 +111,9 @@ utilities = {
                 utilities.resetChoice();
             } else if (e.prop("type") === "checkbox") {
                 e.prop("checked", false);
+            } else if (e.prop("type") === "radio") {
+                e.prop("checked", false);
+                return;
             } else {
                 e.parent().removeClass("is-invalid is-valid is-filled mb-3");
                 e.val("");

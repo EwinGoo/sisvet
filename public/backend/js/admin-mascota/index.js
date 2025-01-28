@@ -18,7 +18,7 @@ $(document).ready(function () {
         currentId: null,
 
         init() {
-            utilities.initChoice();
+            utilities.initChoice(true);
             this.initDataTable();
             this.bindEvents();
             utilities.formValidateInit();
@@ -72,6 +72,7 @@ $(document).ready(function () {
         },
 
         bindEvents() {
+            // $("#modal-main").modal("show");
             this.elements.dataTable.on(
                 "click",
                 ".edit",
@@ -96,14 +97,18 @@ $(document).ready(function () {
 
                 selectElement.addEventListener("change", (event) => {
                     const selectedAnimalId = event.detail.value;
-                    // console.log(selectedAnimalId);
                     this.loadRazasByAnimal(selectedAnimalId);
+                    const razaChoice = choiceInstances["id_raza"];
+                    razaChoice.setChoices(
+                        [
+                            { value: "", label: "Raza",disabled:true }, // O puedes dejar el label vacío: label: ""
+                        ],
+                        "value",
+                        "label",
+                        true // Renderiza inmediatamente.
+                    );
+                    razaChoice.setChoiceByValue('');
                 });
-                // idAnimalChoice.config.onChange = (value) => {
-                //     console.log('cargo');
-
-                //     this.loadRazasByAnimal(value);
-                // };
             }
         },
 
@@ -184,8 +189,6 @@ $(document).ready(function () {
 
             const idRazaChoice = choiceInstances["id_raza"]; // Asegúrate de que este sea el identificador correcto
             if (idRazaChoice) {
-                console.log("entro");
-
                 idRazaChoice.clearChoices(); // Elimina las opciones existentes
                 idRazaChoice.setChoices(
                     [{ value: "", label: "Raza" }],
@@ -209,19 +212,7 @@ $(document).ready(function () {
             const url =
                 mascota.ruta_archivo && "/storage/" + mascota.ruta_archivo;
 
-            const response = await this.loadAnimalByRazas(mascota.id_animal);
-            const razaChoice = choiceInstances["id_raza"];
-            if (razaChoice) {
-                // Clear existing choices
-                razaChoice.clearChoices();
-                if (response.razas) {
-                    response.razas.forEach((raza) => {
-                        razaChoice.setChoices([
-                            { value: raza.id_raza, label: raza.raza },
-                        ]);
-                    });
-                }
-            }
+            await this.loadRazasByAnimal(mascota.id_animal);
             this.populateForm(mascota);
             this.elements.modalTitle.text("Editar mascota");
             this.elements.btnSubmit.prop("disabled", false);
@@ -237,8 +228,13 @@ $(document).ready(function () {
                 const name = $input.attr("name");
                 if ($input.prop("tagName") === "SELECT") {
                     const choice = choiceInstances[name];
+                    // console.log(choice);/
                     if (choice)
-                        choice.setChoiceByValue(`${mascota[name] || ""}`);
+                        choice.setChoiceByValue(mascota[name].toString() || "");
+                } else if ($input.is(":radio")) {
+                    $input.val() === mascota[name]
+                        ? $input.prop("checked", true)
+                        : $input.prop("checked", false);
                 } else {
                     $input.val(mascota[name]).parent().addClass("is-filled");
                 }
@@ -286,35 +282,7 @@ $(document).ready(function () {
             // });
             console.log("error");
         },
-        loadRazasByAnimal(animalId) {
-            if (!animalId) {
-                return;
-            }
-            $.ajax({
-                url: `/admin/mascota/get-razas/${animalId}`,
-                method: "GET",
-                success: (response) => {
-                    // debugger;
-                    console.log(response);
-                    const razaChoice = choiceInstances["id_raza"];
-                    if (razaChoice) {
-                        // Clear existing choices
-                        razaChoice.clearChoices();
-                        if (response.razas) {
-                            response.razas.forEach((raza) => {
-                                razaChoice.setChoices([
-                                    { value: raza.id_raza, label: raza.raza },
-                                ]);
-                            });
-                        }
-                    }
-                },
-                error: (xhr) => {
-                    console.error("Error loading razas:", xhr.responseText);
-                },
-            });
-        },
-        loadAnimalByRazas(animalId) {
+        async loadRazasByAnimal(animalId) {
             if (!animalId) {
                 return;
             }
@@ -322,11 +290,45 @@ $(document).ready(function () {
                 $.ajax({
                     url: `/admin/mascota/get-razas/${animalId}`,
                     method: "GET",
-                    success: (data) => resolve(data),
-                    error: (err) => reject(err),
+                    success: (response) => {
+                        const razaChoice = choiceInstances["id_raza"];
+                        if (razaChoice) {
+                            razaChoice.clearChoices();
+                            console.log(response.razas);
+
+                            if (response.razas) {
+                                response.razas.forEach((raza) => {
+                                    razaChoice.setChoices([
+                                        {
+                                            value: raza.id_raza.toString(),
+                                            label: raza.raza,
+                                        },
+                                    ]);
+                                });
+                            }
+                        }
+                        resolve(); // Indica que la operación ha finalizado correctamente
+                    },
+                    error: (xhr) => {
+                        console.error("Error loading razas:", xhr.responseText);
+                        reject(xhr); // Indica que hubo un error
+                    },
                 });
             });
-        },
+        }
+        // loadAnimalByRazas(animalId) {
+        //     if (!animalId) {
+        //         return;
+        //     }
+        //     return new Promise((resolve, reject) => {
+        //         $.ajax({
+        //             url: `/admin/mascota/get-razas/${animalId}`,
+        //             method: "GET",
+        //             success: (data) => resolve(data),
+        //             error: (err) => reject(err),
+        //         });
+        //     });
+        // },
     };
 
     MascotaManager.init();

@@ -68,3 +68,33 @@ CREATE TABLE evolucion (
     pronostico varchar(500),
     FOREIGN KEY (id_historial) REFERENCES historial_clinico(id_historial)
 );
+
+CREATE TABLE tipos_vacunas (
+    id_tipo_vacuna INT AUTO_INCREMENT PRIMARY KEY,
+    nombre_vacuna VARCHAR(55),
+    id_animal INT,
+    FOREIGN KEY (id_animal) REFERENCES animales(id_animal)
+);
+
+CREATE TABLE vacunas (
+    id_vacuna INT AUTO_INCREMENT PRIMARY KEY,
+    id_historial INT,
+    fecha DATE,
+    id_tipo_vacuna INT
+    FOREIGN KEY (id_historial) REFERENCES historial_clinico(id_historial),
+    FOREIGN KEY (id_tipo_vacuna) REFERENCES tipos_vacunas(id_tipo_vacuna)
+);
+
+-- inserts
+
+INSERT INTO sisvet.tipos_vacunas (id_tipo_vacuna, nombre_vacuna, id_animal)
+VALUES
+-- Vacunas para perros
+(1, 'parvoCorona', 2),
+(2, 'Hexavalente', 2),
+(3, 'Octavalente', 2),
+(4, 'Antirrabica', 2),
+
+-- Vacunas para gatos
+(5, 'Triplefelina', 1),
+(6, 'Antirrabica', 1);

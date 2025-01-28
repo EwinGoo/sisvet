@@ -515,9 +515,7 @@
     <script src="{{ asset('material-dashboard/assets/js/material-dashboard.min.js?v=3.0.6') }}"></script>
 
     <script src="{{ asset('assets/js/global.scripts.js') }}"></script>
-    @if (!$pageURL || $page == 'admin-producto')
     <script src="{{ asset('assets/js/image-preview.js') }}"></script>
-    @endif
     <script src="{{ asset('backend/js/components/alerts.js') }}"></script>
     @if ($pageURL)
         {{-- @vite('public/backend/js/' . $page . '/index.js') --}}

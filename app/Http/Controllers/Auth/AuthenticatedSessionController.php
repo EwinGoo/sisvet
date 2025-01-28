@@ -31,9 +31,9 @@ class AuthenticatedSessionController extends Controller
     {
         $user = UsuarioModel::where('email', $request->email)->first();
 
-        if (!$this->validateReCaptcha($request)) {
-            return back()->withErrors(['captcha' => 'Error en la validación de reCAPTCHA.'])->onlyInput('email');
-        }
+        // if (!$this->validateReCaptcha($request)) {
+        //     return back()->withErrors(['captcha' => 'Error en la validación de reCAPTCHA.'])->onlyInput('email');
+        // }
         if (!$user || !$user->estado) {
             return back()->withErrors([
                 'email' => 'Su cuenta está inactiva. Por favor, contacte con el administrador.',

@@ -224,12 +224,12 @@ az = {
 };
 az_new = {
     showSwal: function ({ e, url, message } = {}) {
-        console.log(message);
+        // console.log(message);
 
         if ("errors" == e) {
             let l = Swal.mixin({
                 customClass: {
-                    confirmButton: "btn bg-gradient-success",
+                    confirmButton: "btn bg-gradient-info",
                     cancelButton: "btn bg-gradient-danger",
                 },
                 buttonsStyling: !1,
@@ -240,7 +240,7 @@ az_new = {
                 html: `${message}`,
                 // html: `123`,
                 focusConfirm: !1,
-                confirmButton: "btn bg-gradient-info",
+                // confirmButton: "btn bg-gradient-info",
             });
         }
     },

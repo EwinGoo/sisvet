@@ -16,6 +16,8 @@ use Illuminate\Validation\Rule;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Validation\ValidationException;
+use Illuminate\Http\Response;
+use Illuminate\View\View;
 
 class MascotaController extends Controller
 {
@@ -77,12 +79,16 @@ class MascotaController extends Controller
             ];
             return response()->json($data, 400);
         }
-        if (!($idImage = Helpers::__fileUpload($request, 'image', 'mascotas')) && $request->hasFile('image')) {
-            $data = [
-                'message' => 'Error al subir la imagen.',
-                'status' => 500
-            ];
-            return response()->json($data, 500);
+        if ($request->hasFile('image')) {
+            if (!($idImage = Helpers::__fileUpload($request, 'image', 'mascotas'))) {
+                $data = [
+                    'message' => 'Error al subir la imagen.',
+                    'status' => 500
+                ];
+                return response()->json($data, 500);
+            }
+        } else {
+            $idImage =  null;
         }
         $mascota = MascotaModel::create([
             'nombre_mascota' => $request->nombre_mascota,
@@ -198,35 +204,37 @@ class MascotaController extends Controller
         ];
         return response()->json($data, 200);
     }
-    public function historialIndex($id)
+
+    public function historial($id = null, $option = null)
     {
         try {
-            $historial = HistorialClinicoModel::find($id);
-            if (!$historial) {
-                return $this->handleNotFound($id);
+            if (request()->ajax()) {
+
+                // dd($id,$idReg,$option);
+                // Manejo peticiones ajax
+                $data = HistorialClinicoModel::getDataHistorial($id, $option);
+
+                if (!$data) {
+                    return response()->json(['message' => 'No se encontraron historiales para esta mascota', 'data' => []], 200);
+                }
+                return response()->json(['data' => $data], 200);
+            } else {
+                // Manejo de solicitudes normales
+                $historial = HistorialClinicoModel::find($id);
+                if (!$historial) {
+                    return $this->handleNotFound($id);
+                }
+                $this->pageURL = 'admin-mascota/historial';
+                $this->data['info'] = HistorialClinicoModel::getHistorial($id);
+                return $this->render('mascota.historial.index');
             }
-            $this->pageURL = 'admin-mascota/historial';
-            $this->data['info'] = HistorialClinicoModel::getHistorialMascota($id);
-            return $this->render('mascota.historial.index');
         } catch (\Exception $e) {
-            Log::error('Error en getAllHistorial: ' . $e->getMessage());
-            return $this->handleServerError();
-        }
-    }
-    public function getAllHistorial($id)
-    {
-        if (!request()->ajax()) {
-            return response()->json(['error' => 'Solo se permiten solicitudes AJAX'], 400);
-        }
-        try {
-            $data = HistorialClinicoModel::getAllHistorialMascota($id);
-            if ($data->isEmpty()) {
-                return response()->json(['message' => 'No se encontraron historiales para esta mascota', 'data' => []], 200);
+            Log::error('Error en historial: ' . $e->getMessage());
+            if (request()->ajax()) {
+                return response()->json(['error' => 'Ocurrió un error al obtener los historiales'], 500);
+            } else {
+                return $this->handleServerError();
             }
-            return response()->json(['data' => $data], 200);
-        } catch (\Exception $e) {
-            Log::error('Error en getAllHistorial: ' . $e->getMessage());
-            return response()->json(['error' => 'Ocurrió un error al obtener los historiales'], 500);
         }
     }
 
@@ -248,22 +256,24 @@ class MascotaController extends Controller
         }
         return redirect()->route('admin-mascota.historial.index', ['id' => $existingHistorial->id_historial ?? $historialClinico->id_historial]);
     }
-    public function getFullDataHistorial($id)
+    public function getFullDataHistorial($id, $option = null)
     {
         if (!request()->ajax()) {
             return response()->json(['error' => 'Solo se permiten solicitudes AJAX'], 400);
         }
+
         try {
-            $data = HistorialClinicoModel::getFullDataHistorial($id);
-            if ($data === null) {
+            $data = HistorialClinicoModel::getFullDataHistorial($id, $option);
+            if (!$data) {
                 return response()->json(['error' => 'Historial no encontrado'], 404);
             }
             return response()->json(['data' => $data], 200);
         } catch (\Exception $e) {
             Log::error('Error en getFullDataHistorial: ' . $e->getMessage());
-            return response()->json(['error' => 'Ocurrió un error al obtener los historiales'], 500);
+            return response()->json(['error' => 'Error al obtener datos'], 500);
         }
     }
+
     public function anamnesisUpdate(Request $request)
     {
         try {
@@ -334,8 +344,8 @@ class MascotaController extends Controller
             'frecuencia_respiratoria' => 'required|integer',
             'mucosa' => 'required|string',
             'rc' => 'required|string',
-            'inspeccion' => 'required|string',
-            'palpacion' => 'required|string',
+            // 'inspeccion' => 'required|string',
+            // 'palpacion' => 'required|string',
         ]);
 
         if ($validator->fails()) {
@@ -383,6 +393,7 @@ class MascotaController extends Controller
             $record = DB::table('historial_clinico')->where('id_historial', $id)->first();
             return response()->json([
                 'status' => 'success',
+                'type' => 'anamnesis',
                 'message' => 'Parametros actualizados correctamente',
                 'data' => $record,
             ]);
@@ -390,6 +401,7 @@ class MascotaController extends Controller
             // Maneja el caso donde no se actualizó ningún registro
             return response()->json([
                 'status' => 'error',
+                'type' => 'anamnesis',
                 'message' => 'No se pudo actualizar el registro',
             ], 400);
         }
@@ -397,6 +409,7 @@ class MascotaController extends Controller
 
     public function handleHistorialData(Request $request)
     {
+        //validaciones
         $specificRules = [
             'metodos_complementarios' => [
                 'examen' => 'nullable|required_without_all:resultados|string|max:500',
@@ -412,6 +425,7 @@ class MascotaController extends Controller
             ],
 
         ];
+        // utiliza validaciones segun opcion especifica
         $optionRules = $specificRules[$request->option] ?? $specificRules['default'];
 
         $validator = Validator::make(
@@ -443,6 +457,66 @@ class MascotaController extends Controller
         } catch (\Exception $e) {
             return response()->json([
                 'message' => 'Error al guardar ' . $title,
+                'error' => $e->getMessage()
+            ], 500);
+        }
+    }
+    public function deleteHistorialData($id, $idReg)
+    {
+        // Definir el mapeo de las rutas con las tablas y las columnas de ID
+        $tableMapping = [
+            "examen" => ['table' => 'examen_general', 'idColumn' => 'id_examen'],
+            "sintomas" => ['table' => 'sintomas', 'idColumn' => 'id_sintoma'],
+            "metodos_complementarios" => ['table' => 'metodos_complementarios', 'idColumn' => 'id_metodo'],
+            "diagnosticos_presuntivos" => ['table' => 'diagnosticos_presuntivos', 'idColumn' => 'id_diagnostico_presuntivo'],
+            "diagnosticos_definitivos" => ['table' => 'diagnosticos_definitivos', 'idColumn' => 'id_diagnostico_definitivo'],
+            "tratamiento" => ['table' => 'tratamiento', 'idColumn' => 'id_tratamiento'],
+            "evolucion" => ['table' => 'evolucion', 'idColumn' => 'id_evolucion'],
+        ];
+
+        try {
+            // Extraer la parte relevante de la URL
+            // dd(request()->path());
+            $parts = explode('/', trim(parse_url(request()->path(), PHP_URL_PATH), '/')); // Dividir la ruta de la URL
+            $section = $parts[2] ?? null; // Obtener la sección (por ejemplo: examen)
+            $id = $parts[3] ?? null;      // Obtener el ID (por ejemplo: 22)
+
+            // Validar que la sección e ID existan
+            if (!$section || !$id || !is_numeric($id)) {
+                return response()->json([
+                    'message' => 'URL no válida o datos insuficientes'
+                ], 400);
+            }
+
+            // Verificar si la sección está en el mapeo
+            if (!isset($tableMapping[$section])) {
+                return response()->json([
+                    'message' => 'Sección no válida'
+                ], 400);
+            }
+
+            // Obtener la tabla y columna de ID correspondientes
+            $table = $tableMapping[$section]['table'];
+            $idColumn = $tableMapping[$section]['idColumn'];
+
+            // Verificar si el registro existe
+            $record = DB::table($table)->where($idColumn, $id)->first();
+
+            if (!$record) {
+                return response()->json([
+                    'message' => 'Registro no encontrado en ' . $table
+                ], 404);
+            }
+
+            // Eliminar el registro
+            DB::table($table)->where($idColumn, $id)->delete();
+
+            return response()->json([
+                'message' => 'Registro eliminado con éxito de ' . $table
+            ], 200);
+        } catch (\Exception $e) {
+            return response()->json([
+                'message' => 'Error al eliminar el registro',
                 'error' => $e->getMessage()
             ], 500);
         }
@@ -489,26 +563,6 @@ class MascotaController extends Controller
         }
         return [$request->option, $id, $fields, $title];
     }
-
-    // public function sintomasSave(Request $request)
-    // {
-    //     return $this->genericSave($request, 'sintomas');
-    // }
-
-    // public function diagnosticoSave(Request $request)
-    // {
-    //     return $this->genericSave($request, 'diagnosticos');
-    // }
-
-    // public function tratamientoSave(Request $request)
-    // {
-    //     return $this->genericSave($request, 'tratamientos');
-    // }
-
-    // public function evolucionSave(Request $request)
-    // {
-    //     return $this->genericSave($request, 'evoluciones');
-    // }
 
     private function handleNotFound($id)
     {

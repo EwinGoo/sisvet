@@ -1,188 +1,11 @@
 @extends('backend.app')
 @section('content')
-    <style>
-        #profile,
-        #examen-general,
-        #anamnesis-info,
-        #sintomas,
-        #metodos-complementarios,
-        #diagnostico-presuntivo,
-        #diagnostico-definitivo,
-        #tratamiento,
-        #evolucion {
-            scroll-margin-top: 100px;
-        }
-    </style>
-    <div class="col-lg-3">
-        <div class="card position-sticky top-1" style="top: 9% !important">
-            <ul class="nav flex-column bg-white border-radius-lg p-3">
-                <li class="nav-item">
-                    <a class="nav-link text-dark d-flex" data-scroll href="#profile">
-                        <i class="material-icons text-lg me-2">info</i>
-                        <span class="text-sm">Información general</span>
-                    </a>
-                </li>
-                <li class="nav-item pt-2">
-                    <a class="nav-link text-dark d-flex" data-scroll href="#anamnesis-info">
-                        <i class="material-icons text-lg me-2">medication_liquid</i>
-                        <span class="text-sm">Anamnesis</span>
-                    </a>
-                </li>
-                <li class="nav-item pt-2">
-                    <a class="nav-link text-dark d-flex" data-scroll href="#examen-general">
-                        <i class="material-icons text-lg me-2">local_hospital</i>
-                        <span class="text-sm">Examen general </span>
-                    </a>
-                </li>
-                <li class="nav-item pt-2">
-                    <a class="nav-link text-dark d-flex" data-scroll href="#sintomas">
-                        <i class="material-icons text-lg me-2">description</i>
-                        <span class="text-sm">Sintomas</span>
-                    </a>
-                </li>
-                <li class="nav-item pt-2">
-                    <a class="nav-link text-dark d-flex" data-scroll href="#metodos-complementarios">
-                        <i class="material-icons text-lg me-2">emoji_objects</i>
-                        <span class="text-sm">Metodos complementarios</span>
-                    </a>
-                </li>
-                <li class="nav-item pt-2">
-                    <a class="nav-link text-dark d-flex" data-scroll href="#diagnostico-presuntivo">
-                        <i class="material-icons text-lg me-2">content_paste_search</i>
-                        <span class="text-sm">Diagnostico presuntivo</span>
-                    </a>
-                </li>
-                <li class="nav-item pt-2">
-                    <a class="nav-link text-dark d-flex" data-scroll href="#diagnostico-definitivo">
-                        <i class="material-icons text-lg me-2">content_paste_search</i>
-                        <span class="text-sm">Diagnostico definitivo</span>
-                    </a>
-                </li>
-                <li class="nav-item pt-2">
-                    <a class="nav-link text-dark d-flex" data-scroll href="#tratamiento">
-                        <i class="material-icons text-lg me-2">app_registration</i>
-                        <span class="text-sm">Tratamiento</span>
-                    </a>
-                </li>
-                <li class="nav-item pt-2">
-                    <a class="nav-link text-dark d-flex" data-scroll href="#evolucion">
-                        <i class="material-icons text-lg me-2">track_changes</i>
-                        <span class="text-sm">Evolucion y pronostico</span>
-                    </a>
-                </li>
-            </ul>
-        </div>
+    <div class="col-lg-2">
+        @include('backend.mascota.historial.sidenav')
     </div>
-    <div class="col-lg-9 mt-lg-0 mt-4 az-information">
+    <div class="col-lg-10 mt-lg-0 mt-4 az-information">
         <div class="card" id="profile" data-id="{{ $data['info']->id_historial }}">
-            <div class="card-header p-3 pt-3 pb-1">
-                <div
-                    class="icon icon-lg icon-shape bg-gradient-dark shadow text-center border-radius-xl mt-n4 me-3 float-start">
-                    <i class="material-icons opacity-10">event</i>
-                </div>
-                <h6 class="mb-0 text-uppercase">Información del propietario y la mascota</h6>
-            </div>
-            <div class="card-body pt-2">
-                <div class="row">
-                    <div class="row mt-3">
-                        <div class="col-12 col-md-6 col-xl-6 position-relative">
-                            <div class="card card-plain h-100">
-                                <div class="card-header py-0 ">
-
-                                    <div class="row justify-content-center align-items-center">
-                                        <div class="col-sm-auto col-4">
-                                            <div class="avatar avatar-xl position-relative">
-                                                <img src="https://png.pngtree.com/png-clipart/20230927/original/pngtree-man-avatar-image-for-profile-png-image_13001877.png"
-                                                    alt="bruce" class="w-100 rounded-circle shadow-sm" />
-                                            </div>
-                                        </div>
-                                        <div class="col-sm-auto col-8 my-auto">
-                                            <div class="h-100">
-                                                <h5 class="mb-1 font-weight-bolder">{{ $data['info']->nombre_completo }}
-                                                </h5>
-                                                <p class="mb-0 font-weight-normal text-sm">
-                                                    Propietario
-                                                </p>
-                                            </div>
-                                        </div>
-                                        <div class="col-sm-auto ms-sm-auto mt-sm-0 mt-3 d-flex">
-                                        </div>
-                                    </div>
-
-
-                                </div>
-                                <hr class="horizontal dark" />
-                                <div class="card-body p-3">
-                                    <ul class="list-group">
-                                        <li class="list-group-item border-0 ps-0 pt-0 text-sm">
-                                            <strong class="text-dark">Celular:</strong> {{ $data['info']->celular }}
-                                        </li>
-                                        <li class="list-group-item border-0 ps-0  pt-0 text-sm">
-                                            <strong class="text-dark">Dirección:</strong> {{ $data['info']->direccion }}
-                                        </li>
-                                        <li class="list-group-item border-0 ps-0  pt-0 pb-0">
-                                            <strong class="text-dark text-sm">Social:</strong>
-                                            <a class="btn btn-facebook btn-simple mb-0 ps-1 pe-2 py-0"
-                                                href="https://api.whatsapp.com/send?phone={{ $data['info']->celular }}"
-                                                target="_blank">
-                                                <i class="fab fa-whatsapp fa-lg"></i>
-                                            </a>
-                                        </li>
-                                    </ul>
-                                </div>
-                            </div>
-                            <hr class="vertical dark" />
-                        </div>
-                        <div class="col-12 col-md-6 col-xl-6 mt-md-0 mt-4 position-relative">
-                            <div class="card card-plain h-100">
-                                <div class="card-header py-0 p-3">
-                                    <div class="row justify-content-center align-items-center">
-                                        <div class="col-sm-auto col-4">
-                                            <div class="avatar avatar-xl position-relative">
-                                                {{-- <img src="{{ asset('assets/images/dog-cat.png') }}" alt="bruce"
-                                                    class="w-100 rounded-circle shadow-sm" /> --}}
-                                                <img src="{{ Storage::url($data['info']->ruta_archivo) }}" alt="bruce"
-                                                    class="w-100 rounded-circle shadow-sm" />
-                                            </div>
-                                        </div>
-                                        <div class="col-sm-auto col-8 my-auto">
-                                            <div class="h-100">
-                                                <h5 class="mb-1 font-weight-bolder">{{ $data['info']->nombre_mascota }}</h5>
-                                                <p class="mb-0 font-weight-normal text-sm">
-                                                    Mascota
-                                                </p>
-                                            </div>
-                                        </div>
-                                        <div class="col-sm-auto ms-sm-auto mt-sm-0 mt-3">
-                                            <span class="badge bg-gradient-info">{{ $data['info']->animal }}</span>
-                                            <br>
-                                            <p class="mb-0 font-weight-normal text-sm mt-2">
-                                                Tipo Mascota
-                                            </p>
-                                        </div>
-                                    </div>
-                                </div>
-                                <hr class="horizontal dark" />
-                                <div class="card-body p-3">
-                                    <ul class="list-group">
-                                        <li class="list-group-item border-0 ps-0 pt-0 text-sm">
-                                            <strong class="text-dark">Edad:</strong>
-                                            {{ $data['info']->years ? $data['info']->years . ' años y' : '' }}
-                                            {{ $data['info']->meses ? $data['info']->meses . ' meses' : '' }}
-                                        </li>
-                                        <li class="list-group-item border-0 ps-0 pt-0 text-sm">
-                                            <strong class="text-dark">Color:</strong> {{ $data['info']->color }}
-                                        </li>
-                                        <li class="list-group-item border-0 ps-0 pt-0 text-sm">
-                                            <strong class="text-dark">Sexo:</strong>{{ $data['info']->genero }}
-                                        </li>
-                                    </ul>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
+            @include('backend.mascota.historial.informacion')
         </div>
         <div class="card mt-2" id="anamnesis-info">
             <div class="card-header pb-2">
@@ -191,8 +14,7 @@
                         <h6>ANAMNESIS</h6>
                     </div>
                     <div class="col-md-4 text-end">
-                        <a id="btn-new" href="javascript:;" class="btn btn-primary btn-sm new"
-                            data-action="anamnesis">
+                        <a id="btn-new" href="javascript:;" class="btn btn-primary btn-small new" data-action="anamnesis">
                             <i class="fas fa-user-edit text-sm" data-bs-toggle="tooltip" data-bs-placement="top"
                                 title="Edit Profile"></i><i class="material-icons text-sm">edit</i> Editar</a>
                     </div>
@@ -229,7 +51,47 @@
                 </div>
             </div>
         </div>
+        <div class="card mt-2" id="vacunas-info">
+            <div class="card-header pb-2">
+                <div class="d-lg-flex">
+                    <div>
+                        <h6>VACUNAS</h6>
+                    </div>
+                    <div class="ms-auto my-auto mt-lg-0 mt-4">
+                        <div class="ms-auto my-auto">
+                            <button data-action="vacunas" id="btn-new" type="button"
+                                class="btn btn-outline-secondary btn-small mb-0 new">+
+                                Agregar</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="card-body pt-0">
+                <div class="table-responsive">
+                    <table class="table align-items-center mb-0" id="table-vacunas" data-type="vacunas">
+                        <thead>
+                            <tr>
+                                <th class="w-5 text-uppercase text-xxs font-weight-bolder opacity-7">
+                                    N°
+                                </th>
+                                <th class="text-uppercase text-xxs font-weight-bolder opacity-7">
+                                    Fecha
+                                </th>
+                                <th class="text-uppercase text-xxs font-weight-bolder opacity-7 ps-2">
+                                    Vacuna
+                                </th>
+                                <th class="w-5 text-uppercase text-xxs font-weight-bolder opacity-7 text-end">
+                                    Acciones
+                                </th>
+                            </tr>
+                        </thead>
+                        <tbody>
 
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
         <div class="card mt-2">
             <div class="card-header pb-3" id="examen-general">
                 <div class="d-lg-flex">
@@ -238,7 +100,7 @@
                     </div>
                     <div class="ms-auto my-auto mt-lg-0 mt-4">
                         <div class="ms-auto my-auto">
-                            <button id="btn-new" type="button" class="btn bg-gradient-secondary btn-sm mb-0 new"
+                            <button id="btn-new" type="button" class="btn btn-outline-secondary btn-small mb-0 new"
                                 data-action="examen">+
                                 Agregar</button>
                         </div>
@@ -247,7 +109,7 @@
             </div>
             <div class="card-body pt-0">
                 <div class="table-responsive">
-                    <table class="table align-items-center mb-0" id="table-examen">
+                    <table class="table align-items-center mb-0" id="table-examen" data-type="examen">
                         <thead>
                             <tr>
                                 <th class="w-5 text-uppercase text-xxs font-weight-bolder opacity-7">
@@ -270,6 +132,9 @@
                                 </th>
                                 <th class="text-center text-uppercase text-xxs font-weight-bolder opacity-7">
                                     R.S. SEG
+                                </th>
+                                <th class="text-center text-uppercase text-xxs font-weight-bolder opacity-7">
+                                    Acciones
                                 </th>
                             </tr>
                         </thead>
@@ -300,7 +165,7 @@
                     <div class="ms-auto my-auto mt-lg-0 mt-4">
                         <div class="ms-auto my-auto">
                             <button data-action="sintomas" id="btn-new" type="button"
-                                class="btn bg-gradient-secondary btn-sm mb-0 new">+
+                                class="btn btn-outline-secondary btn-small mb-0 new">+
                                 Agregar</button>
                         </div>
                     </div>
@@ -308,7 +173,7 @@
             </div>
             <div class="card-body pt-0">
                 <div class="table-responsive">
-                    <table class="table align-items-center mb-0" id="table-sintomas">
+                    <table class="table align-items-center mb-0" id="table-sintomas" data-type="sintomas">
                         <thead>
                             <tr>
                                 <th class="w-5 text-uppercase text-xxs font-weight-bolder opacity-7">
@@ -319,6 +184,9 @@
                                 </th>
                                 <th class="text-uppercase text-xxs font-weight-bolder opacity-7 ps-2">
                                     Descripción
+                                </th>
+                                <th class="w-5 text-uppercase text-xxs font-weight-bolder opacity-7 text-end">
+                                    Acciones
                                 </th>
                             </tr>
                         </thead>
@@ -336,7 +204,7 @@
                     <div class="ms-auto my-auto mt-lg-0 mt-4">
                         <div class="ms-auto my-auto">
                             <button data-action="metodos_complementarios" id="btn-new" type="button"
-                                class="btn bg-gradient-secondary btn-sm mb-0 new">+
+                                class="btn btn-outline-secondary btn-small mb-0 new">+
                                 Agregar</button>
                         </div>
                     </div>
@@ -344,7 +212,8 @@
             </div>
             <div class="card-body pt-0">
                 <div class="table-responsive">
-                    <table class="table align-items-center mb-0" id="table-metodos-complementarios">
+                    <table class="table align-items-center mb-0" id="table-metodos-complementarios"
+                        data-type="metodos_complementarios">
                         <thead>
                             <tr>
                                 <th class="w-5 text-uppercase text-xxs font-weight-bolder opacity-7">
@@ -358,6 +227,9 @@
                                 </th>
                                 <th class="text-uppercase text-xxs font-weight-bolder opacity-7 ps-2">
                                     Resultados
+                                </th>
+                                <th class="w-5 text-uppercase text-xxs font-weight-bolder opacity-7 text-end">
+                                    Acciones
                                 </th>
                             </tr>
                         </thead>
@@ -375,7 +247,7 @@
                     <div class="ms-auto my-auto mt-lg-0 mt-4">
                         <div class="ms-auto my-auto">
                             <button data-action="diagnosticos_presuntivos" id="btn-new" type="button"
-                                class="btn bg-gradient-secondary btn-sm mb-0 new">+
+                                class="btn btn-outline-secondary btn-small mb-0 new">+
                                 Agregar</button>
                         </div>
                     </div>
@@ -383,7 +255,8 @@
             </div>
             <div class="card-body pt-0">
                 <div class="table-responsive">
-                    <table class="table align-items-center mb-0" id="table-diagnostico-presuntivo">
+                    <table class="table align-items-center mb-0" id="table-diagnostico-presuntivo"
+                        data-type="diagnosticos_presuntivos">
                         <thead>
                             <tr>
                                 <th class="w-5 text-uppercase text-xxs font-weight-bolder opacity-7">
@@ -395,6 +268,10 @@
                                 <th class="text-uppercase text-xxs font-weight-bolder opacity-7 ps-2">
                                     Descripción
                                 </th>
+                                <th class="w-5 text-uppercase text-xxs font-weight-bolder opacity-7 text-end">
+                                    Acciones
+                                </th>
+
                             </tr>
                         </thead>
                         <tbody>
@@ -411,7 +288,7 @@
                     <div class="ms-auto my-auto mt-lg-0 mt-4">
                         <div class="ms-auto my-auto">
                             <button data-action="diagnosticos_definitivos" id="btn-new" type="button"
-                                class="btn bg-gradient-secondary btn-sm mb-0 new">+
+                                class="btn btn-outline-secondary btn-small mb-0 new">+
                                 Agregar</button>
                         </div>
                     </div>
@@ -419,7 +296,8 @@
             </div>
             <div class="card-body pt-0">
                 <div class="table-responsive">
-                    <table class="table align-items-center mb-0" id="table-diagnostico-definitivo">
+                    <table class="table align-items-center mb-0" id="table-diagnostico-definitivo"
+                        data-type="diagnosticos_definitivos">
                         <thead>
                             <tr>
                                 <th class="w-5 text-uppercase text-xxs font-weight-bolder opacity-7">
@@ -430,6 +308,9 @@
                                 </th>
                                 <th class="text-uppercase text-xxs font-weight-bolder opacity-7 ps-2">
                                     Descripción
+                                </th>
+                                <th class="w-5 text-uppercase text-xxs font-weight-bolder opacity-7 text-end">
+                                    Acciones
                                 </th>
                             </tr>
                         </thead>
@@ -447,7 +328,7 @@
                     <div class="ms-auto my-auto mt-lg-0 mt-4">
                         <div class="ms-auto my-auto">
                             <button data-action="tratamiento" id="btn-new" type="button"
-                                class="btn btn-sm bg-gradient-secondary  mb-0 new">+
+                                class="btn btn-small btn-outline-secondary  mb-0 new">+
                                 Agregar</button>
                         </div>
                     </div>
@@ -455,7 +336,7 @@
             </div>
             <div class="card-body pt-0">
                 <div class="table-responsive">
-                    <table class="table align-items-center mb-0" id="table-tratamiento">
+                    <table class="table align-items-center mb-0" id="table-tratamiento" data-type="tratamiento">
                         <thead>
                             <tr>
                                 <th class="w-5 text-uppercase text-xxs font-weight-bolder opacity-7">
@@ -466,6 +347,9 @@
                                 </th>
                                 <th class="text-uppercase text-xxs font-weight-bolder opacity-7 ps-2">
                                     Descripción
+                                </th>
+                                <th class="w-5 text-uppercase text-xxs font-weight-bolder opacity-7 text-end">
+                                    Acciones
                                 </th>
                             </tr>
                         </thead>
@@ -478,36 +362,42 @@
             <div class="card-header pb-3" id="evolucion">
                 <div class="d-lg-flex">
                     <div>
-                        <h6>EVOLUCIÓN Y PRONÓSTICO</h6>
+                        <h6 data-bs-toggle="collapse" href="#collapseExample" role="button" aria-expanded="false"
+                            aria-controls="collapseExample">EVOLUCIÓN Y PRONÓSTICO</h6>
                     </div>
                     <div class="ms-auto my-auto mt-lg-0 mt-4">
                         <div class="ms-auto my-auto">
                             <button data-action="evolucion" id="btn-new" type="button"
-                                class="btn bg-gradient-secondary btn-sm mb-0 new">+
+                                class="btn btn-outline-secondary btn-small mb-0 new">+
                                 Agregar</button>
                         </div>
                     </div>
                 </div>
             </div>
-            <div class="card-body pt-0">
-                <div class="table-responsive">
-                    <table class="table align-items-center mb-0" id="table-evolucion">
-                        <thead>
-                            <tr>
-                                <th class="w-5 text-uppercase text-xxs font-weight-bolder opacity-7">
-                                    N°
-                                </th>
-                                <th class="w-10 text-uppercase text-xxs font-weight-bolder opacity-7">
-                                    Fecha y hora
-                                </th>
-                                <th class="text-uppercase text-xxs font-weight-bolder opacity-7 ps-2">
-                                    Descripción
-                                </th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                        </tbody>
-                    </table>
+            <div class="collapse show" id="collapseExample">
+                <div class="card-body pt-0">
+                    <div class="table-responsive">
+                        <table class="table align-items-center mb-0" id="table-evolucion" data-type="evolucion">
+                            <thead>
+                                <tr>
+                                    <th class="w-5 text-uppercase text-xxs font-weight-bolder opacity-7">
+                                        N°
+                                    </th>
+                                    <th class="w-10 text-uppercase text-xxs font-weight-bolder opacity-7">
+                                        Fecha y hora
+                                    </th>
+                                    <th class="text-uppercase text-xxs font-weight-bolder opacity-7 ps-2">
+                                        Descripción
+                                    </th>
+                                    <th class="w-5 text-uppercase text-xxs font-weight-bolder opacity-7 text-end">
+                                        Acciones
+                                    </th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                            </tbody>
+                        </table>
+                    </div>
                 </div>
             </div>
         </div>

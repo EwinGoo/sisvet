@@ -73,21 +73,39 @@ export function examenForm() {
                         placeholder="" />
                 </div>
             </div>
-            <div class="col-12 col-sm-6 mt-3">
-                <div class="input-group input-group-static">
-                    <label for="mucosa">Mucosa</label>
-                    <input type="text" name="mucosa" id="mucosa" class="form-control" placeholder="" />
+            <div class="col-12 col-sm-6 mt-sm-2 mt-3">
+                <label for="mucosa">Mucosa</label>
+                <div class="input-group input-group-outline" id="select-validation-mucosa">
+                    <select class="form-control choices" name="mucosa" id="mucosa">
+                        <option value="">[SELECCIONE]</option>
+                        <option value="Convestiva">Convestiva</option>
+                        <option value="Cianotico">Cianotico</option>
+                        <option value="Icterico">Icterico</option>
+                        <option value="Anemico">Anemico</option>
+                        <option value="Normal">Normal</option>
+                    </select>
+                    <small class="select-error" error-name="mucosa">Error message</small>
                 </div>
             </div>
-            <div class="col-6 col-sm-6 mt-3">
-                <div class="input-group input-group-static">
+            <div class="col-6 col-sm-6 mt-sm-2 mt-3">
+                <!--<div class="input-group input-group-static">
                     <label for="rc">R.S. SEG</label>
                     <input type="text" name="rc" id="rc" class="form-control" placeholder="" />
+                </div>-->
+                <label for="rc">R.S. SEG</label>
+                <div class="input-group input-group-outline" id="select-validation-rc">
+                    <select class="form-control choices" name="rc" id="rc">
+                        <option value="">[SELECCIONE]</option>
+                        <option value="1">1 Seg</option>
+                        <option value="2">2 Seg</option>
+                        <option value="3">3 Seg</option>
+                    </select>
+                    <small class="select-error" error-name="rc">Error message</small>
                 </div>
             </div>
             <div class="form-check p-0 mt-4">
                 <label class="form-check-label text-warning" for="isUpdateTwoFields">
-                    ¿Actualizar estos campos?
+                    ¿Actualizar los campos inspección y palpación?
                 </label>
                 <input type="checkbox" class="form-check-input" name="isUpdateTwoFields" id="isUpdateTwoFields" />
             </div>
@@ -107,53 +125,64 @@ export function examenForm() {
     </form>
     `;
 }
-export function genericForm(isConfirmed = 0) {
-    return /*html*/ `
-   <form id='form-main'>
+export function getForm(typeField = 0, tiposVacunas = []) {
+    // Template para campos de examen/resultados
+    const metodosFields = /*html*/`
+        <div class="col-12 col-sm-12 mt-3">
+            <label for="examen" class="form-control ms-0 mb-0">Examen</label>
+            <div class="input-group input-group-static az-input-group-outline">
+                <textarea id="examen" name="examen" class="form-control az-area p-3" rows="2"></textarea>
+                <small>Error message</small>
+            </div>
+        </div>
+        <div class="col-12 col-sm-12 mt-3">
+            <label for="resultados" class="form-control ms-0 mb-0">Resultados</label>
+            <div class="input-group input-group-static az-input-group-outline">
+                <textarea id="resultados" name="resultados" class="form-control az-area p-3" rows="2"></textarea>
+                <small>Error message</small>
+            </div>
+        </div>`;
+
+    // Template para campos clínicos
+    const vacunasOptions = tiposVacunas.map(tv =>
+        `<option value="${tv.id_tipo_vacuna}">${tv.nombre_vacuna}</option>`
+    ).join('');
+
+    const vacunasFields = /*html*/`
+        <div class="col-12 col-sm-12 mt-sm-2 mt-3">
+            <label for="id_tipo_vacuna">Tipo de vacuna</label>
+            <div class="input-group input-group-outline" id="select-validation-id_tipo_vacuna">
+                <select class="form-control choices" name="id_tipo_vacuna" id="id_tipo_vacuna">
+                    <option value="">[SELECCIONE]</option>
+                    ${vacunasOptions}
+                </select>
+                <small class="select-error" error-name="id_tipo_vacuna">Error message</small>
+            </div>
+        </div>`;
+
+    // Template para descripción
+    const descripcionField = /*html*/`
+        <div class="col-12 col-sm-12 mt-3">
+            <label for="descripcion" class="form-control ms-0 mb-0">Descripción</label>
+            <div class="input-group input-group-static az-input-group-outline">
+                <textarea id="descripcion" name="descripcion" class="form-control az-area p-3" rows="2"></textarea>
+                <small>Error message</small>
+            </div>
+        </div>`;
+
+    return /*html*/`
+    <form id='form-main'>
         <div class="row mt-3">
             <div class="col-12 col-sm-12 mt-3 mt-sm-0">
                 <div class="input-group input-group-static">
                     <label for="fecha">Fecha</label>
-                    <input type="date" name="fecha" id="fecha" class="form-control" placeholder="" value="${
-                        getFecha().date
-                    }" />
+                    <input type="date" name="fecha" id="fecha" class="form-control" value="${getFecha().date}" />
                 </div>
             </div>
-            ${
-                isConfirmed
-                    ? /*HTML */ `
-                    <div class="col-12 col-sm-12 mt-3 ">
-                        <label for="examen" class="form-control ms-0 mb-0">Examen</label>
-                        <div class="input-group input-group-static az-input-group-outline">
-                            <textarea id="examen" name="examen" class="form-control az-area p-3" rows="2" placeholder=""
-                                spellcheck="false"></textarea>
-                            <small>Error message</small>
-                        </div>
-                    </div>
-                    <div class="col-12 col-sm-12 mt-3 ">
-                        <label for="resultados" class="form-control ms-0 mb-0">Resultados</label>
-                        <div class="input-group input-group-static az-input-group-outline">
-                            <textarea id="resultados" name="resultados" class="form-control az-area p-3" rows="2" placeholder=""
-                                spellcheck="false"></textarea>
-                            <small>Error message</small>
-                        </div>
-                    </div>
-                    `
-                    : /*HTML*/ `
-                    <div class="col-12 col-sm-12 mt-3 ">
-                        <label for="descripcion" class="form-control ms-0 mb-0">Descripción</label>
-                        <div class="input-group input-group-static az-input-group-outline">
-                            <textarea id="descripcion" name="descripcion" class="form-control az-area p-3" rows="2" placeholder=""
-                                spellcheck="false"></textarea>
-                            <small>Error message</small>
-                        </div>
-                    </div>
-                    `
-            }
+            ${typeField === 1 ? vacunasFields : typeField === 2 ? metodosFields : descripcionField}
         </div>
-    </form>
-    `;
-}
+    </form>`;
+ }
 export function evolucionForm() {
     return /*html*/ `
     <form id='form-main'>

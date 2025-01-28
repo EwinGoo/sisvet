@@ -54,9 +54,9 @@
             <div class="input-group input-group-outline" id="select-validation-id_raza">
                 <select class="form-control choices" name="id_raza" id="id_raza">
                     <option value="">Raza</option>
-                    @foreach ($data['razas'] as $item)
+                    {{-- @foreach ($data['razas'] as $item)
                         <option value="{{ $item->id_raza }}">{{ $item->raza }}</option>
-                    @endforeach
+                    @endforeach --}}
                 </select>
                 <small class="select-error" error-name="id_raza">Error message</small>
             </div>
@@ -69,14 +69,33 @@
             </div>
         </div>
         <div class="col-12 col-sm-6 mt-3 mt-sm-3">
-            <div class="input-group input-group-outline" id="select-validation-genero">
+            <label class="form-control ms-0 p-0">Género:</label>
+            <div class="input-group input-group-outline">
+                <div class="row w-100">
+                    <div class="col-6 d-flex align-items-center">
+                        <div class="form-check">
+                            <input class="form-check-input" type="radio" name="genero" value="M" id="M">
+                            <label class="form-check-label" for="M">Macho</label>
+                        </div>
+                    </div>
+                    <div class="col-6 d-flex align-items-center">
+                        <div class="form-check">
+                            <input class="form-check-input" type="radio" name="genero" value="H" id="H">
+                            <label class="form-check-label" for="H">Hembra</label>
+                        </div>
+                    </div>
+                </div>
+                <small class="text-danger" id="error-rol" style="visibility: inherit;"></small>
+            </div>
+
+            {{-- <div class="input-group input-group-outline" id="select-validation-genero">
                 <select class="form-control choices" name="genero" id="genero">
                     <option value="">Género</option>
                     <option value="M">Macho</option>
                     <option value="H">Hembra</option>
                 </select>
                 <small class="select-error" error-name="genero">Error message</small>
-            </div>
+            </div> --}}
         </div>
     </div>
     <div class="row mt-3 mt-sm-3">
