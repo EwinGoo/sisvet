@@ -61,4 +61,11 @@ class UsuarioModel extends Authenticatable
             ->first();
         return $results;
     }
+    public static function getUsers()
+    {
+        $results = self::select('usuarios.*','m.ruta_archivo')
+            ->leftJoin('multimedia as m', 'usuarios.id_multimedia', '=', 'm.id_multimedia')
+            ->get();
+        return $results;
+    }
 }

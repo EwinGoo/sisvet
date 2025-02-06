@@ -87,7 +87,7 @@ utilities = {
                 noChoicesText: "No hay opciones para elegir",
                 noResultsText: "No se encontraron resultados",
                 shouldSort: false,
-                searchEnabled: search
+                searchEnabled: search,
             });
 
             // Store instance with a meaningful key
@@ -149,6 +149,7 @@ utilities = {
         toast.show();
     },
 };
+
 window.languageTable = {
     search: "_INPUT_",
     searchPlaceholder: "Buscar...",
@@ -164,3 +165,38 @@ window.languageTable = {
     processing: "Procesando...",
     zeroRecords: "Sin resultados encontrados",
 };
+$(document).ready(function () {
+    const modal = $("#imageModal");
+    const modalImg = $("#modalImage");
+    const fullscreenBtn = $("#fullscreenBtn");
+    let isFullscreen = false;
+
+    $(document).on("click", ".img-preview", function () {
+        modalImg.attr("src", $(this).attr("src"));
+        modal.css("display", "block");
+        setTimeout(() => modal.addClass("show"), 10);
+    });
+
+    function closeModal() {
+        modal.removeClass("show");
+        setTimeout(() => modal.css("display", "none"), 300);
+        isFullscreen = false;
+        modalImg.removeClass("fullscreen");
+    }
+
+    $("#closeBtn").click(closeModal);
+
+    fullscreenBtn.click(function () {
+        isFullscreen = !isFullscreen;
+        modalImg.toggleClass("fullscreen");
+        $(this).html(isFullscreen ? "⤓" : "⤢");
+    });
+
+    modal.click(function (e) {
+        if (e.target === this) closeModal();
+    });
+
+    $(document).keyup(function (e) {
+        if (e.key === "Escape") closeModal();
+    });
+});

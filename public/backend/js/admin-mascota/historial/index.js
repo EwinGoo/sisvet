@@ -3,6 +3,7 @@ import {
     examenForm,
     getForm,
     evolucionForm,
+    metodoForm,
 } from "./forms.js";
 import { anamnesisChange } from "./data.js";
 import { listData } from "./table.js";
@@ -71,7 +72,7 @@ $(document).ready(function () {
                 id: "id_sintoma",
             },
             metodos_complementarios: {
-                generator: () => getForm(2),
+                generator: metodoForm,
                 title: "Metodos Complementarios",
                 size: "md",
                 id: "id_metodo",
@@ -105,6 +106,8 @@ $(document).ready(function () {
         formUrls: {},
 
         init() {
+            // $("[data-action='metodos_complementarios']").click();
+            // $("[data-action='metodos_complementarios']")[0].click();
             this.bindEvents();
             utilities.ajaxSetup();
             this.loadInitialData();
@@ -160,16 +163,22 @@ $(document).ready(function () {
                 url: `/admin/mascota/${id_historial}/historial`,
                 method: "GET",
                 success: (response) => {
-                    this.data = {...this.data.data, ...response};
+                    this.data = { ...this.data.data, ...response };
                     // console.log(this.data);
 
                     this.loadAnamnesis(this.data.data);
                     this.loadVacunas(this.data.data.vacunas);
                     this.loadExamenGeneral(this.data.data.examen);
                     this.loadSintomas(this.data.data.sintomas);
-                    this.loadMetodosComplemetarios(this.data.data.metodos_complementarios);
-                    this.loadDiagnosticoPresuntivo(this.data.data.diagnosticos_presuntivos);
-                    this.loadDiagnosticoDefinitivo(this.data.data.diagnosticos_definitivos);
+                    this.loadMetodosComplemetarios(
+                        this.data.data.metodos_complementarios
+                    );
+                    this.loadDiagnosticoPresuntivo(
+                        this.data.data.diagnosticos_presuntivos
+                    );
+                    this.loadDiagnosticoDefinitivo(
+                        this.data.data.diagnosticos_definitivos
+                    );
                     this.loadEvolucion(this.data.data.evolucion);
                     this.loadTratamiento(this.data.data.tratamiento);
                     // this.updateUI();
@@ -186,7 +195,7 @@ $(document).ready(function () {
         loadAnamnesis(data) {
             const anamnesis = data.anamnesis || data;
             this.data.data.anamnesis = anamnesis;
-            const values = {...anamnesis };
+            const values = { ...anamnesis };
 
             $("#ult_des").text(values.ultima_desparasitacion);
             $("#vac").text(values.vacunas);
@@ -220,16 +229,10 @@ $(document).ready(function () {
             );
         },
         loadDiagnosticoPresuntivo(data) {
-            listData(
-                data,
-                this.elements.tables.diagnosticos_presuntivos
-            );
+            listData(data, this.elements.tables.diagnosticos_presuntivos);
         },
         loadDiagnosticoDefinitivo(data) {
-            listData(
-                data,
-                this.elements.tables.diagnosticos_definitivos
-            );
+            listData(data, this.elements.tables.diagnosticos_definitivos);
         },
         loadTratamiento(data) {
             listData(data, this.elements.tables.tratamiento);
@@ -275,7 +278,10 @@ $(document).ready(function () {
                         this.data.data[option] = this.data.data[option].filter(
                             (item) => item[this.formOptions[option].id] !== id
                         );
-                        this.updateSpecificSection(option, this.data.data[option]);
+                        this.updateSpecificSection(
+                            option,
+                            this.data.data[option]
+                        );
                     },
                     error: this.handleError,
                 });
@@ -294,10 +300,13 @@ $(document).ready(function () {
             this.elements.modalContent.empty();
             if (this.formOptions.hasOwnProperty(option)) {
                 const { generator, title, size } = this.formOptions[option];
-                const formHtml = option === 'vacunas' ? generator(1, this.data.data.tipos_vacunas) : generator();
+                const formHtml =
+                    option === "vacunas"
+                        ? generator(1, this.data.data.tipos_vacunas)
+                        : generator();
                 this.elements.currentOption = option;
                 this.elements.modalContent.html(formHtml);
-                this.elements.modalTitle.text('Agregar ' + title);
+                this.elements.modalTitle.text("Agregar " + title);
                 this.elements.modalSize
                     .removeClass("modal-lg modal-md")
                     .addClass(`modal-${size}`);
@@ -319,21 +328,22 @@ $(document).ready(function () {
         },
 
         initializeForm(formType) {
+            utilities.initChoice(false);
             switch (formType) {
                 case "anamnesis":
                     // console.log('yes');
                     anamnesisChange(this.elements, this.data);
                     break;
                 case "vacunas":
-                    utilities.initChoice(false);
                     break;
                 case "examen":
                     $("#palpacion").val(this.data.data.anamnesis.palpacion);
                     $("#inspeccion").val(this.data.data.anamnesis.inspeccion);
-                    utilities.initChoice(false);
                     // Inicialización específica para examen
                     break;
                 case "sintomas":
+                case "metodos_complementarios":
+                    const imageUploader = new ImageUploader();
                     // Inicialización específica para examen
                     break;
                 // ... otros casos según sea necesario
@@ -350,14 +360,21 @@ $(document).ready(function () {
         handleSubmit(e) {
             e.preventDefault();
             this.elements.btnSubmit.prop("disabled", true);
-            let formData = this.elements.modalContent.find("form").serialize();
-            formData += "&id_historial=" + this.elements.currentId;
-            formData += "&option=" + this.elements.currentOption;
+            let formData = new FormData(
+                this.elements.modalContent.find("form")[0]
+            );
+            formData.append("id_historial", this.elements.currentId);
+            formData.append("option", this.elements.currentOption);
+            // let formData = this.elements.modalContent.find("form").serialize();
+            // formData += "&id_historial=" + this.elements.currentId;
+            // formData += "&option=" + this.elements.currentOption;
 
             $.ajax({
                 url: this.formUrls[this.elements.currentOption],
                 type: "POST",
                 data: formData,
+                contentType: false,
+                processData: false,
                 success: (response) => {
                     // console.log(response);
 
@@ -397,7 +414,10 @@ $(document).ready(function () {
                     this.data.data[dataType].push(newData);
                 }
             }
-            this.updateSpecificSection(dataType, this.data.data[this.elements.currentOption]);
+            this.updateSpecificSection(
+                dataType,
+                this.data.data[this.elements.currentOption]
+            );
         },
         showToast(message) {
             this.elements.toastMessage.text(message);

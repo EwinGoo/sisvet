@@ -1,73 +1,25 @@
-<link href="{{ asset('material-dashboard/assets/fileupload/filepond.css') }}" rel="stylesheet" />
-<link href="{{ asset('material-dashboard/assets/fileupload/filepond-plugin-image-preview.css') }}" rel="stylesheet" />
-<style>
-    .filepond {
-        /* width: 400px; */
-        /* Ancho deseado */
-        /* height: 100% !important; */
-        /* Alto deseado */
-        /* Estilo del borde */
-        /* display: flex; */
-        /* /* justify-content: center;
-        align-items: center;
-        flex-direction: column; */
-        /* margin: 50px auto; */
-        /* max-height: 200px; */
-        /* Margen para centrar el contenedor */
-    }
-
-    .filepond--drop-label {
-        /* height: 100% !important; */
-    }
-</style>
-{{-- <style>
-    .image-preview-container {
-        max-width: 300px;
-        margin: 0 auto;
-    }
-
-    .drop-area {
-        border: 2px dashed #ccc;
-        border-radius: 10px;
-        padding: 20px;
-        text-align: center;
-        position: relative;
-        cursor: pointer;
-    }
-
-    .drop-area:hover {
-        background-color: #f0f0f0;
-    }
-
-    .image-preview {
-        margin-top: 10px;
-        display: flex;
-        justify-content: center;
-        align-items: center;
-    }
-
-    .image-preview img {
-        max-width: 100%;
-        max-height: 200px;
-        border-radius: 10px;
-    }
-</style> --}}
-<form id='form-main'>
+{{-- <link href="{{ asset('material-dashboard/assets/fileupload/filepond.css') }}" rel="stylesheet" />
+<link href="{{ asset('material-dashboard/assets/fileupload/filepond-plugin-image-preview.css') }}" rel="stylesheet" /> --}}
+<form id='form-main' enctype="multipart/form-data">
     <div class="row mt-3 mb-2">
         <div class="col-12 col-sm-4 mt-3 mt-sm-0">
             <label for="image" class="form-label">Foto de perfil: </label>
-            <input type="file" class="filepond" name="image" id="image"
-                accept="image/png, image/jpeg, image/gif" />
-            <small id='error-image' class="text-danger"></small>
-            {{-- <div class="image-preview-container">
-                <div id="drop-area" class="drop-area">
-                    <p>Arrastra y suelta una imagen o <span class="label-action">examinar</span></p>
-                    <input type="file" id="file-input" accept="image/*" style="display: none;">
+            <div class="image-uploader h-0 m-0">
+                <div class="upload-area" id="uploadArea" style="height: 100%">
+                    <div class="upload-placeholder" id="placeholder">
+                        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"
+                            stroke="currentColor">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z" />
+                        </svg>
+                        <div class="upload-text">
+                            Arrastra una imagen aquí<br />o haz clic para seleccionar
+                        </div>
+                    </div>
+                    <input type="file" id="fileInput" name="image" accept="image/*" style="display: none" />
+                    <small id='error-image' class="text-danger"></small>
                 </div>
-                <div id="preview" class="image-preview">
-                    <img id="imageElement" src="" alt="Vista previa de la imagen" style="display: none;">
-                </div>
-            </div> --}}
+            </div>
         </div>
         <div class="col-12 col-sm-8 mt-3 mt-sm-0">
             <div class="row mb-2">
@@ -203,13 +155,13 @@
             });
         });
     </script> --}}
-    <script src="{{ asset('material-dashboard/assets/fileupload/filepond-plugin-image-preview.js') }}"></script>
-    <script src="{{ asset('material-dashboard/assets/fileupload/filepond.js') }}"></script>
+    {{-- <script src="{{ asset('material-dashboard/assets/fileupload/filepond-plugin-image-preview.js') }}"></script>
+    <script src="{{ asset('material-dashboard/assets/fileupload/filepond.js') }}"></script> --}}
     <script>
         // Inicializar FilePond
-        FilePond.registerPlugin(FilePondPluginImagePreview);
-        const inputElement = document.querySelector('input[type="file"]');
-        const pond = FilePond.create(inputElement);
+        // FilePond.registerPlugin(FilePondPluginImagePreview);
+        // const inputElement = document.querySelector('input[type="file"]');
+        // const pond = FilePond.create(inputElement);
 
         // function loadImageFromURL(url) {
         //     fetch(url)

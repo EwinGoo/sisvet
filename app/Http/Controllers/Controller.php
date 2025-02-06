@@ -58,6 +58,7 @@ class Controller extends BaseController
     protected function getCurrentUser()
     {
         $user = UsuarioModel::getUser(Auth::id());
+        // dd($user);
         $user->image = Helpers::getImage($user->ruta_archivo);
         return $user;
     }
@@ -69,6 +70,7 @@ class Controller extends BaseController
             "administración" => [
                 "usuarios" => "admin-usuario",
             ],
+            "Panel Principal" => 'dashboard',
         ]:[];
 
           // Menús específicos para el grupo médico
@@ -90,8 +92,8 @@ class Controller extends BaseController
             "clientes" => 'admin-cliente',
         ] : [];
 
-      
-       
+
+
 
         // Retornar los menús agrupados
         return array_merge($grupoAdministrador,$grupoMedico,$grupoVendedor);
@@ -100,7 +102,7 @@ class Controller extends BaseController
     protected function getIconMenu(): array
     {
         return [
-            'panel principal' => 'dashboard',
+            'Panel Principal' => 'dashboard',
             'marines' => 'image',
             'estudiantes' => 'group_add',
             'respuestas' => 'fact_check',

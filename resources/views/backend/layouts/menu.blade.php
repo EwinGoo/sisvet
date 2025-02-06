@@ -19,11 +19,11 @@
                 <a data-bs-toggle="collapse" href="#ProfileNav" class="nav-link text-white" aria-controls="ProfileNav"
                     role="button" aria-expanded="false">
                     <img src="{{ $usuario->image }}" class="avatar" />
-                    <div>
-                        <span class="nav-link-text ms-2 ps-1">
+                    <div class="nav-link-text ms-2 ps-1 text-center">
+                        <span>
                             {{ $usuario->nombre . ' ' . $usuario->paterno }}
                         </span>
-                        <div class="text-center" style="margin-left: 0.4rem;">
+                        <div style="margin-left: 0.4rem;">
                             <span class="text-center badge bg-gradient-success">{{ $usuario->rol }}</span>
                         </div>
                     </div>

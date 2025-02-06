@@ -176,7 +176,7 @@ class SalesManager {
                                     ? `/storage/${item.url}`
                                     : "/assets/images/no-image.png"
                             }"
-                                class="avatar avatar-md me-3" alt="table image" />
+                                class="avatar avatar-md me-3 img-preview" alt="table image" />
                         </div>
                         <div class="d-flex flex-column justify-content-center">
                             <h6 class="mb-0 text-sm">${item.name}</h6>

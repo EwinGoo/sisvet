@@ -121,19 +121,27 @@ function createRowTwo(data, index, name) {
                 ? /*html*/ `
             <td>
                 <p class="text-sm font-weight-normal mb-0">${
-                    data.examen ?? ""
+                    data.examen ?? "-"
                 }</p>
             </td>
             <td>
-                <p class="text-sm font-weight-normal mb-0">${
-                    data.resultados ?? ""
-                }</p>
+                <p class="text-sm font-weight-normal mb-0">
+                    ${data.resultados ?? "-"}
+                </p>
+            </td>
+            <td>
+                <p class="text-sm text-center font-weight-normal mb-0">
+                    ${data.nombre_examen ?? "-"}
+                </p>
+            </td>
+            <td>
+                ${__imageLoad(data.ruta_archivo)}
             </td>
             `
                 : /*html*/ `
             <td>
                 <p class="text-sm font-weight-normal mb-0">${
-                    name === "vacunas" ? data.nombre_vacuna : data.descripcion
+                    name === "vacunas" ? data.nombre_vacuna ?? "" : data.descripcion ?? ""
                 }</p>
             </td>
             `
@@ -152,4 +160,17 @@ function createRowTwo(data, index, name) {
         </td>
     </tr>
 `;
+}
+function __imageLoad(url = null) {
+
+    if(!url) url = '/assets/images/no-image.jpg'
+    else url =  `/storage/${url}`;
+
+    return `
+    <div class="d-flex px-2 py-1">
+        <div>
+            <img src="${url}" class="avatar avatar-md avatar-2 me-3 img-preview" alt="table image" />
+        </div>
+    </div>
+    `;
 }

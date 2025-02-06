@@ -103,22 +103,25 @@ export function examenForm() {
                     <small class="select-error" error-name="rc">Error message</small>
                 </div>
             </div>
-            <div class="form-check p-0 mt-4">
+            <div class="form-check p-0 mt-4 w-auto" data-bs-toggle="collapse" href="#collapseExample" role="button" aria-expanded="false"
+            aria-controls="collapseExample">
                 <label class="form-check-label text-warning" for="isUpdateTwoFields">
                     ¿Actualizar los campos inspección y palpación?
                 </label>
                 <input type="checkbox" class="form-check-input" name="isUpdateTwoFields" id="isUpdateTwoFields" />
             </div>
-            <div class="col-12 col-sm-12 mt-3">
-                <div class="input-group input-group-static">
-                    <label for="inspeccion">Inspección</label>
-                    <input type="text" name="inspeccion" id="inspeccion" class="form-control" placeholder="" />
+            <div class="collapse" id="collapseExample">
+                <div class="col-12 col-sm-12 mt-3">
+                    <div class="input-group input-group-static">
+                        <label for="inspeccion">Inspección</label>
+                        <input type="text" name="inspeccion" id="inspeccion" class="form-control" placeholder="" />
+                    </div>
                 </div>
-            </div>
-            <div class="col-12 col-sm-12 mt-3">
-                <div class="input-group input-group-static">
-                    <label for="palpacion">Palpación</label>
-                    <input type="text" name="palpacion" id="palpacion" class="form-control" placeholder="" />
+                <div class="col-12 col-sm-12 mt-3">
+                    <div class="input-group input-group-static">
+                        <label for="palpacion">Palpación</label>
+                        <input type="text" name="palpacion" id="palpacion" class="form-control" placeholder="" />
+                    </div>
                 </div>
             </div>
         </div>
@@ -127,7 +130,7 @@ export function examenForm() {
 }
 export function getForm(typeField = 0, tiposVacunas = []) {
     // Template para campos de examen/resultados
-    const metodosFields = /*html*/`
+    const metodosFields = /*html*/ `
         <div class="col-12 col-sm-12 mt-3">
             <label for="examen" class="form-control ms-0 mb-0">Examen</label>
             <div class="input-group input-group-static az-input-group-outline">
@@ -144,11 +147,14 @@ export function getForm(typeField = 0, tiposVacunas = []) {
         </div>`;
 
     // Template para campos clínicos
-    const vacunasOptions = tiposVacunas.map(tv =>
-        `<option value="${tv.id_tipo_vacuna}">${tv.nombre_vacuna}</option>`
-    ).join('');
+    const vacunasOptions = tiposVacunas
+        .map(
+            (tv) =>
+                `<option value="${tv.id_tipo_vacuna}">${tv.nombre_vacuna}</option>`
+        )
+        .join("");
 
-    const vacunasFields = /*html*/`
+    const vacunasFields = /*html*/ `
         <div class="col-12 col-sm-12 mt-sm-2 mt-3">
             <label for="id_tipo_vacuna">Tipo de vacuna</label>
             <div class="input-group input-group-outline" id="select-validation-id_tipo_vacuna">
@@ -161,7 +167,7 @@ export function getForm(typeField = 0, tiposVacunas = []) {
         </div>`;
 
     // Template para descripción
-    const descripcionField = /*html*/`
+    const descripcionField = /*html*/ `
         <div class="col-12 col-sm-12 mt-3">
             <label for="descripcion" class="form-control ms-0 mb-0">Descripción</label>
             <div class="input-group input-group-static az-input-group-outline">
@@ -170,19 +176,91 @@ export function getForm(typeField = 0, tiposVacunas = []) {
             </div>
         </div>`;
 
-    return /*html*/`
+    return /*html*/ `
     <form id='form-main'>
         <div class="row mt-3">
             <div class="col-12 col-sm-12 mt-3 mt-sm-0">
                 <div class="input-group input-group-static">
                     <label for="fecha">Fecha</label>
-                    <input type="date" name="fecha" id="fecha" class="form-control" value="${getFecha().date}" />
+                    <input type="date" name="fecha" id="fecha" class="form-control" value="${
+                        getFecha().date
+                    }" />
                 </div>
             </div>
-            ${typeField === 1 ? vacunasFields : typeField === 2 ? metodosFields : descripcionField}
+            ${
+                typeField === 1
+                    ? vacunasFields
+                    : typeField === 2
+                    ? metodosFields
+                    : descripcionField
+            }
         </div>
     </form>`;
- }
+}
+export function metodoForm() {
+    return /*html*/ `
+    <form id='form-main' enctype="multipart/form-data">
+        <div class="row mt-3">
+            <div class="col-12 col-sm-12 mt-3 mt-sm-0">
+                <div class="input-group input-group-static">
+                    <label for="fecha_hora">Fecha y hora</label>
+                    <input type="datetime" name="fecha_hora" id="fecha_hora" class="form-control" placeholder="" value="${
+                        getFecha().date
+                    }"/>
+                </div>
+            </div>
+            <div class="col-12 col-sm-12 mt-3">
+                <label for="examen" class="form-control ms-0 mb-0">Examen</label>
+                <div class="input-group input-group-static az-input-group-outline">
+                    <textarea id="examen" name="examen" class="form-control az-area p-3" rows="2"></textarea>
+                    <small>Error message</small>
+                </div>
+            </div>
+            <div class="col-12 col-sm-12 mt-3">
+                <label for="resultados" class="form-control ms-0 mb-0">Resultados</label>
+                <div class="input-group input-group-static az-input-group-outline">
+                    <textarea id="resultados" name="resultados" class="form-control az-area p-3" rows="2"></textarea>
+                    <small>Error message</small>
+                </div>
+            </div>
+            <div class="col-12 col-sm-12 mt-3 ">
+                <label for="id_tipo_examen">Tipo de examen</label>
+                <div class="input-group input-group-outline" id="select-validation-id_tipo_examen">
+                    <select class="form-control choices" name="id_tipo_examen" id="id_tipo_examen">
+                        <option value="">[SELECCIONE]</option>
+                        <option value="1">Hemograma</option>
+                        <option value="2">Quimica Sanguinea</option>
+                        <option value="3">Perfil hepatico</option>
+                        <option value="4">Perfil renal</option>
+                        <option value="5">Perfil pancreatico</option>
+                        <option value="6">Ecografia</option>
+                        <option value="7">Radiografia</option>
+                    </select>
+                    <small class="select-error" error-name="id_tipo_examen">Error message</small>
+                </div>
+            </div>
+            <div class="col-12 col-sm-12 mb-2 mt-3">
+                <label class="form-control ms-0 p-0">Imagen:</label>
+                <div class="image-uploader h-0 m-0 w-100 w-sm-50 m-auto">
+                    <div class="upload-area" id="uploadArea" style="height: 100%">
+                        <div class="upload-placeholder" id="placeholder">
+                            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"
+                                stroke="currentColor">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                    d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z" />
+                            </svg>
+                            <div class="upload-text">
+                                Arrastra una imagen aquí<br />o haz clic para seleccionar
+                            </div>
+                        </div>
+                        <input type="file" id="fileInput" name="image" accept="image/*" style="display: none" />
+                    </div>
+                </div>
+            </div>
+        </div>
+    </form>
+    `;
+}
 export function evolucionForm() {
     return /*html*/ `
     <form id='form-main'>

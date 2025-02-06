@@ -34,12 +34,22 @@ CREATE TABLE sintomas (
     FOREIGN KEY (id_historial) REFERENCES historial_clinico(id_historial)
 );
 
+CREATE TABLE tipos_examenes (
+    id_tipo_examen INT PRIMARY KEY AUTO_INCREMENT,
+    nombre_examen VARCHAR(50) NOT NULL,
+    descripcion varchar(100)
+);
+
 CREATE TABLE metodos_complementarios (
     id_metodo INT AUTO_INCREMENT PRIMARY KEY,
     id_historial INT,
-    fecha_orden DATE,
+    fecha_hora DATE,
     examen VARCHAR(255),
     resultados varchar(500),
+    id_tipo_examen INT,
+    id_multimedia INT,
+    FOREIGN KEY (id_tipo_examen) REFERENCES tipos_examenes(id_tipo_examen),
+    FOREIGN KEY (id_multimedia) REFERENCES multimedia(id_multimedia),
     FOREIGN KEY (id_historial) REFERENCES historial_clinico(id_historial)
 );
 
@@ -85,6 +95,9 @@ CREATE TABLE vacunas (
     FOREIGN KEY (id_tipo_vacuna) REFERENCES tipos_vacunas(id_tipo_vacuna)
 );
 
+
+
+
 -- inserts
 
 INSERT INTO sisvet.tipos_vacunas (id_tipo_vacuna, nombre_vacuna, id_animal)
@@ -98,3 +111,12 @@ VALUES
 -- Vacunas para gatos
 (5, 'Triplefelina', 1),
 (6, 'Antirrabica', 1);
+
+INSERT INTO tipos_examenes (nombre_examen, descripcion) VALUES
+('Hemograma', 'Análisis de células sanguíneas.'),
+('Quimica Sanguinea', 'Análisis de componentes químicos en la sangre.'),
+('Perfil hepatico', 'Evaluación de la función hepática.'),
+('Perfil renal', 'Evaluación de la función renal.'),
+('Perfil pancreatico', 'Evaluación de la función pancreática.'),
+('Ecografia', 'Imágenes por ultrasonido.'),
+('Radiografia', 'Imágenes por rayos X.');

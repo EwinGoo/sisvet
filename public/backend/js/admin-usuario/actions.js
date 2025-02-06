@@ -21,8 +21,22 @@ export function _ESTADO(id, state = null) {
     return `
         <span data-id="${id}" data-state="${state}" class="badge badge-${
         state === "1" ? "success" : "secondary"
-    } badge-sm state">
+    } badge-md state">
             ${state === "1" ? "ACTIVO" : "INACTIVO"}
         </span>
+    `;
+}
+
+export function __imageLoad(url = null) {
+    if (!url) url = "/assets/images/no-image.png";
+    else url = `/storage/${url}`;
+
+    return `
+    <div class="d-flex px-2 py-1">
+        <div>
+            <img src="${url}"
+                class="avatar avatar-md me-3 img-preview" alt="table image" />
+        </div>
+    </div>
     `;
 }

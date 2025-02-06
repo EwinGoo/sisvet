@@ -37,6 +37,7 @@
                         <thead class="thead-light">
                             <tr>
                                 <th>id</th>
+                                <th>Foto</th>
                                 <th>Nombre Completo</th>
                                 <th>Usuario</th>
                                 <th>rol</th>

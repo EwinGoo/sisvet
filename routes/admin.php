@@ -9,10 +9,11 @@ use App\Http\Controllers\Backend\Tienda\InventarioController;
 use App\Http\Controllers\Backend\Tienda\ProductoController;
 use App\Http\Controllers\Backend\Tienda\VentaController;
 use App\Http\Controllers\Backend\UsuarioController;
+use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\TestController;
 use App\Http\Controllers\TestingController;
 use Illuminate\Support\Facades\Route;
-
+use SebastianBergmann\CodeCoverage\Report\Html\Dashboard;
 
 /* init::Rutas del sistema de administración*/
 
@@ -26,6 +27,7 @@ Route::get('/test', [TestController::class, 'index']);
 // });
 Route::prefix('admin')->middleware(['auth'])->group(function () {
     Route::get('/dashboard', [PropietarioController::class, 'index'])->name('dashboard');
+    // Route::get('/dashboard', [DashboardController::class, 'index'])->name('dashboard');
 
     Route::middleware(['role:administrador'])->group(function () {
         Route::resource('usuario', UsuarioController::class)->names('admin-usuario');

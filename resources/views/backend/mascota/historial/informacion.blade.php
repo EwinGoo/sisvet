@@ -14,8 +14,8 @@
                         <div class="row justify-content-center align-items-center">
                             <div class="col-sm-auto col-4">
                                 <div class="avatar avatar-xl position-relative">
-                                    <img onclick="openModal(this)" src="https://png.pngtree.com/png-clipart/20230927/original/pngtree-man-avatar-image-for-profile-png-image_13001877.png"
-                                        alt="bruce" class="w-100 rounded-circle shadow-sm" />
+                                    <img src="https://png.pngtree.com/png-clipart/20230927/original/pngtree-man-avatar-image-for-profile-png-image_13001877.png"
+                                        alt="bruce" class="w-100 rounded-circle shadow-sm img-preview" />
                                 </div>
                             </div>
                             <div class="col-sm-auto col-8 my-auto">
@@ -61,8 +61,8 @@
                         <div class="row justify-content-center align-items-center text-center">
                             <div class="col-sm-auto col-4">
                                 <div class="avatar avatar-xl position-relative">
-                                    <img onclick="openModal(this)" src="{{ $data['info']->ruta_archivo ? Storage::url($data['info']->ruta_archivo) : asset('assets/images/silueta-dog-cat.jpg') }}"
-                                        alt="bruce" class="w-100 h-100 rounded-circle shadow-sm" />
+                                    <img src="{{ $data['info']->ruta_archivo ? Storage::url($data['info']->ruta_archivo) : asset('assets/images/silueta-dog-cat.jpg') }}"
+                                        alt="bruce" class="w-100 h-100 rounded-circle shadow-sm img-preview" />
                                 </div>
                             </div>
                             <div class="col-sm-auto col-8 my-auto">
@@ -103,71 +103,6 @@
         </div>
     </div>
 </div>
-<div id="imageModal" class="modal-e">
-    <span class="close" onclick="closeModal()">&times;</span>
-    <img id="modalImage" class="modal-e-content">
-</div>
-<style>
-    .modal-e {
-        display: none;
-        position: fixed;
-        z-index: 99999;
-        top: 0;
-        left: 0;
-        width: 100%;
-        height: 100%;
-        background-color: rgba(0,0,0,0.9);
-    }
 
-    .modal-e-content {
-        margin: auto;
-        display: block;
-        max-width: 20%;
-        max-height: 80vh;
-        position: absolute;
-        top: 50%;
-        left: 50%;
-        transform: translate(-50%, -50%);
-    }
 
-    .close {
-        position: absolute;
-        right: 25px;
-        top: 15px;
-        color: #f1f1f1;
-        font-size: 40px;
-        font-weight: bold;
-        cursor: pointer;
-    }
-
-    </style>
-
-    <!-- JavaScript -->
-    <script>
-    function openModal(element) {
-        const modal = document.getElementById("imageModal");
-        const modalImg = document.getElementById("modalImage");
-        // const smallImg = document.querySelector(".avatar img");
-        // const image = document.getElementById("image");
-
-        modal.style.display = "block";
-        console.log(element.src);
-
-        modalImg.src = element.src;
-    }
-    // image.onclick = function(event) {
-    //     alert(123);
-    // }
-
-    function closeModal() {
-        document.getElementById("imageModal").style.display = "none";
-    }
-
-    // Cerrar al hacer click fuera de la imagen
-    window.onclick = function(event) {
-        const modal = document.getElementById("imageModal");
-        if (event.target == modal) {
-            modal.style.display = "none";
-        }
-    }
-    </script>
+<!-- JavaScript -->

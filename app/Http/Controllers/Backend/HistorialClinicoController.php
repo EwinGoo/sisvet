@@ -245,6 +245,8 @@ class HistorialClinicoController extends Controller
             $mapping = HistorialClinicoModel::TABLE_MAPPING[$option];
 
             // dd($mapping);
+            //
+            // dd($this->__options($request));
 
             // Validar los campos requeridos según la opción
             $validationRules = array_merge(
@@ -254,17 +256,29 @@ class HistorialClinicoController extends Controller
 
             $validator = Validator::make($request->all(), $validationRules);
 
+
+            if ($request->image) {
+                // si ahi imagen inserta
+                if (!($idImage = Helpers::__fileUpload($request, 'image', 'historial'))) {
+                    $data = [
+                        'message' => 'Error al subir la imagen.',
+                        'status' => 500
+                    ];
+                    return response()->json($data, 500);
+                }else{
+                    $request->merge(['id_multimedia' => $idImage]);
+                }
+            }
+
             if ($validator->fails()) {
                 return response()->json([
                     'message' => 'Error de validación',
                     'errors' => $validator->errors()
                 ], 422);
             }
-            // dd($request->all());
-            // dd($validator->fails());
-            $data = $request->all();
-            unset($data['option']);
-            $result = HistorialClinicoModel::handleHistorialData($data, $option);
+            // $data = $request->all();
+            // unset($data['option']);
+            $result = HistorialClinicoModel::handleHistorialData($request->except(['option', 'image']), $option);
 
             return response()->json([
                 'message' => $mapping['title'] . ' guardado con éxito',
@@ -281,6 +295,9 @@ class HistorialClinicoController extends Controller
     public function deleteHistorialData($id, $option, $idReg)
     {
         // dd($option, $idReg,HistorialClinicoModel::TABLE_MAPPING[$option]);
+
+        // dd($id);
+        // $reg  = HistorialClinicoModel::where('id_', $id)->first();
 
         try {
             if (!isset(HistorialClinicoModel::TABLE_MAPPING[$option])) {

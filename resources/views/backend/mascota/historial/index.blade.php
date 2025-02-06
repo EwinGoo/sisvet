@@ -228,6 +228,12 @@
                                 <th class="text-uppercase text-xxs font-weight-bolder opacity-7 ps-2">
                                     Resultados
                                 </th>
+                                <th class="w-6 text-uppercase text-xxs font-weight-bolder opacity-7 ps-2">
+                                    Tipo Examen
+                                </th>
+                                <th class="w-6 text-uppercase text-xxs font-weight-bolder opacity-7 ps-2">
+                                    Imagen
+                                </th>
                                 <th class="w-5 text-uppercase text-xxs font-weight-bolder opacity-7 text-end">
                                     Acciones
                                 </th>

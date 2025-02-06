@@ -9,7 +9,6 @@
                     </script>
                     , desarrollado por
                     <a href="#" class="font-weight-bold" target="_blank">JorgeF</a>
-                    para un desempeño mejor.
                 </div>
             </div>
             <div class="col-lg-6">

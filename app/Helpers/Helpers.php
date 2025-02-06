@@ -14,7 +14,7 @@ class Helpers
         $imagePath = null;
         if ($url) {
             // Verifica si la URL apunta a un archivo almacenado en Laravel Storage
-            $imagePath = Storage::url($url);
+            $imagePath = 'public/' . $url;
         } elseif ($defaultPath) {
             // Usa la ruta predeterminada
             $imagePath = public_path($defaultPath);
@@ -28,7 +28,7 @@ class Helpers
         $extension = pathinfo($imagePath, PATHINFO_EXTENSION);
         try {
             // Lee el contenido del archivo de forma segura usando Storage::get()
-            $imageData = $url ? Storage::get($url) : file_get_contents($imagePath);
+            $imageData = $imagePath ? Storage::get($imagePath) : file_get_contents($imagePath);
         } catch (\Exception $e) {
             throw new \RuntimeException("Error al leer la imagen: " . $e->getMessage());
         }

@@ -49,6 +49,13 @@
             </div>
             @include('backend.layouts.footer')
         </div>
+        <div class="modal-image" id="imageModal">
+            <img class="modal-image-content" id="modalImage" src="" alt="Modal Image">
+            <div class="modal-image-controls">
+                <button class="modal-image-btn" id="fullscreenBtn">⤢</button>
+                <button class="modal-image-btn" id="closeBtn">×</button>
+            </div>
+        </div>
     </main>
     <div class="position-fixed top-1 end-1 z-index-1030">
         <div class="toast fade hide p-2 mt-2 bg-gradient-info" role="alert" aria-live="assertive" id="infoToast"
@@ -513,9 +520,8 @@
 
     <script async defer src="https://buttons.github.io/buttons.js"></script>
     <script src="{{ asset('material-dashboard/assets/js/material-dashboard.min.js?v=3.0.6') }}"></script>
-
-    <script src="{{ asset('assets/js/global.scripts.js') }}"></script>
     <script src="{{ asset('assets/js/image-preview.js') }}"></script>
+    <script src="{{ asset('assets/js/global.scripts.js') }}"></script>
     <script src="{{ asset('backend/js/components/alerts.js') }}"></script>
     @if ($pageURL)
         {{-- @vite('public/backend/js/' . $page . '/index.js') --}}
@@ -526,7 +532,6 @@
 
     @if (strpos($pageURL, "detalle-venta") !== false)
     <script src="{{ asset('backend/js/tienda/admin-cliente/index.js') }}" type="module"></script>
-
     @endif
 
 </body>

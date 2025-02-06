@@ -120,6 +120,8 @@ class ClientManager {
 
     editForm(id, title) {
         const reg = utilities.getByID(id, this.table, "id_producto");
+        console.log(reg);
+
         const url = reg.ruta_archivo && "/storage/" + reg.ruta_archivo;
         this.currentId = id;
         this.modalTitle.text(title);
@@ -134,10 +136,9 @@ class ClientManager {
         this.form.find(":input").each(function () {
             const name = $(this).attr("name");
             if ($(this).prop("tagName") === "SELECT") {
-                const choice = choiceInstances.find(
-                    (el) => el._baseId === `choices--${name}`
-                );
-                if (choice) choice.setChoiceByValue(data[name].toString());
+                const choice = choiceInstances[name];
+                if (choice)
+                    choice.setChoiceByValue(data[name].toString() || "");
             } else {
                 $(this).parent().addClass("is-filled");
                 $(this).val(data[name]);

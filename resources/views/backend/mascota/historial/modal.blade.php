@@ -20,3 +20,39 @@
         </div>
     </div>
 </div>
+
+{{-- <script>
+    const modal = $("#imageModal");
+    const modalImg = $("#modalImage");
+    const fullscreenBtn = $("#fullscreenBtn");
+    let isFullscreen = false;
+
+    $(".img-preview").click(function () {
+        modalImg.attr("src", $(this).attr("src"));
+        modal.css("display", "block");
+        setTimeout(() => modal.addClass("show"), 10);
+    });
+
+    function closeModal() {
+        modal.removeClass("show");
+        setTimeout(() => modal.css("display", "none"), 300);
+        isFullscreen = false;
+        modalImg.removeClass("fullscreen");
+    }
+
+    $("#closeBtn").click(closeModal);
+
+    fullscreenBtn.click(function () {
+        isFullscreen = !isFullscreen;
+        modalImg.toggleClass("fullscreen");
+        $(this).html(isFullscreen ? "⤓" : "⤢");
+    });
+
+    modal.click(function (e) {
+        if (e.target === this) closeModal();
+    });
+
+    $(document).keyup(function (e) {
+        if (e.key === "Escape") closeModal();
+    });
+</script> --}}

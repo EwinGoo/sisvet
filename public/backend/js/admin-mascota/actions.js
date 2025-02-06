@@ -29,8 +29,7 @@ export function __imageLoad(url = null) {
     return `
     <div class="d-flex px-2 py-1">
         <div>
-            <img src="${url}"
-                class="avatar avatar-md me-3" alt="table image" />
+            <img src="${url}" class="avatar avatar-md me-3 img-preview" alt="table image" />
         </div>
     </div>
     `;

@@ -23,7 +23,7 @@ class UsuarioController extends Controller
         /* init::Listar personas */
 
         if (request()->ajax()) {
-            $data = UsuarioModel::get();
+            $data = UsuarioModel::getUsers();
             return response()->json(['data' => $data], 200);
         }
         return $this->render("usuario.index");

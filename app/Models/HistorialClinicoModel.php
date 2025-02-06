@@ -6,6 +6,7 @@ use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Support\Facades\Log;
+use Illuminate\Support\Facades\Storage;
 
 class HistorialClinicoModel extends Model
 {
@@ -138,6 +139,11 @@ class HistorialClinicoModel extends Model
                         $query->join('tipos_vacunas as tv', $mapping['table'] . '.id_tipo_vacuna', '=', 'tv.id_tipo_vacuna')
                             ->select($mapping['table'] . '.*', 'tv.nombre_vacuna');
                     }
+                    if ($key === 'metodos_complementarios') {
+                        $query->leftJoin('tipos_examenes as te', $mapping['table'] . '.id_tipo_examen', '=', 'te.id_tipo_examen')
+                            ->leftJoin('multimedia as m', 'm.id_multimedia', '=', $mapping['table'] . '.id_multimedia')
+                            ->select($mapping['table'] . '.*', 'te.nombre_examen', 'm.ruta_archivo');
+                    }
 
                     $fullData[$key] =  $query->get();
                 }
@@ -165,7 +171,6 @@ class HistorialClinicoModel extends Model
             ['id_historial' => $data['id_historial']],
             $data
         );
-        // dd($fields);
 
         try {
             // $id = DB::table($mapping['table'])->insertGetId($fields);
@@ -178,6 +183,18 @@ class HistorialClinicoModel extends Model
                     return $query->join('tipos_vacunas as tv', $mapping['table'] . '.id_tipo_vacuna', '=', 'tv.id_tipo_vacuna')
                         ->select($mapping['table'] . '.*', 'tv.nombre_vacuna');
                 })
+                ->when($option === 'metodos_complementarios', function ($query) use ($mapping) {
+                    return $query->leftJoin('tipos_examenes as te', $mapping['table'] . '.id_tipo_examen', '=', 'te.id_tipo_examen')
+                        ->leftJoin('multimedia as m', 'm.id_multimedia', '=', $mapping['table'] . '.id_multimedia')
+                        ->select($mapping['table'] . '.*', 'te.nombre_examen', 'm.ruta_archivo');
+                })
+
+                // ->when($option === 'metodos_complementarios', function ($query) use ($mapping) {
+                //     return $query->join('tipos_examenes as te', $mapping['table'] . '.id_tipo_examen', '=', 'te.id_tipo_examen')
+                //                  ->leftJoin('multimedia as m', 'm.idmultimedia', '=', $mapping['table'] . '.id_multimedia')
+                //                  ->select($mapping['table'] . '.*', 'te.nombre_examen', 'm.ruta_archivo');
+                // })
+
                 ->where($mapping['id_column'], $id)
                 ->first();
         } catch (\Exception $e) {
@@ -199,10 +216,28 @@ class HistorialClinicoModel extends Model
 
         $mapping = self::TABLE_MAPPING[$option];
 
+        // dd($id);
+
         try {
+
+            if ($option == "metodos_complementarios") {
+                $reg = DB::table('metodos_complementarios')->where('id_metodo', $id)->first();
+                $regMultimedia = DB::table('multimedia')->where('id_multimedia', $reg->id_multimedia)->first();
+            }
+
             $deleted = DB::table($mapping['table'])
                 ->where($mapping['id_column'], $id)
                 ->delete();
+
+            if ($reg->id_multimedia) {
+                $deleted = DB::table('multimedia')
+                    ->where('id_multimedia', $reg->id_multimedia)
+                    ->delete();
+                $filePath = 'public/' . $regMultimedia->ruta_archivo;
+                if (Storage::exists($filePath)) {
+                    Storage::delete($filePath); // Elimina el archivo
+                }
+            }
 
             if (!$deleted) {
                 throw new \Exception("Registro no encontrado");
