@@ -70,7 +70,7 @@ class Controller extends BaseController
             "administración" => [
                 "usuarios" => "admin-usuario",
             ],
-            "Panel Principal" => 'dashboard',
+            // "Panel Principal" => 'dashboard',
         ]:[];
 
           // Menús específicos para el grupo médico
