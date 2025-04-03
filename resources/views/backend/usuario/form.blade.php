@@ -103,16 +103,16 @@
             <label class="form-control ms-0 mb-0 p-0">Rol del usuario: </label>
             <div class="input-group input-group-outline">
                 <div class="form-check mb-3">
-                    <input class="form-check-input" type="radio" name="rol" value="administrador"
+                    <input class="form-check-input" type="radio" name="rol" value="1"
                         id="administrador">
                     <label class="custom-control-label" for="administrador">ADMINISTRADOR</label>
                 </div>
                 <div class="form-check">
-                    <input class="form-check-input" type="radio" name="rol" value="medico" id="medico">
+                    <input class="form-check-input" type="radio" name="rol" value="2" id="medico">
                     <label class="custom-control-label" for="medico">MEDICO</label>
                 </div>
                 <div class="form-check">
-                    <input class="form-check-input" type="radio" name="rol" value="vendedor" id="vendedor">
+                    <input class="form-check-input" type="radio" name="rol" value="3" id="vendedor">
                     <label class="custom-control-label" for="vendedor">VENDEDOR</label>
                 </div>
                 <small class="text-danger" id="error-rol" style='visibility: inherit'></small>

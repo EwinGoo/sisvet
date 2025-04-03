@@ -213,9 +213,9 @@ $(document).ready(function () {
         },
 
         setRoleValues() {
-            $("#administrador").val("administrador");
-            $("#vendedor").val("vendedor");
-            $("#medico").val("medico");
+            $("#administrador").val("1");
+            $("#medico").val("2");
+            $("#vendedor").val("3");
         },
 
         enablePasswordFields() {

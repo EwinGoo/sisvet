@@ -30,7 +30,7 @@ class UsuarioModel extends Authenticatable
         'materno',
         'email',
         'password',
-        'rol',
+        'id_rol',
         'celular',
         'id_multimedia',
     ];

@@ -230,7 +230,7 @@ $(document).ready(function () {
                     const choice = choiceInstances[name];
                     // console.log(choice);/
                     if (choice)
-                        choice.setChoiceByValue(mascota[name].toString() || "");
+                        choice.setChoiceByValue((mascota[name] || "").toString());
                 } else if ($input.is(":radio")) {
                     $input.val() === mascota[name]
                         ? $input.prop("checked", true)

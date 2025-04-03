@@ -38,7 +38,7 @@ class UsuarioController extends Controller
                 'nombre' => 'required',
                 'paterno' => 'required',
                 'image' => 'required|file|max:10000|mimes:png,jpg,jpeg',
-                'email' => 'required',
+                'email' => 'required|email|unique:usuarios,email',
                 'celular' => 'required|numeric|digits:8',
                 'password' => ['required', 'confirmed', Rules\Password::defaults()],
             ],
@@ -46,6 +46,7 @@ class UsuarioController extends Controller
                 // 'usuario.required' => 'Seleccione una persona existente.',
                 'password.confirmed' => 'Las contraseñas no coinciden.',
                 'usuario.unique' => 'Usuario ya registrado.',
+                'email.unique' => 'Email ya registrado.',
             ]
         );
 
@@ -73,7 +74,7 @@ class UsuarioController extends Controller
             'email' => $request->email,
             'password' => Hash::make($request->password),
             'id_multimedia' => $idImage,
-            'rol' => $request->rol,
+            'id_rol' => $request->rol,
         ]);
         if (!$user) {
             $data = [

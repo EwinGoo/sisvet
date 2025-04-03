@@ -229,7 +229,7 @@ class HistorialClinicoModel extends Model
                 ->where($mapping['id_column'], $id)
                 ->delete();
 
-            if ($reg->id_multimedia) {
+            if (isset($reg->id_multimedia)) {
                 $deleted = DB::table('multimedia')
                     ->where('id_multimedia', $reg->id_multimedia)
                     ->delete();
