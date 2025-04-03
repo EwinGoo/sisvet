@@ -1,3 +1,9 @@
+CREATE TABLE roles (
+    id_rol INT AUTO_INCREMENT PRIMARY KEY,
+    rol VARCHAR(55) NOT NULL,
+	descripcion VARCHAR(100) NOT NULL
+);
+
 CREATE TABLE historial_clinico (
     id_historial INT AUTO_INCREMENT PRIMARY KEY,
     id_mascota INT,
@@ -20,7 +26,7 @@ CREATE TABLE examen_general (
     frecuencia_respiratoria VARCHAR(25),
     mucosa VARCHAR(50),
     rc VARCHAR(50),
-mm VARCHAR(50),
+    mm VARCHAR(50),
     inspeccion VARCHAR(255),
     palpacion VARCHAR(255),
     FOREIGN KEY (id_historial) REFERENCES historial_clinico(id_historial)

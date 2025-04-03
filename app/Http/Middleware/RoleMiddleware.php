@@ -15,8 +15,9 @@ class RoleMiddleware
     public function handle(Request $request, Closure $next, ...$roles)
     {
         $user = Auth::user();
+        // dd($user);
         // Verifica si el usuario tiene alguno de los roles permitidos
-        if ($user && in_array($user->rol, $roles)) {
+        if ($user && in_array($user->rol->rol, $roles)) {
             return $next($request);
         }
         // Si no tiene permiso, redirige o lanza un error

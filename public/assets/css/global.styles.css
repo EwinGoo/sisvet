@@ -594,3 +594,6 @@ table.dataTable.dtr-inline.collapsed > tbody > tr > th.dtr-control:before {
 }
 
 /* end styles :: image-view */
+.modal{
+    z-index: 10000;
+}

@@ -25,16 +25,16 @@ Route::get('/test', [TestController::class, 'index']);
 // Route::prefix('admin')->middleware(['auth'])->group(function () {
 //     Route::resource('persona', PersonaController::class)->names('admin-persona');
 // });
+Route::get('/dashboard', [DashboardController::class, 'index'])->name('dashboard');
 Route::prefix('admin')->middleware(['auth'])->group(function () {
     Route::get('/dashboard', [PropietarioController::class, 'index'])->name('dashboard');
-    // Route::get('/dashboard', [DashboardController::class, 'index'])->name('dashboard');
 
     Route::middleware(['role:administrador'])->group(function () {
         Route::resource('usuario', UsuarioController::class)->names('admin-usuario');
         Route::post('/change-state-user', [UsuarioController::class, 'changeStatus'])->name('change-state');
         Route::get('/usuario/{id}/image', [UsuarioController::class, 'getImage'])->name('admin-usuario.get-image');
     });
-    Route::middleware(['role:administrador,medico'])->group(function () {
+    Route::middleware(['role:administrador,médico'])->group(function () {
         Route::resource('propietario', PropietarioController::class)->names('admin-propietario');
         Route::resource('mascota', MascotaController::class)->names('admin-mascota');
         Route::get('mascota/get-razas/{id}',  [MascotaController::class, 'getRazas']);

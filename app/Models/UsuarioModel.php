@@ -57,15 +57,21 @@ class UsuarioModel extends Authenticatable
     {
         $results = self::select('*')
             ->leftJoin('multimedia as m', 'usuarios.id_multimedia', '=', 'm.id_multimedia')
+            ->leftJoin('roles as r', 'r.id_rol', '=', 'usuarios.id_rol')
             ->where('id_usuario', $id)
             ->first();
         return $results;
     }
     public static function getUsers()
     {
-        $results = self::select('usuarios.*','m.ruta_archivo')
+        $results = self::select('usuarios.*', 'm.ruta_archivo', 'r.rol')
             ->leftJoin('multimedia as m', 'usuarios.id_multimedia', '=', 'm.id_multimedia')
+            ->leftJoin('roles as r', 'r.id_rol', '=', 'usuarios.id_rol')
             ->get();
         return $results;
+    }
+    public function rol()
+    {
+        return $this->belongsTo(Rol::class, 'id_rol');
     }
 }

@@ -41,12 +41,12 @@ class ProductoController extends Controller
     {
         /* init::Guardar propietario */
         $validator = Validator::make($request->all(), [
-            'image' => 'nullable|file|max:5000|mimes:png,jpg,jpeg',
+            'image' => 'required|file|max:5000|mimes:png,jpg,jpeg',
             'nombre_producto' => 'required|string|max:90',
             'id_categoria'    => 'required|integer|exists:categorias,id_categoria',
             'descripcion'     => 'nullable|string|max:200',
             'precio'          => 'required|numeric|min:0',
-            'fecha_vencimiento' => 'required',
+            // 'fecha_vencimiento' => 'required',
             // 'fecha_vencimiento' => 'required|date|after:today',
         ], [
             'nombre_producto.required' => 'El producto es requerido',
@@ -108,8 +108,8 @@ class ProductoController extends Controller
             'id_categoria'    => 'required|integer|exists:categorias,id_categoria',
             'descripcion'     => 'nullable|string|max:200',
             'precio'          => 'required|numeric|min:0',
+            // 'fecha_vencimiento' => 'required',
             // 'fecha_vencimiento' => 'required|date|after:today',
-            'fecha_vencimiento' => 'required',
         ], [
             'nombre_producto.required' => 'El producto es requerido',
             'id_categoria.required' => 'El campo categoria es requerido.',

@@ -30,8 +30,9 @@ export function __imageLoad(url = null) {
     `;
 }
 export function __bgFormat(date) {
+    if(date == null) return '<div class="d-flex justify-content-center">-</div>';
     return `
-        <div class="d-flex px-2 py-1">
+        <div class="d-flex px-2 py-1  justify-content-center">
             <span data-bs-toggle="tooltip" data-bs-original-title="${defineDateStatus(date).message}" class="text-white badge bg-gradient-${defineDateStatus(date).status} mb-0">
                 ${date}
             </span>

@@ -278,97 +278,97 @@
                 },
             });
 
-            var ctx2 = document.getElementById("chart-line").getContext("2d");
+            // var ctx2 = document.getElementById("chart-line").getContext("2d");
 
-            new Chart(ctx2, {
-                type: "line",
-                data: {
-                    labels: [
-                        "Apr",
-                        "May",
-                        "Jun",
-                        "Jul",
-                        "Aug",
-                        "Sep",
-                        "Oct",
-                        "Nov",
-                        "Dec",
-                    ],
-                    datasets: [{
-                        label: "Mobile apps",
-                        tension: 0,
-                        borderWidth: 0,
-                        pointRadius: 5,
-                        pointBackgroundColor: "rgba(255, 255, 255, .8)",
-                        pointBorderColor: "transparent",
-                        borderColor: "rgba(255, 255, 255, .8)",
-                        borderColor: "rgba(255, 255, 255, .8)",
-                        borderWidth: 4,
-                        backgroundColor: "transparent",
-                        fill: true,
-                        data: [50, 40, 300, 320, 500, 350, 200, 230, 500],
-                        maxBarThickness: 6,
-                    }, ],
-                },
-                options: {
-                    responsive: true,
-                    maintainAspectRatio: false,
-                    plugins: {
-                        legend: {
-                            display: false,
-                        },
-                    },
-                    interaction: {
-                        intersect: false,
-                        mode: "index",
-                    },
-                    scales: {
-                        y: {
-                            grid: {
-                                drawBorder: false,
-                                display: true,
-                                drawOnChartArea: true,
-                                drawTicks: false,
-                                borderDash: [5, 5],
-                                color: "rgba(255, 255, 255, .2)",
-                            },
-                            ticks: {
-                                display: true,
-                                color: "#f8f9fa",
-                                padding: 10,
-                                font: {
-                                    size: 14,
-                                    weight: 300,
-                                    family: "Roboto",
-                                    style: "normal",
-                                    lineHeight: 2,
-                                },
-                            },
-                        },
-                        x: {
-                            grid: {
-                                drawBorder: false,
-                                display: false,
-                                drawOnChartArea: false,
-                                drawTicks: false,
-                                borderDash: [5, 5],
-                            },
-                            ticks: {
-                                display: true,
-                                color: "#f8f9fa",
-                                padding: 10,
-                                font: {
-                                    size: 14,
-                                    weight: 300,
-                                    family: "Roboto",
-                                    style: "normal",
-                                    lineHeight: 2,
-                                },
-                            },
-                        },
-                    },
-                },
-            });
+            // new Chart(ctx2, {
+            //     type: "line",
+            //     data: {
+            //         labels: [
+            //             "Apr",
+            //             "May",
+            //             "Jun",
+            //             "Jul",
+            //             "Aug",
+            //             "Sep",
+            //             "Oct",
+            //             "Nov",
+            //             "Dec",
+            //         ],
+            //         datasets: [{
+            //             label: "Mobile apps",
+            //             tension: 0,
+            //             borderWidth: 0,
+            //             pointRadius: 5,
+            //             pointBackgroundColor: "rgba(255, 255, 255, .8)",
+            //             pointBorderColor: "transparent",
+            //             borderColor: "rgba(255, 255, 255, .8)",
+            //             borderColor: "rgba(255, 255, 255, .8)",
+            //             borderWidth: 4,
+            //             backgroundColor: "transparent",
+            //             fill: true,
+            //             data: [50, 40, 300, 320, 500, 350, 200, 230, 500],
+            //             maxBarThickness: 6,
+            //         }, ],
+            //     },
+            //     options: {
+            //         responsive: true,
+            //         maintainAspectRatio: false,
+            //         plugins: {
+            //             legend: {
+            //                 display: false,
+            //             },
+            //         },
+            //         interaction: {
+            //             intersect: false,
+            //             mode: "index",
+            //         },
+            //         scales: {
+            //             y: {
+            //                 grid: {
+            //                     drawBorder: false,
+            //                     display: true,
+            //                     drawOnChartArea: true,
+            //                     drawTicks: false,
+            //                     borderDash: [5, 5],
+            //                     color: "rgba(255, 255, 255, .2)",
+            //                 },
+            //                 ticks: {
+            //                     display: true,
+            //                     color: "#f8f9fa",
+            //                     padding: 10,
+            //                     font: {
+            //                         size: 14,
+            //                         weight: 300,
+            //                         family: "Roboto",
+            //                         style: "normal",
+            //                         lineHeight: 2,
+            //                     },
+            //                 },
+            //             },
+            //             x: {
+            //                 grid: {
+            //                     drawBorder: false,
+            //                     display: false,
+            //                     drawOnChartArea: false,
+            //                     drawTicks: false,
+            //                     borderDash: [5, 5],
+            //                 },`
+            //                 ticks: {
+            //                     display: true,
+            //                     color: "#f8f9fa",
+            //                     padding: 10,
+            //                     font: {
+            //                         size: 14,
+            //                         weight: 300,
+            //                         family: "Roboto",
+            //                         style: "normal",
+            //                         lineHeight: 2,
+            //                     },
+            //                 },
+            //             },
+            //         },
+            //     },
+            // });
 
             var ctx3 = document.getElementById("chart-line-tasks").getContext("2d");
 
@@ -460,6 +460,62 @@
                     },
                 },
             });
+            var ctx4 = document.getElementById("pie-chart").getContext("2d");
+
+            new Chart(ctx4, {
+                type: "pie",
+                data: {
+                    labels: ['Facebook', 'Direct', 'Organic', 'Referral'],
+                    datasets: [{
+                        label: "Projects",
+                        weight: 9,
+                        cutout: 0,
+                        tension: 0.9,
+                        pointRadius: 2,
+                        borderWidth: 2,
+                        backgroundColor: ['#17c1e8', '#e3316e', '#3A416F', '#a8b8d8'],
+                        data: [15, 20, 12, 60],
+                        fill: false
+                    }],
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: {
+                        legend: {
+                            display: false,
+                        }
+                    },
+                    interaction: {
+                        intersect: false,
+                        mode: 'index',
+                    },
+                    scales: {
+                        y: {
+                            grid: {
+                                drawBorder: false,
+                                display: false,
+                                drawOnChartArea: false,
+                                drawTicks: false,
+                            },
+                            ticks: {
+                                display: false
+                            }
+                        },
+                        x: {
+                            grid: {
+                                drawBorder: false,
+                                display: false,
+                                drawOnChartArea: false,
+                                drawTicks: false,
+                            },
+                            ticks: {
+                                display: false,
+                            }
+                        },
+                    },
+                },
+            });
 
             // Initialize the vector map
             var map = new jsVectorMap({
@@ -525,14 +581,16 @@
     <script src="{{ asset('backend/js/components/alerts.js') }}"></script>
     @if ($pageURL)
         {{-- @vite('public/backend/js/' . $page . '/index.js') --}}
-    <script src="{{ asset('backend/js/' . $pageURL . '/index.js') }}" type="module"></script>
+        <script src="{{ asset('backend/js/' . $pageURL . '/index.js') }}" type="module"></script>
     @elseif($page && $page !== 'dashboard' && $pageURL == null)
-    <script src="{{ asset('backend/js/' . $page . '/index.js') }}" type="module"></script>
+        <script src="{{ asset('backend/js/' . $page . '/index.js') }}" type="module"></script>
     @endif
 
-    @if (strpos($pageURL, "detalle-venta") !== false)
-    <script src="{{ asset('backend/js/tienda/admin-cliente/index.js') }}" type="module"></script>
+    @if (strpos($pageURL, 'detalle-venta') !== false)
+        <script src="{{ asset('backend/js/tienda/admin-cliente/index.js') }}" type="module"></script>
     @endif
+
+    @yield('scripts')
 
 </body>
 

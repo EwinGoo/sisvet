@@ -59,6 +59,7 @@ class Controller extends BaseController
     {
         $user = UsuarioModel::getUser(Auth::id());
         // dd($user);
+        // dd(Auth::user());
         $user->image = Helpers::getImage($user->ruta_archivo);
         return $user;
     }
@@ -70,11 +71,11 @@ class Controller extends BaseController
             "administración" => [
                 "usuarios" => "admin-usuario",
             ],
-            // "Panel Principal" => 'dashboard',
+            "Panel Principal" => 'dashboard',
         ]:[];
 
           // Menús específicos para el grupo médico
-          $grupoMedico = ($user->rol == 'medico' || $user->rol == 'administrador') ? [
+          $grupoMedico = ($user->rol == 'médico' || $user->rol == 'administrador') ? [
             '<hr>',
             'CONSULTORIO',
             "propietarios" => 'admin-propietario',
