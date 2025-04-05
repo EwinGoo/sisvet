@@ -48,8 +48,17 @@ class ClienteController extends Controller
             'ci.required' => 'Campo cedula es requerido',
             'ci.unique' => 'La cedula ya ha sido tomado.',
         ]);
-        
-        
+
+        if ($validator->fails()) {
+            $data = [
+                'message' => 'Error en la validación de los datos',
+                'errors' => $validator->errors(),
+                'status' => 400
+            ];
+            return response()->json($data, 400);
+        }
+
+
         $cliente = ClienteModel::create([
             'nombre' => $request->nombre,
             'id_usuario' => Auth::id(),

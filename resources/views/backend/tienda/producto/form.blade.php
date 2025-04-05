@@ -55,6 +55,13 @@
         </div>
         <div class="col-12 col-sm-12 mt-3">
             <div class="input-group input-group-outline">
+                <label for="cantidad" class="form-label">Cantidad</label>
+                <input id="cantidad" name="cantidad" class="form-control" type="number" />
+                <small>Error message</small>
+            </div>
+        </div>
+        <div class="col-12 col-sm-12 mt-3">
+            <div class="input-group input-group-outline">
                 <label for="fecha_vencimiento" class="form-label">Fecha de vencimiento</label>
                 <input id="fecha_vencimiento" name="fecha_vencimiento" class="form-control" type="date" />
                 <small>Error message</small>

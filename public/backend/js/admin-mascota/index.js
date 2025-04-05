@@ -1,5 +1,5 @@
 import { ACTIONS, listHistorial, __imageLoad } from "./actions.js";
-
+import { getHistorial } from "./pre-view-historial.js";
 $(document).ready(function () {
     const MascotaManager = {
         elements: {
@@ -16,6 +16,19 @@ $(document).ready(function () {
             inputMascotaId: $("#input-mascota-id"),
         },
         currentId: null,
+        data: {
+            tipos_vacunas: [],
+            anamnesis: [],
+            vacunas: [],
+            examen: [],
+            sintomas: [],
+            metodos_complementarios: [],
+            diagnosticos_presuntivos: [],
+            diagnosticos_definitivos: [],
+            tratamiento: [],
+            evolucion: [],
+        },
+        formUrls: {},
 
         init() {
             utilities.initChoice(true);
@@ -61,7 +74,11 @@ $(document).ready(function () {
                         targets: -1,
                         orderable: false,
                         render: (data, type, row) =>
-                            ACTIONS("mascota", row.id_mascota),
+                            ACTIONS(
+                                "mascota",
+                                row.id_mascota,
+                                row.id_historial
+                            ),
                     },
                 ],
                 drawCallback: () => {
@@ -72,7 +89,12 @@ $(document).ready(function () {
         },
 
         bindEvents() {
-            // $("#modal-main").modal("show");
+            // this.elements.modalHistorial.modal("show");
+            this.elements.dataTable.on(
+                "click",
+                ".pre-view-historial",
+                this.handlePreViewHistorial.bind(this)
+            );
             this.elements.dataTable.on(
                 "click",
                 ".edit",
@@ -101,17 +123,38 @@ $(document).ready(function () {
                     const razaChoice = choiceInstances["id_raza"];
                     razaChoice.setChoices(
                         [
-                            { value: "", label: "Raza",disabled:true }, // O puedes dejar el label vacío: label: ""
+                            { value: "", label: "Raza", disabled: true }, // O puedes dejar el label vacío: label: ""
                         ],
                         "value",
                         "label",
                         true // Renderiza inmediatamente.
                     );
-                    razaChoice.setChoiceByValue('');
+                    razaChoice.setChoiceByValue("");
                 });
             }
         },
+        getData(id) {
+            $.ajax({
+                url: "/admin/mascota/" + id + "/historial",
+                method: "GET",
+                success: (data) => {
+                    getHistorial(data.data);
+                },
+                error: (error) => {
+                    console.error("Error en AJAX:", error);
+                },
+            });
+        },
 
+        handlePreViewHistorial(event) {
+            const target = $(event.target).closest(".pre-view-historial");
+            // const id = target.data("id");
+            const id_historial = target.data("id-historial");
+            this.getData(id_historial);
+            // this.editMascota(id, "editar cliente");
+            this.elements.modalHistorial.modal("show");
+            // alert(id);
+        },
         handleEdit(event) {
             const target = $(event.target).closest(".edit");
             const id = target.data("id");
@@ -183,6 +226,7 @@ $(document).ready(function () {
 
         handleNew() {
             this.resetForm();
+            this.currentId = null;
             this.elements.modalTitle.text("Nueva mascota");
             this.elements.btnSubmit.removeAttr("data-id");
             this.elements.modalEl.modal("show");
@@ -230,7 +274,9 @@ $(document).ready(function () {
                     const choice = choiceInstances[name];
                     // console.log(choice);/
                     if (choice)
-                        choice.setChoiceByValue((mascota[name] || "").toString());
+                        choice.setChoiceByValue(
+                            (mascota[name] || "").toString()
+                        );
                 } else if ($input.is(":radio")) {
                     $input.val() === mascota[name]
                         ? $input.prop("checked", true)
@@ -315,7 +361,7 @@ $(document).ready(function () {
                     },
                 });
             });
-        }
+        },
         // loadAnimalByRazas(animalId) {
         //     if (!animalId) {
         //         return;

@@ -179,8 +179,6 @@ class ClientManager {
     handleSaveError(error) {
         this.btnSubmit.prop("disabled", false);
         const errors = error.responseJSON.errors;
-        console.log(errors);
-
         utilities.formValidation(errors);
     }
 }

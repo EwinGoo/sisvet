@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\Backend\Consultorio\RazaController;
 use App\Http\Controllers\Backend\HistorialClinicoController;
 use App\Http\Controllers\Backend\PropietarioController;
 use App\Http\Controllers\Backend\MascotaController;
@@ -25,9 +26,9 @@ Route::get('/test', [TestController::class, 'index']);
 // Route::prefix('admin')->middleware(['auth'])->group(function () {
 //     Route::resource('persona', PersonaController::class)->names('admin-persona');
 // });
-Route::get('/dashboard', [DashboardController::class, 'index'])->name('dashboard');
+// Route::get('/dashboard', [DashboardController::class, 'index'])->name('dashboard');
 Route::prefix('admin')->middleware(['auth'])->group(function () {
-    Route::get('/dashboard', [PropietarioController::class, 'index'])->name('dashboard');
+    Route::get('/dashboard', [DashboardController::class, 'index'])->name('dashboard');
 
     Route::middleware(['role:administrador'])->group(function () {
         Route::resource('usuario', UsuarioController::class)->names('admin-usuario');
@@ -38,42 +39,25 @@ Route::prefix('admin')->middleware(['auth'])->group(function () {
         Route::resource('propietario', PropietarioController::class)->names('admin-propietario');
         Route::resource('mascota', MascotaController::class)->names('admin-mascota');
         Route::get('mascota/get-razas/{id}',  [MascotaController::class, 'getRazas']);
-
         Route::prefix('mascota')->group(function () {
-
-
-
             Route::get('/{id}/historial/reporte', [HistorialClinicoReport::class, 'index']);
-
         });
 
         Route::prefix('mascota/{id}/historial')->group(function () {
             Route::post('anamnesis', [HistorialClinicoController::class, 'anamnesisUpdate']);
             Route::post('examen', [HistorialClinicoController::class, 'examenSave']);
             Route::post('{option}', [HistorialClinicoController::class, 'handleHistorialData']);
-            // Route::post('vacunas', [HistorialClinicoController::class, 'handleHistorialData']);
-            // Route::post('sintomas', [HistorialClinicoController::class, 'handleHistorialData']);
-            // Route::post('metodos_complementarios', [HistorialClinicoController::class, 'handleHistorialData']);
-            // Route::post('diagnosticos_presuntivos', [HistorialClinicoController::class, 'handleHistorialData']);
-            // Route::post('diagnosticos_definitivos', [HistorialClinicoController::class, 'handleHistorialData']);
-            // Route::post('tratamiento', [HistorialClinicoController::class, 'handleHistorialData']);
-            // Route::post('evolucion', [HistorialClinicoController::class, 'handleHistorialData']);
-
             Route::delete('{option}/{idReg}', [HistorialClinicoController::class, 'deleteHistorialData']);
-            // Route::delete('examen/{idReg}', [HistorialClinicoController::class, 'deleteHistorialData']);
-            // Route::delete('sintomas/{idReg}', [HistorialClinicoController::class, 'deleteHistorialData']);
-            // Route::delete('metodos_complementarios/{idReg}', [HistorialClinicoController::class, 'deleteHistorialData']);
-            // Route::delete('diagnosticos_presuntivos/{idReg}', [HistorialClinicoController::class, 'deleteHistorialData']);
-            // Route::delete('diagnosticos_definitivos/{idReg}', [HistorialClinicoController::class, 'deleteHistorialData']);
-            // Route::delete('tratamiento/{idReg}', [HistorialClinicoController::class, 'deleteHistorialData']);
-            // Route::delete('evolucion/{idReg}', [HistorialClinicoController::class, 'deleteHistorialData']);
-
         });
         Route::post('mascota/historial', [HistorialClinicoController::class, 'historialClinicoSave']);
-        // Route::get('mascota/historiales/{id}', [HistorialClinicoController::class, 'getAllHistorial']);
         Route::get('mascota/{id}/historial', [HistorialClinicoController::class, 'historial'])->name('admin-mascota.historial.index');
         Route::get('mascota/{id}/historial/{option}', [HistorialClinicoController::class, 'historial']);
 
+        Route::get('raza', [RazaController::class, 'index'])->name('admin-raza.index');
+        Route::post('raza', [RazaController::class, 'store']);
+        Route::put('raza/{raza}', [RazaController::class, 'update']);
+        Route::delete('raza/{raza}', [RazaController::class, 'destroy']);
+        Route::post('change-state-raza', [RazaController::class, 'changeStatus']);
     });
 
     Route::middleware(['role:administrador,vendedor'])->group(function () {

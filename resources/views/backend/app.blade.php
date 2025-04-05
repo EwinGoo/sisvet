@@ -586,9 +586,9 @@
         <script src="{{ asset('backend/js/' . $page . '/index.js') }}" type="module"></script>
     @endif
 
-    @if (strpos($pageURL, 'detalle-venta') !== false)
+    {{-- @if (strpos($pageURL, 'detalle-venta') !== false)
         <script src="{{ asset('backend/js/tienda/admin-cliente/index.js') }}" type="module"></script>
-    @endif
+    @endif --}}
 
     @yield('scripts')
 

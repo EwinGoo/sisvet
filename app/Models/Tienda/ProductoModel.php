@@ -15,7 +15,7 @@ class ProductoModel extends Model
     use SoftDeletes;
     protected $table = 'productos';
     protected $primaryKey = 'id_producto';
-    protected $fillable = ['id_usuario', 'descripcion', 'nombre_producto', 'id_categoria', 'id_proveedor', 'precio', 'fecha_vencimiento', 'codigo_barras','id_multimedia'];
+    protected $fillable = ['id_usuario', 'descripcion', 'nombre_producto', 'id_categoria', 'id_proveedor', 'precio', 'fecha_vencimiento', 'codigo_barras', 'id_multimedia', 'cantidad'];
     protected $guarded = [];
     public $timestamps = true;
     protected $dates = ['deleted_at'];
@@ -31,6 +31,7 @@ class ProductoModel extends Model
                 'id_proveedor',
                 'precio',
                 'fecha_vencimiento',
+                'cantidad',
                 'codigo_barras',
                 'm.ruta_archivo'
             ]);

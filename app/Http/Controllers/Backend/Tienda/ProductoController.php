@@ -46,6 +46,7 @@ class ProductoController extends Controller
             'id_categoria'    => 'required|integer|exists:categorias,id_categoria',
             'descripcion'     => 'nullable|string|max:200',
             'precio'          => 'required|numeric|min:0',
+            'cantidad'          => 'nullable|integer',
             // 'fecha_vencimiento' => 'required',
             // 'fecha_vencimiento' => 'required|date|after:today',
         ], [
@@ -74,6 +75,7 @@ class ProductoController extends Controller
             'id_usuario' => Auth::id(),
             'descripcion' => $request->descripcion,
             'precio' => $request->precio,
+            'cantidad' => $request->cantidad,
             'fecha_vencimiento' => $request->fecha_vencimiento,
             'id_multimedia' => $idImage,
         ]);
@@ -108,6 +110,7 @@ class ProductoController extends Controller
             'id_categoria'    => 'required|integer|exists:categorias,id_categoria',
             'descripcion'     => 'nullable|string|max:200',
             'precio'          => 'required|numeric|min:0',
+            'cantidad'          => 'nullable|integer',
             // 'fecha_vencimiento' => 'required',
             // 'fecha_vencimiento' => 'required|date|after:today',
         ], [
@@ -139,6 +142,7 @@ class ProductoController extends Controller
             'id_usuario' => Auth::id(),
             'descripcion' => $request->descripcion,
             'precio' => $request->precio,
+            'cantidad' => $request->cantidad,
             'fecha_vencimiento' => $request->fecha_vencimiento,
             'id_multimedia' => $idImage ?? $producto->id_multimedia
         ]);

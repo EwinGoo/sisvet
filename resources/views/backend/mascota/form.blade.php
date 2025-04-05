@@ -118,5 +118,12 @@
                 </div>
             </div>
         </div>
+        <div class="col-12 col-sm-6 mt-3 mt-sm-4 pt-sm-1">
+            <div class="input-group input-group-outline">
+                <label for="peso" class="form-label">Peso</label>
+                <input id="peso" name="peso" class="form-control" type="text" />
+                <small>Error message</small>
+            </div>
+        </div>
     </div>
 </form>

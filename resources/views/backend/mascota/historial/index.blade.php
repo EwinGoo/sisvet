@@ -248,7 +248,7 @@
             <div class="card-header pb-3" id="diagnostico-presuntivo">
                 <div class="d-lg-flex">
                     <div>
-                        <h6>DIAGNOSTICO PRESUNTIVO</h6>
+                        <h6>DIAGNÓSTICO PRESUNTIVO</h6>
                     </div>
                     <div class="ms-auto my-auto mt-lg-0 mt-4">
                         <div class="ms-auto my-auto">
@@ -289,7 +289,7 @@
             <div class="card-header pb-3" id="diagnostico-definitivo">
                 <div class="d-lg-flex">
                     <div>
-                        <h6>DIAGNOSTICO DEFINITIVO</h6>
+                        <h6>DIAGNÓSTICO DEFINITIVO</h6>
                     </div>
                     <div class="ms-auto my-auto mt-lg-0 mt-4">
                         <div class="ms-auto my-auto">

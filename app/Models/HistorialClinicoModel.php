@@ -103,8 +103,12 @@ class HistorialClinicoModel extends Model
     {
         try {
             $historial = DB::table('historial_clinico')
-                ->select('historial_clinico.*', 'm.id_animal')
+                ->select('historial_clinico.*', 'm.*', 'p.*','r.raza','a.animal')
+                ->selectRaw("CONCAT_WS(' ', p.nombre, p.paterno, IFNULL(p.materno, '')) as nombre_completo")
                 ->join('mascotas as m', 'm.id_mascota', '=', 'historial_clinico.id_mascota')
+                ->join('animales as a', 'a.id_animal', '=', 'm.id_animal')
+                ->join('razas as r', 'r.id_raza', '=', 'm.id_raza')
+                ->join('propietarios as p', 'p.id_propietario', '=', 'm.id_propietario')
                 ->where('id_historial', $id)
                 ->first();
 

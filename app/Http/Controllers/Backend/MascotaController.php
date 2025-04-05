@@ -65,6 +65,7 @@ class MascotaController extends Controller
             'image' => 'nullable|file|max:5000|mimes:png,jpg,jpeg',
             'years' => 'nullable|numeric|max:99',
             'meses' => 'nullable|numeric|max:12',
+            'peso' => 'nullable|string|max:55',
         ], [
             'nombre_mascota.required' => 'Campo nombre es requerido',
             'id_propietario.required' => 'Campo propietario es requerido',
@@ -101,6 +102,7 @@ class MascotaController extends Controller
             'meses' => $request->meses,
             'id_animal' => $request->id_animal,
             'id_multimedia' => $idImage,
+            'peso' => $request->peso,
         ]);
         if (!$mascota) {
             $data = [
@@ -134,6 +136,7 @@ class MascotaController extends Controller
             'image' => 'nullable|file|max:5000|mimes:png,jpg,jpeg',
             'years' => 'nullable|integer|min:0|max:99',
             'meses' => 'nullable|integer|min:0|max:99',
+            'peso' => 'nullable|string|max:55',
         ], [
             'nombre_mascota.required' => 'Campo nombre es requerido',
             'id_propietario.required' => 'Campo propietario es requerido',
@@ -171,6 +174,8 @@ class MascotaController extends Controller
             'years' => $request->years,
             'meses' => $request->meses,
             'id_animal' => $request->id_animal,
+            'peso' => $request->peso,
+            'id_multimedia' => $idImage ? $idImage : null,
         ]);
         if (!$mascota) {
             $data = [

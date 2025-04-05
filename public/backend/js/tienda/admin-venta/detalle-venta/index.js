@@ -2,23 +2,28 @@ class SalesManager {
     constructor() {
         // Elementos del formulario
         this.form = $("#ventaForm");
+        this.formCliente = $("#form-main");
+        this.modalEl = $("#modal-main");
+        this.modalTitle = $("#modal-title");
         this.formFields = {
-            clientCode: document.querySelector('[name="ci"]'),
+            clientCode: document.querySelector('[name="ci_cliente"]'),
             clientId: document.querySelector('[name="id_cliente"]'),
-            clientName: document.querySelector('[name="nombre"]'),
+            clientName: document.querySelector('[name="nombre_cliente"]'),
             buscador: document.querySelector("#buscador"),
             productCode: document.querySelector('[name="id_producto"]'),
             productName: document.querySelector('[name="nombre_producto"]'),
             price: document.querySelector('[name="precio"]'),
             quantity: document.querySelector('[name="cantidad"]'),
-            url:'',
+            url: "",
         };
+        this.btnSubmit = $("#btn-submit");
         this.hiddenProductsContainer =
             document.getElementById("productos-hidden");
 
         // Botones
         this.buttons = {
             add: document.querySelector("#btn-add-product"),
+            addClient: document.querySelector("#btn-add-client"),
             generate: document.querySelector("#btn-generate-sale"),
             cancel: document.querySelector("#btn-cancel-sale"),
 
@@ -35,6 +40,7 @@ class SalesManager {
 
         this.initializeComponents();
         this.initializeEventListeners();
+        utilities.ajaxSetup();
     }
 
     initializeComponents() {
@@ -45,18 +51,44 @@ class SalesManager {
                     url: "/admin/cliente",
                     data: { query: request.term },
                     success: (data) => {
-                        response(
-                            data.data.map((item) => ({
-                                label: `${item.ci} - ${item.nombre_completo}`,
-                                value: item.ci,
-                                item: item,
-                            }))
-                        );
+                        if (data.data && data.data.length > 0) {
+                            response(
+                                data.data.map((item) => ({
+                                    label: `${item.ci} - ${item.nombre_completo}`,
+                                    value: item.ci,
+                                    item: item,
+                                }))
+                            );
+                        } else {
+                            // Mostrar mensaje cuando no hay resultados
+                            response([
+                                {
+                                    label: "No se encontraron coincidencias",
+                                    value: "",
+                                    disabled: true,
+                                },
+                            ]);
+                        }
+                    },
+                    error: () => {
+                        response([
+                            {
+                                label: "Error al buscar clientes",
+                                value: "",
+                                disabled: true,
+                            },
+                        ]);
                     },
                 });
             },
             minLength: 2,
             select: (event, ui) => {
+                // Prevenir selección de elementos deshabilitados (como mensajes)
+                if (ui.item.disabled) {
+                    event.preventDefault();
+                    return;
+                }
+
                 event.preventDefault();
                 this.formFields.clientCode.value = ui.item.value;
                 this.formFields.clientId.value = ui.item.item.id_cliente;
@@ -65,6 +97,22 @@ class SalesManager {
                         ui.item.item.nombre_completo;
                 }
             },
+            // // Opcional: Estilo para el mensaje "No encontrado"
+            // open: function (event, ui) {
+            //     $(
+            //         ".ui-autocomplete .ui-menu-item:has(a.ui-state-disabled)"
+            //     ).css({
+            //         color: "#999",
+            //         "font-style": "italic",
+            //         cursor: "default",
+            //     });
+            // },
+            // // Opcional: Deshabilitar el ítem de "No encontrado"
+            // focus: function (event, ui) {
+            //    if (ui.item.disabled) {
+            //        event.preventDefault();
+            //    }
+            // }
         });
 
         // Inicializar Autocomplete para producto
@@ -101,6 +149,10 @@ class SalesManager {
 
     initializeEventListeners() {
         this.buttons.add.addEventListener("click", () => this.addProduct());
+        this.buttons.addClient.addEventListener("click", () =>
+            this.addClient()
+        );
+        this.btnSubmit.on("click", () => this.handleSubmitClient());
         this.buttons.generate.addEventListener("click", () =>
             this.generateSale()
         );
@@ -111,6 +163,28 @@ class SalesManager {
             e.preventDefault();
             const index = $(e.currentTarget).data("index");
             this.removeProduct(index);
+        });
+    }
+    addClient() {
+        this.modalTitle.text('nuevo cliente');
+        this.btnSubmit.prop("disabled", false);
+        utilities.resetForm(this.formCliente);
+    }
+    handleSubmitClient() {
+        this.btnSubmit.prop("disabled", true);
+        $.ajax({
+            type: "POST",
+            url: '/admin/cliente',
+            data: this.formCliente.serialize(),
+            success: (response) => {
+                this.modalEl.modal("hide");
+                az.showSwal("success-message", null, response.message);
+            },
+            error: (error) => {
+                this.btnSubmit.prop("disabled", false);
+                const errors = error.responseJSON.errors;
+                utilities.formValidation(errors);
+            },
         });
     }
 
@@ -207,7 +281,7 @@ class SalesManager {
         `
             )
             .join("");
-            utilities.tooltip();
+        utilities.tooltip();
     }
 
     updateHiddenInputs() {
@@ -241,8 +315,9 @@ class SalesManager {
     }
 
     removeProduct(index) {
-        const deleteButton = this.detailsTable.querySelectorAll('.delete-product')[index];
-        $(deleteButton).tooltip('dispose');
+        const deleteButton =
+            this.detailsTable.querySelectorAll(".delete-product")[index];
+        $(deleteButton).tooltip("dispose");
 
         this.saleDetails.splice(index, 1);
         this.updateDetailsTable();

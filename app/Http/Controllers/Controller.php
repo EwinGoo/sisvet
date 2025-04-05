@@ -80,6 +80,7 @@ class Controller extends BaseController
             'CONSULTORIO',
             "propietarios" => 'admin-propietario',
             "mascotas" => 'admin-mascota',
+            "razas" => 'admin-raza',
         ]:[];
 
 
@@ -123,6 +124,7 @@ class Controller extends BaseController
             "ventas" => 'store',
             "productos" => 'production_quantity_limits',
             "clientes" => 'groups',
+            "razas" => 'format_list_bulleted',
         ];
     }
 }

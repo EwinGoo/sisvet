@@ -1,11 +1,13 @@
-export function ACTIONS(name = "", id = null) {
-    return `
+export function ACTIONS(name = "", id = null, id_historial = null) {
+    return /*html */`
     <td class="text-sm">
-        <!--<a href="javascript:;" data-bs-toggle="tooltip"
-            data-bs-original-title="Vista previa de ${name}">
+        ${id_historial ? `
+        <a data-id="${id}" data-id-historial="${id_historial}" href="javascript:;" data-bs-toggle="tooltip"
+           class="pre-view-historial" data-bs-original-title="Vista previa de historial">
             <i class="material-icons text-info position-relative text-lg">visibility</i>
-        </a>-->
-        <a data-id="${id}" href="javascript:;" class="edit" data-bs-toggle="tooltip"
+        </a>
+        ` : ``}
+        <a data-id="${id}" href="javascript:;" class="edit ${id_historial ?'ms-3 ' :'margin-preview'}" data-bs-toggle="tooltip"
             data-bs-original-title="Editar ${name}">
             <i class="material-icons text-warning position-relative text-lg">drive_file_rename_outline</i>
         </a>
