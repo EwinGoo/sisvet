@@ -162,6 +162,8 @@ class MascotaController extends Controller
                 ];
                 return response()->json($data, 500);
             }
+        }else{
+            $idImage = $mascota->id_multimedia ? $mascota->id_multimedia : null;
         }
 
         $mascota->update([

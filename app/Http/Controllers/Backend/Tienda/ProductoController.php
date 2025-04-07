@@ -21,7 +21,6 @@ class ProductoController extends Controller
         $this->page = 'admin-producto';
         $this->pageURL = 'tienda/admin-producto';
         $this->area = 'Tienda';
-
     }
     public function index(Request $request)
     {
@@ -176,5 +175,22 @@ class ProductoController extends Controller
             'status' => 200
         ];
         return response()->json($data, 200);
+    }
+
+    public function checkStock($id)
+    {
+        $producto = ProductoModel::find($id);
+
+        if (!$producto) {
+            return response()->json([
+                'message' => 'Producto no encontrado',
+                'status' => 404
+            ], 404);
+        }
+
+        return response()->json([
+            'stock' => $producto->cantidad, // Asumiendo que tienes un campo 'cantidad' en tu modelo
+            'status' => 200
+        ]);
     }
 }

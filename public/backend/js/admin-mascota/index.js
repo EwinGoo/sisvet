@@ -312,6 +312,7 @@ $(document).ready(function () {
                 error: (xhr) => {
                     this.elements.btnSubmit.prop("disabled", false);
                     utilities.formValidation(xhr.responseJSON.errors);
+                    $("#error-rol").text(xhr.responseJSON.errors.rol);
                 },
             });
         },

@@ -7,11 +7,15 @@ export function ACTIONS(name = "", id = null, id_historial = null) {
             <i class="material-icons text-info position-relative text-lg">visibility</i>
         </a>
         ` : ``}
-        <a data-id="${id}" href="javascript:;" class="edit ${id_historial ?'ms-3 ' :'margin-preview'}" data-bs-toggle="tooltip"
+        <a data-id="${id}" href="/admin/mascota/${id}/generar-credencial" class="${id_historial ?'ms-3 ' :'margin-preview'}" data-bs-toggle="tooltip"
+            data-bs-original-title="generar credencial ${name}">
+            <i class="material-icons text-success position-relative text-lg">badge</i>
+        </a>
+        <a data-id="${id}" href="javascript:;" class="edit ms-1" data-bs-toggle="tooltip"
             data-bs-original-title="Editar ${name}">
             <i class="material-icons text-warning position-relative text-lg">drive_file_rename_outline</i>
         </a>
-        <a data-id="${id}" href="javascript:;" class="ms-3 delete" data-bs-toggle="tooltip"
+        <a data-id="${id}" href="javascript:;" class="ms-1 delete" data-bs-toggle="tooltip"
             data-bs-original-title="Eliminar ${name}">
             <i class="material-icons text-danger position-relative text-lg">delete</i>
         </a>
@@ -20,6 +24,12 @@ export function ACTIONS(name = "", id = null, id_historial = null) {
             <button type="button" class="ms-3 btn btn-sm btn-info" data-bs-toggle="tooltip"
             data-bs-original-title="Historial ${name}">HISTORIAL</button>
         </form>
+        ${id_historial ? `
+        <a data-id="${id}" href="/admin/mascota/${id_historial}/historial/reporte" class="ms-1" data-bs-toggle="tooltip"
+            data-bs-original-title="Regerar reporte">
+            <i class="material-icons text-danger position-relative text-lg">picture_as_pdf</i>
+        </a>
+        ` : ``}
     </td>
     `;
 }

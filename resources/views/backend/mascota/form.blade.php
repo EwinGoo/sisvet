@@ -15,6 +15,7 @@
                         </div>
                     </div>
                     <input type="file" id="fileInput" name="image" accept="image/*" style="display: none" />
+                    <small id='error-image' class="text-danger" style="width: 23rem;"></small>
                 </div>
             </div>
         </div>

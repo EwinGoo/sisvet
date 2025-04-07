@@ -5,9 +5,11 @@ namespace App\Http\Controllers\Backend\Tienda;
 use App\Http\Controllers\Controller;
 use App\Models\PropietarioModel;
 use App\Models\Tienda\DetalleVentaModel;
+use App\Models\Tienda\ProductoModel;
 use App\Models\Tienda\VentaModel;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Validation\Rule;
 
@@ -49,55 +51,91 @@ class VentaController extends Controller
 
     public function store(Request $request)
     {
-        /* init::Guardar propietario */
+        /* Validación de datos */
         $validator = Validator::make($request->all(), [
             'id_cliente' => 'nullable|exists:clientes,id_cliente',
             'total_venta' => 'required|numeric',
             'productos' => 'required|array',
-
         ], [
             'productos.required' => 'Debe agregar al menos un producto.',
         ]);
+
         if ($validator->fails()) {
-            $data = [
+            return response()->json([
                 'message' => 'Error en la validación de los datos',
                 'errors' => $validator->errors(),
                 'status' => 400
-            ];
-            return response()->json($data, 400);
+            ], 400);
         }
-        $venta = VentaModel::create([
-            'id_usuario' => Auth::id(),
-            'fecha_venta' => date("Y-m-d H:i:s"),
-            'total_venta' => $request->total_venta,
-            'id_cliente' => $request->id_cliente,
-        ]);
 
-        $detallesVenta = array_map(function ($producto) use ($venta) {
-            return [
-                'id_venta' => $venta->id_venta,
-                'id_producto' => $producto['codigo'],
-                'cantidad' => $producto['cantidad'],
-                'precio_unitario' => $producto['precio'],
-                'subtotal' => $producto['subtotal'],
-            ];
-        }, $request->productos);
+        // Validar stock antes de crear la venta
+        foreach ($request->productos as $producto) {
+            $productoModel = ProductoModel::find($producto['codigo']);
 
-        // Inserción masiva
-        DetalleVentaModel::insert($detallesVenta);
+            if (!$productoModel) {
+                return response()->json([
+                    'message' => 'Producto no encontrado (Código: ' . $producto['codigo'] . ')',
+                    'status' => 400
+                ], 400);
+            }
 
-        if (!$venta) {
-            $data = [
-                'message' => 'Error al registrar',
+            if ($productoModel->cantidad < $producto['cantidad']) {
+                return response()->json([
+                    'message' => 'Stock insuficiente para el producto: ' . $productoModel->nombre_producto .
+                        ' (Stock: ' . $productoModel->cantidad . ', Solicitado: ' . $producto['cantidad'] . ')',
+                    'status' => 400
+                ], 400);
+            }
+        }
+
+        // Iniciar transacción para asegurar integridad de datos
+        DB::beginTransaction();
+
+        try {
+            // Crear la venta
+            $venta = VentaModel::create([
+                'id_usuario' => Auth::id(),
+                'fecha_venta' => date("Y-m-d H:i:s"),
+                'total_venta' => $request->total_venta,
+                'id_cliente' => $request->id_cliente,
+            ]);
+
+            // Preparar detalles de venta y reducir stock
+            $detallesVenta = [];
+            foreach ($request->productos as $producto) {
+                $detallesVenta[] = [
+                    'id_venta' => $venta->id_venta,
+                    'id_producto' => $producto['codigo'],
+                    'cantidad' => $producto['cantidad'],
+                    'precio_unitario' => $producto['precio'],
+                    'subtotal' => $producto['subtotal'],
+                ];
+
+                // Reducir el stock del producto
+                ProductoModel::where('id_producto', $producto['codigo'])
+                    ->decrement('cantidad', $producto['cantidad']);
+            }
+
+            // Insertar detalles de venta
+            DetalleVentaModel::insert($detallesVenta);
+
+            // Confirmar la transacción
+            DB::commit();
+
+            return response()->json([
+                'message' => 'Venta registrada exitosamente y stock actualizado',
+                'venta' => $venta,
+                'status' => 201
+            ], 201);
+        } catch (\Exception $e) {
+            // Revertir la transacción en caso de error
+            DB::rollBack();
+
+            return response()->json([
+                'message' => 'Error al registrar la venta: ' . $e->getMessage(),
                 'status' => 500
-            ];
-            return response()->json($data, 500);
+            ], 500);
         }
-        $data = [
-            'venta' => $venta,
-            'status' => 201
-        ];
-        return response()->json($data, 201);
     }
     public function update(Request $request, $id)
     {
@@ -169,5 +207,41 @@ class VentaController extends Controller
             'status' => 200
         ];
         return response()->json($data, 200);
+    }
+
+    public function detalle($id)
+    {
+        // Obtener información principal de la venta
+        $venta = VentaModel::select('ventas.*')
+            ->selectRaw("CONCAT_WS(' ', c.nombre, c.paterno, IFNULL(c.materno, '')) as cliente")
+            ->selectRaw("CONCAT_WS(' ', u.nombre, u.paterno, IFNULL(u.materno, '')) as vendedor")
+            ->selectRaw("DATE_FORMAT(fecha_venta, '%d de %M del %Y') as fecha")
+            ->selectRaw("DATE_FORMAT(fecha_venta, '%h:%i %p') as hora")
+            ->leftJoin('clientes as c', 'c.id_cliente', '=', 'ventas.id_cliente')
+            ->leftJoin('usuarios as u', 'u.id_usuario', '=', 'ventas.id_usuario')
+            ->find($id);
+
+        if (!$venta) {
+            return response()->json([
+                'message' => 'Venta no encontrada',
+                'status' => 404
+            ], 404);
+        }
+
+        // Obtener detalles de la venta
+        $detalles = DetalleVentaModel::select(
+            'detalles_venta.*',
+            'p.nombre_producto',
+            'p.id_producto'
+        )
+            ->leftJoin('productos as p', 'p.id_producto', '=', 'detalles_venta.id_producto')
+            ->where('id_venta', $id)
+            ->get();
+
+        return response()->json([
+            'venta' => $venta,
+            'detalles' => $detalles,
+            'status' => 200
+        ], 200);
     }
 }

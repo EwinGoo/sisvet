@@ -3,224 +3,399 @@
 namespace App\Http\Controllers\Backend\Reportes;
 
 use App\Http\Controllers\Controller;
+use App\Models\HistorialClinicoModel;
+use App\Models\MascotaModel;
 use TCPDF;
 
 class HistorialClinicoReport extends Controller
 {
-    public function index()
+    public function generarPdf($id = null)
     {
-        $pdf = new PDF(PDF_PAGE_ORIENTATION, PDF_UNIT, PDF_PAGE_FORMAT, true, 'UTF-8', false);
-        // Configuración básica
 
-        // set document information
-        $pdf->SetCreator(PDF_CREATOR);
-        $pdf->SetAuthor('Nicola Asuni');
-        $pdf->SetTitle('TCPDF Example 001');
-        $pdf->SetSubject('TCPDF Tutorial');
-        $pdf->SetKeywords('TCPDF, PDF, example, test, guide');
+        // $historial = HistorialClinicoModel::find($id);
+        $data = HistorialClinicoModel::getDataHistorial($id, null, true);
+        // $dctor =
+        $data = json_decode(json_encode($data), true);
 
-        // set default header data
-        $pdf->SetHeaderData(PDF_HEADER_LOGO, PDF_HEADER_LOGO_WIDTH, PDF_HEADER_TITLE . ' 001', PDF_HEADER_STRING, array(0, 64, 255), array(0, 64, 128));
-        $pdf->setFooterData(array(0, 64, 0), array(0, 64, 128));
+        // echo '<pre>';
+        // echo json_encode((array)$data, JSON_PRETTY_PRINT); // Formato JSON ordenado
+        // echo '</pre>';
+        // exit;
 
-        // set header and footer fonts
-        $pdf->setHeaderFont(array(PDF_FONT_NAME_MAIN, '', PDF_FONT_SIZE_MAIN));
-        $pdf->setFooterFont(array(PDF_FONT_NAME_DATA, '', PDF_FONT_SIZE_DATA));
-
-        // set default monospaced font
-        $pdf->SetDefaultMonospacedFont(PDF_FONT_MONOSPACED);
-
-        // set margins
-        $pdf->SetMargins(PDF_MARGIN_LEFT, PDF_MARGIN_TOP, PDF_MARGIN_RIGHT);
-        $pdf->SetHeaderMargin(PDF_MARGIN_HEADER);
-        $pdf->SetFooterMargin(PDF_MARGIN_FOOTER);
-
-        // set auto page breaks
-        $pdf->SetAutoPageBreak(TRUE, PDF_MARGIN_BOTTOM);
-
-        // set image scale factor
-        $pdf->setImageScale(PDF_IMAGE_SCALE_RATIO);
-
-        // set some language-dependent strings (optional)
-        if (@file_exists(dirname(__FILE__) . '/lang/eng.php')) {
-            require_once(dirname(__FILE__) . '/lang/eng.php');
-            $pdf->setLanguageArray($l);
+        if (!$data) {
+            abort(404, 'No se encontró la mascota con el ID especificado');
         }
 
-        // ---------------------------------------------------------
+        ob_clean();
 
-        // set default font subsetting mode
-        $pdf->setFontSubsetting(true);
+        // Crear instancia de PDF personalizado
+        $pdf = new VeterinariaPDF(PDF_PAGE_ORIENTATION, PDF_UNIT, PDF_PAGE_FORMAT, true, 'UTF-8', false);
 
-        // Set font
-        // dejavusans is a UTF-8 Unicode font, if you only need to
-        // print standard ASCII chars, you can use core fonts like
-        // helvetica or times to reduce file size.
+        // Configuración del documento
+        $pdf->SetCreator('Sistema Veterinario');
+        $pdf->SetAuthor('Clínica Veterinaria San Martin');
+        $pdf->SetTitle('Historia Clínica');
+        $pdf->SetMargins(15, 40, 15);
+        $pdf->SetHeaderMargin(10);
+        $pdf->SetFooterMargin(10);
+        $pdf->SetAutoPageBreak(TRUE, 25);
 
+        // ===== DATOS ESTÁTICOS =====
+        $propietario = [
+            'fecha' => date('d/m/Y'),
+            'nombre' => $data['anamnesis']['nombre_completo'],
+            'celular' => $data['anamnesis']['celular'],
+            'direccion' => $data['anamnesis']['direccion'],
+            'registro' => $data['anamnesis']['registro']
+        ];
 
-        // Add a page
-        // This method has several options, check the source code documentation for more information.
+        $mascota = [
+            'nombre' => $data['anamnesis']['nombre_mascota'],
+            'especie' => $data['anamnesis']['animal'],
+            'edad' => $this->formatEdad($data['anamnesis']['years'], $data['anamnesis']['meses']),
+            'peso' => $data['anamnesis']['peso'],
+            'color' => $data['anamnesis']['color'],
+            'raza' => $data['anamnesis']['raza'],
+            'genero' => $data['anamnesis']['genero'] ? ($data['anamnesis']['genero'] == 'M' ? 'Macho' : 'Hembra') : 'No especificado',
+        ];
+
+        $vacunas = $data['vacunas'];
+
+        $anamnesis = $data['anamnesis'];
+
+        $examen_general = $data['examen'];
+
+        $sintomas = $data['sintomas'];
+
+        $metodos_complementarios = array_map(function ($metodo) {
+            return [
+                'fecha_hora' => date('d/m/Y', strtotime($metodo['fecha_hora'])),
+                'examen' => $metodo['examen'],
+                'resultados' => $metodo['resultados'],
+                'nombre_examen' => $metodo['nombre_examen']
+            ];
+        }, $data['metodos_complementarios']);
+
+        $diagnostico_presuntivo = $data['diagnosticos_presuntivos'];
+        $diagnostico_definitivo = $data['diagnosticos_definitivos'];
+
+        $tratamientos = $data['tratamiento'];
+
+        $evolucion = array_map(function ($evolucion) {
+            return [
+                'fecha_hora' => date('d/m/Y H:m', strtotime($evolucion['fecha_hora'])),
+                'descripcion' => $evolucion['descripcion'],
+            ];
+        }, $data['evolucion']);
+
+        // ===== GENERACIÓN DEL PDF =====
         $pdf->AddPage();
-        $pdf->SetFont('helvetica', 'B', 16);
-        $pdf->SetFont('dejavusans', '', 14, '', true);
-        $pdf->Ln(10);
 
-        $pdf->Cell(0, 25, 'HISTORIA CLINICA', 0, 1, 'C');
+        $pdf->SetFont('ptserifb', 'B', 20);
+        $pdf->SetY(27);
+        $pdf->Cell(0, 6, 'HISTORIA CLÍNICA ', 0, 1, 'C');
+        //$pdf->Ln(1);
 
-        $header = array('Country', 'Capital', 'Area (sq km)', 'Pop. (thousands)');
-        $data = [[1, 2, 3, 4]];
+        // 1. RESEÑA DEL PROPIETARIO
+        $pdf->sectionTitle('1. RESEÑA DEL PROPIETARIO');
 
-        $x = $pdf->GetX();
-        $pdf->ColoredTable($header, $data);
-        $pdf->SetX($x);
+        $pdf->twoColumnRow('Fecha:', $propietario['fecha'], 'N° Registro:', $propietario['registro']);
+        $pdf->twoColumnRow('Nombre:', $propietario['nombre'], 'Celular:', $propietario['celular']);
+        $pdf->singleRow('Dirección:', $propietario['direccion']);
+        $pdf->Ln(4);
 
-        // Definir las coordenadas, el ancho y la altura de la celda
-        $x = 10;  // Posición X
-        $y = 50;  // Posición Y
-        $width = 50;  // Ancho de la celda
-        $height = 50;  // Altura de la celda
-        $radius = 25;  // Radio de los bordes redondeados
+        // 2. RESEÑA DE LA MASCOTA
+        $pdf->sectionTitle('2. RESEÑA DE LA MASCOTA');
 
-        // Dibujar un rectángulo redondeado
-        $pdf->SetFillColor(255, 255, 255);  // Color de relleno (blanco en este caso)
-        $pdf->RoundedRect($x, $y, $width, $height, $radius, '1234', 'DF');  // 'DF' significa bordes sólidos con relleno
+        $pdf->twoColumnRow('Nombre:', $mascota['nombre'], 'Especie:', $mascota['especie']);
+        $pdf->twoColumnRow('Edad:', $mascota['edad'], 'Peso:', $mascota['peso']);
+        $pdf->twoColumnRow('Color:', $mascota['color'], 'Raza:', $mascota['raza']);
+        $pdf->singleRow('Género:', $mascota['genero']);
+        $pdf->Ln(4);
 
-        // Escribir el texto en la celda
-        $pdf->SetXY($x, $y);  // Establecer la posición para el texto
-        $pdf->Cell($width, $height, 'HISTORIA CLINICA', 0, 1, 'C');  // La celda sin borde
+        // 3. ANAMNESIS
+        $pdf->sectionTitle('3. ANAMNESIS');
+        $pdf->Ln(2);
+
+        $pdf->labeledRow('Enfermedades Anteriores:', $anamnesis['enfermedades_anteriores']);
+        $pdf->labeledRow('Tratamientos Recientes:', $anamnesis['tratamientos_recientes']);
+        $pdf->labeledRow('Ultima Desparasitación:', $anamnesis['ultima_desparasitacion']);
+        $pdf->labeledRow('Vacunas Anteriores:', $anamnesis['vacunas']);
+
+        $pdf->SetFont('helvetica', 'B', 9);
+        $pdf->Cell(0, 5, 'Control de Vacunas:', 0, 1, 'L');
+        $pdf->Ln(1);
+
+        $pdf->SetFont('helvetica', 'B', 8);
+        $pdf->Cell(42, 5, 'Fecha', 1, 0, 'C', true);
+        $pdf->Cell(0, 5, 'Vacuna', 1, 1, 'C', true);
+
+        $pdf->SetFont('helvetica', '', 8);
+
+        foreach ($vacunas as $key => $v) {
+            $pdf->Cell(42, 5, date('d/m/Y', strtotime($v['fecha'])), 1);
+            $pdf->Cell(0, 5, $v['nombre_vacuna'], 1, 1);
+        }
+
+        $pdf->Ln(4);
+
+        // 4. EXAMEN GENERAL
+
+        $pdf->sectionTitle('4. EXAMEN GENERAL');
+        $pdf->Ln(2);
 
 
+        // Tabla de examen general
+        $pdf->SetFont('helvetica', 'B', 8);
+        $pdf->Cell(30, 5, 'Fecha', 1, 0, 'C', true);
+        $pdf->Cell(30, 5, 'Temperatura', 1, 0, 'C', true);
+        $pdf->Cell(38, 5, "Frecuencia Cardiaca", 1, 0, 'C', true);
+        $pdf->Cell(42, 5, "Frecuencia Respiratoria", 1, 0, 'C', true);
+        $pdf->Cell(20, 5, 'R.C. x seg', 1, 0, 'C', true);
+        $pdf->Cell(20, 5, 'Mucosa', 1, 1, 'C', true);
 
-        $html = '
-        <table border="1" cellspacing="0" cellpadding="4" >
-            <thead>
-                <tr>
-                    <th style="font-weight: bold; text-align: center; border-radius: 10px;">#</th>
-                    <th style="font-weight: bold; text-align: center;">Nombre</th>
-                    <th style="font-weight: bold; text-align: center;">Edad</th>
-                </tr>
-            </thead>
-            <tbody>
-                <tr>
-                    <td style="text-align: center;">1</td>
-                    <td>Juan Pérez</td>
-                    <td style="text-align: center;">25</td>
-                </tr>
-                <tr>
-                    <td style="text-align: center;">2</td>
-                    <td>María López</td>
-                    <td style="text-align: center;">30</td>
-                </tr>
-            </tbody>
-        </table>
-        ';
-        $pdf->writeHTML($html, true, false, true, false, '');
+        $pdf->SetFont('helvetica', '', 8);
 
-        // set text shadow effect
-        // $pdf->setTextShadow(array('enabled' => true, 'depth_w' => 0.2, 'depth_h' => 0.2, 'color' => array(196, 196, 196), 'opacity' => 1, 'blend_mode' => 'Normal'));
+        foreach ($examen_general as $key => $examen) {
+            $pdf->Cell(30, 5, date('d/m/Y', strtotime($examen['fecha'])), 1);
+            $pdf->Cell(30, 5, $examen['temperatura'] . ' °C', 1);
+            $pdf->Cell(38, 5, $examen['frecuencia_cardiaca'], 1);
+            $pdf->Cell(42, 5, $examen['frecuencia_respiratoria'], 1);
+            $pdf->Cell(20, 5, $examen['rc'], 1);
+            $pdf->Cell(20, 5, $examen['mucosa'], 1, 1);
+        }
+        $pdf->labeledRow('Inspección:', $anamnesis['inspeccion']);
+        $pdf->labeledRow('Palpación:', $anamnesis['palpacion']);
+        // $pdf->labeledRow('Observaciones:', $examen['observaciones']);
+        $pdf->Ln(4);
 
-        // Set some content to print
-        $html = <<<EOD
-        <h1>Welcome to <a href="http://www.tcpdf.org" style="text-decoration:none;background-color:#CC0000;color:black;">&nbsp;<span style="color:black;">TC</span><span style="color:white;">PDF</span>&nbsp;</a>!</h1>
-        <i>This is the first example of TCPDF library.</i>
-        <p>This text is printed using the <i>writeHTMLCell()</i> method but you can also use: <i>Multicell(), writeHTML(), Write(), Cell() and Text()</i>.</p>
-        <p>Please check the source code documentation and other examples for further information.</p>
-        <p style="color:#CC0000;">TO IMPROVE AND EXPAND TCPDF I NEED YOUR SUPPORT, PLEASE <a href="http://sourceforge.net/donate/index.php?group_id=128076">MAKE A DONATION!</a></p>
-        EOD;
+        // 5. SÍNTOMAS
+        $pdf->sectionTitle('5. SÍNTOMAS');
+        $pdf->Ln(2);
 
-        // Print text using writeHTMLCell()
-        // $pdf->writeHTMLCell(0, 0, '', '', $html, 0, 1, 0, true, '', true);
-        // $pdf->writeHTMLCell(0, 0, '', '', $html, 0, 1, 0, true, '', true);
-        // $pdf->writeHTMLCell(0, 0, '', '', $html, 0, 1, 0, true, '', true);
-        // $pdf->writeHTMLCell(0, 0, '', '', $html, 0, 1, 0, true, '', true);
-        // $pdf->writeHTMLCell(0, 0, '', '', $html, 0, 1, 0, true, '', true);
-        // $pdf->writeHTMLCell(0, 0, '', '', $html, 0, 1, 0, true, '', true);
-        // $pdf->writeHTMLCell(0, 0, '', '', $html, 0, 1, 0, true, '', true);
+        $pdf->SetFont('helvetica', 'B', 8);
+        $pdf->Cell(30, 5, 'Fecha', 1, 0, 'C', true);
+        $pdf->Cell(150, 5, 'Descripción', 1, 1, 'C', true);
 
-        // ---------------------------------------------------------
-        ob_end_clean();
-        // Close and output PDF document
-        // This method has several options, check the source code documentation for more information.
-        $pdf->Output('example_001.pdf', 'I');
+        $pdf->SetFont('helvetica', '', 8);
+
+        foreach ($sintomas as $key => $s) {
+            $pdf->Cell(30, 5, date('d/m/Y', strtotime($examen['fecha'])), 1);
+            $pdf->Cell(150, 5, $s['descripcion'], 1, 1);
+        }
+
+        $pdf->Ln(4);
+
+        // 6. MÉTODOS COMPLEMENTARIOS
+        $pdf->sectionTitle('6. MÉTODOS COMPLEMENTARIOS');
+        $pdf->Ln(2);
+
+        $pdf->createTable(['Fecha', 'Examen', 'Resultados', 'Tipo examen'], $metodos_complementarios,[30,30, 60, 60]);
+        $pdf->Ln(4);
+
+        // 7. DIAGNÓSTICO PRESUNTIVO
+        $pdf->sectionTitle('7. DIAGNÓSTICO PRESUNTIVO');
+        $pdf->Ln(2);
+
+        $pdf->SetFont('helvetica', 'B', 8);
+        $pdf->Cell(30, 5, 'Fecha', 1, 0, 'C', true);
+        $pdf->Cell(150, 5, 'Descripción', 1, 1, 'C', true);
+        $pdf->SetFont('helvetica', '', 8);
+
+        foreach ($diagnostico_presuntivo as $key => $d) {
+            $pdf->Cell(30, 5, date('d/m/Y', strtotime($d['fecha'])), 1);
+            $pdf->Cell(150, 5, $d['descripcion'], 1, 1);
+        }
+
+        $pdf->Ln(5);
+
+        // 8. DIAGNÓSTICO DEFINITIVO
+
+        $pdf->sectionTitle('8. DIAGNÓSTICO DEFINITIVO');
+        $pdf->Ln(2);
+
+        $pdf->SetFont('helvetica', 'B', 8);
+        $pdf->Cell(30, 5, 'Fecha', 1, 0, 'C', true);
+        $pdf->Cell(150, 5, 'Descripción', 1, 1, 'C', true);
+        $pdf->SetFont('helvetica', '', 8);
+
+        $pdf->SetTextColor(0);
+
+        foreach ($diagnostico_definitivo as $key => $d) {
+            $pdf->Cell(30, 5, date('d/m/Y', strtotime($d['fecha'])), 1);
+            $pdf->Cell(150, 5, $d['descripcion'], 1, 1);
+        }
+
+        $pdf->Ln(5);
+
+        // 9. TRATAMIENTO
+        $pdf->sectionTitle('9. TRATAMIENTO');
+        $pdf->Ln(2);
+
+        $pdf->SetFillColor(58, 115, 111);
+        $pdf->SetTextColor(255);
+        $pdf->SetFont('helvetica', 'B', 8);
+
+        $pdf->Cell(30, 6, 'Fecha', 1, 0, 'C', true);
+        $pdf->Cell(150, 6, 'Descripción', 1, 1, 'C', true);
+        $fill = false;
+
+        $pdf->SetTextColor(0);
+        $pdf->SetFont('helvetica', '', 8);
+
+        foreach ($tratamientos as $t) {
+            $pdf->SetFillColor($fill ? 240 : 255);
+            $pdf->Cell(30, 6, date('d/m/Y', strtotime($t['fecha'])), 'LR', 0, 'L', $fill);
+            $pdf->Cell(150, 6, $t['descripcion'], 'LR', 0, 'L', $fill);
+            $pdf->Ln();
+            $fill = !$fill;
+        }
+        $pdf->Cell(180, 0, '', 'T');
+
+        $pdf->Ln(5);
+
+        // 10. EVOLUCIÓN Y PRONÓSTICO
+        $pdf->sectionTitle('10. EVOLUCIÓN Y PRONÓSTICO');
+        $pdf->Ln(2);
+
+        $pdf->createTable(['Fecha y hora', 'Detalle'], $evolucion, [30, 150]);
+
+        // Firma del veterinario
+        $pdf->Ln(30);
+        // $pdf->Cell(0, 5, '_________________________________________', 0, 1, 'C');
+        $pdf->Cell(0, 5, str_repeat('.', 80), 0, 1, 'C');
+        $pdf->Cell(0, 5, 'Firma medico veterinario', 0, 1, 'C');
+        // $pdf->Cell(0, 5, 'Cédula Profesional: VET-12345', 0, 1, 'C');
+
+        $pdf->Output('historia_clinica_veterinaria.pdf', 'I');
+        exit;
     }
+    private function formatEdad($years, $months)
+    {
+        $edad = '';
+        if ($years > 0) {
+            $edad .= $years . ' año' . ($years > 1 ? 's' : '');
+        }
+        if ($months > 0) {
+            if ($edad != '') {
+                $edad .= ' y ';
+            }
+            $edad .= $months . ' mes' . ($months > 1 ? 'es' : '');
+        }
+        return $edad;
+    }
+
 }
 
-class PDF extends TCPDF
+class VeterinariaPDF extends TCPDF
 {
     public function Header()
     {
-        // Fuente para el encabezado
-        $this->SetFont('helvetica', 'B', 16);
+        // Logo
+        $image_file = public_path('assets/images/logo-report1.png');
+        $this->Image($image_file, 10, 10, 55);
 
-        // Texto personalizado
-        $this->Cell(0, 25, 'HISTORIA CLINICA', 0, 1, 'C');
-        $this->Image('assets/images/logo_2.png', 15, 8, 38, 23, 'PNG', '', '', true, 150, '', false, false, 0, false, false, false);
-        // $this->Image(,);
+        // Título
+        $this->SetFont('helvetica', 'B', 14);
+        $this->Cell(280, 10, 'CLÍNICA VETERINARIA SAN MARTIN', 0, 1, 'C');
 
-        // Línea para separar el encabezado
-        // $this->Line(10, 20, $this->getPageWidth() - 10, 20);
+        // Información de contacto
+        $this->SetFont('helvetica', '', 9);
+        $this->Cell(280, 5, 'Tel: 2222-5555 | Emergencias: 7777-8888 | Av. Central #123', 0, 1, 'C');
+
+        // Línea separadora
+        $this->Line(10, 25, $this->getPageWidth() - 10, 25);
     }
+
     public function Footer()
     {
-        $cur_y = $this->y;
-        // Establecer la fuente para el pie de página
+        $this->SetY(-15);
         $this->SetFont('helvetica', 'I', 8);
-
-        // Mover el cursor a la posición correcta
-        $this->SetY(-15);  // Posición Y desde el fondo de la página
-
-        // Agregar el texto del pie de página (centrado)
-        // $this->Cell(0, 10, 'Página ' . $this->getPageNumGroupAlias() . ' de ' . $this->getNumPages(), 0, 0, 'C');
-
-        $w_page = isset($this->l['w_page']) ? $this->l['w_page'] . ' ' : '';
-
-        if (empty($this->pagegroups)) {
-            $pagenumtxt = 'Página ' . $w_page . $this->getAliasNumPage() . ' de ' . $this->getAliasNbPages();
-        } else {
-            $pagenumtxt = $w_page . $this->getPageNumGroupAlias() . ' / ' . $this->getPageGroupAlias();
-        }
-        $this->setY($cur_y);
-        //Print page number
-        if ($this->getRTL()) {
-            $this->setX($this->original_rMargin);
-            $this->Cell(0, 0, $pagenumtxt, 'T', 0, 'L');
-        } else {
-            $this->setX($this->original_lMargin);
-            $this->Cell(0, 0, $this->getAliasRightShift() . $pagenumtxt, 'T', 0, 'R');
-        }
-
-        // Agregar una línea en el pie de página (si deseas)
-        // $this->Line(10, $this->GetY() + 5, $this->getPageWidth() - 10, $this->GetY() + 5);
+        $this->Cell(0, 10, 'Página ' . $this->getAliasNumPage() . '/' . $this->getAliasNbPages(), 0, 0, 'C');
     }
-    public function ColoredTable($header, $data)
+
+    // ===== MÉTODOS PERSONALIZADOS =====
+
+    public function sectionTitle($title)
     {
-        // Colors, line width and bold font
-        $this->SetFillColor(255, 0, 0);
+        $this->Ln(5);
+        $this->SetFont('helvetica', 'B', 11);
+        $this->SetFillColor(200, 220, 255);
+        $this->Cell(0, 6, $title, 0, 1, 'L', true);
+        $this->SetFont('helvetica', '', 9);
+    }
+
+    public function twoColumnRow($label1, $value1, $label2, $value2)
+    {
+        $this->SetFont('helvetica', 'B', 9);
+        $this->Cell(25, 5, $label1, 0, 0);
+        $this->SetFont('helvetica', '', 9);
+        $this->Cell(60, 5, $value1, 0, 0);
+
+        $this->SetFont('helvetica', 'B', 9);
+        $this->Cell(25, 5, $label2, 0, 0);
+        $this->SetFont('helvetica', '', 9);
+        $this->Cell(0, 5, $value2, 0, 1);
+    }
+
+    public function singleRow($label, $value)
+    {
+        $this->SetFont('helvetica', 'B', 9);
+        $this->Cell(25, 5, $label, 0, 0);
+        $this->SetFont('helvetica', '', 9);
+        $this->Cell(0, 5, $value, 0, 1);
+    }
+
+    public function labeledRow($label, $value)
+    {
+        $this->SetFont('helvetica', 'B', 9);
+        $this->Cell(45, 5, $label, 1, 0);
+        $this->SetFont('helvetica', '', 9);
+        $this->MultiCell(0, 5, $value, 1, 'L');
+    }
+
+    public function createTable($headers, $data, $columnWidths = null)
+    {
+        // Configurar encabezado
+        $this->SetFillColor(58, 115, 111);
         $this->SetTextColor(255);
-        $this->SetDrawColor(128, 0, 0);
-        $this->SetLineWidth(0.3);
-        $this->SetFont('', 'B');
-        // Header
-        $w = array(40, 35, 40, 45);
-        $num_headers = count($header);
-        for ($i = 0; $i < $num_headers; ++$i) {
-            $this->Cell($w[$i], 7, $header[$i], 1, 0, 'C', 1);
+        $this->SetFont('helvetica', 'B', 9);
+
+        // Calcular anchos
+        $numColumns = count($headers);
+        $pageWidth = $this->getPageWidth() - $this->lMargin - $this->rMargin;
+
+        // Si no se especifican anchos, dividir equitativamente
+        if ($columnWidths === null || count($columnWidths) !== $numColumns) {
+            $columnWidth = $pageWidth / $numColumns;
+            $columnWidths = array_fill(0, $numColumns, $columnWidth);
+        }
+
+        // dd($headers);
+
+        // Dibujar encabezados
+        foreach ($headers as $i => $header) {
+            $this->Cell($columnWidths[$i], 6, $header, 1, 0, 'C', true);
         }
         $this->Ln();
-        // Color and font restoration
-        $this->SetFillColor(224, 235, 255);
+
+        // Dibujar datos
         $this->SetTextColor(0);
-        $this->SetFont('');
-        // Data
-        $fill = 0;
+        $this->SetFont('helvetica', '', 9);
+        $fill = false;
+
         foreach ($data as $row) {
-            $this->Cell($w[0], 6, $row[0], 'LR', 0, 'L', $fill);
-            $this->Cell($w[1], 6, $row[1], 'LR', 0, 'L', $fill);
-            $this->Cell($w[2], 6, number_format($row[2]), 'LR', 0, 'R', $fill);
-            $this->Cell($w[3], 6, number_format($row[3]), 'LR', 0, 'R', $fill);
+            $this->SetFillColor($fill ? 240 : 255);
+            $num = 0;
+            foreach ($row as $i => $value) {
+                $this->Cell($columnWidths[$num], 6, $value, 'LR', 0, 'L', $fill);
+                $num++;
+            }
             $this->Ln();
             $fill = !$fill;
         }
-        $this->Cell(array_sum($w), 0, '', 'T');
+
+        // Línea de cierre
+        $this->Cell(array_sum($columnWidths), 0, '', 'T');
     }
 }

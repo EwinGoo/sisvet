@@ -4,6 +4,8 @@ use App\Http\Controllers\Backend\Consultorio\RazaController;
 use App\Http\Controllers\Backend\HistorialClinicoController;
 use App\Http\Controllers\Backend\PropietarioController;
 use App\Http\Controllers\Backend\MascotaController;
+use App\Http\Controllers\Backend\Reportes\ComprobanteVentaReporte;
+use App\Http\Controllers\Backend\Reportes\CredencialMascotaReporte;
 use App\Http\Controllers\Backend\Reportes\HistorialClinicoReport;
 use App\Http\Controllers\Backend\Tienda\ClienteController;
 use App\Http\Controllers\Backend\Tienda\InventarioController;
@@ -40,7 +42,7 @@ Route::prefix('admin')->middleware(['auth'])->group(function () {
         Route::resource('mascota', MascotaController::class)->names('admin-mascota');
         Route::get('mascota/get-razas/{id}',  [MascotaController::class, 'getRazas']);
         Route::prefix('mascota')->group(function () {
-            Route::get('/{id}/historial/reporte', [HistorialClinicoReport::class, 'index']);
+            Route::get('/{id}/historial/reporte', [HistorialClinicoReport::class, 'generarPdf']);
         });
 
         Route::prefix('mascota/{id}/historial')->group(function () {
@@ -52,6 +54,7 @@ Route::prefix('admin')->middleware(['auth'])->group(function () {
         Route::post('mascota/historial', [HistorialClinicoController::class, 'historialClinicoSave']);
         Route::get('mascota/{id}/historial', [HistorialClinicoController::class, 'historial'])->name('admin-mascota.historial.index');
         Route::get('mascota/{id}/historial/{option}', [HistorialClinicoController::class, 'historial']);
+        Route::get('mascota/{id}/generar-credencial', [CredencialMascotaReporte::class, 'generarCredencial']);
 
         Route::get('raza', [RazaController::class, 'index'])->name('admin-raza.index');
         Route::post('raza', [RazaController::class, 'store']);
@@ -66,6 +69,11 @@ Route::prefix('admin')->middleware(['auth'])->group(function () {
         Route::resource('cliente', ClienteController::class)->names('admin-cliente');
         Route::resource('producto', ProductoController::class)->names('admin-producto');
         Route::resource('venta', VentaController::class)->names('admin-venta');
+        Route::get('venta/{id}/comprobante', [ComprobanteVentaReporte::class,'generarComprobante']);
+
+        Route::get('venta/{id}/detalle', [VentaController::class, 'detalle']);
+        Route::get('producto/stock/{id}', [ProductoController::class, 'checkStock']);
+
     });
 });
 

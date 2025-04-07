@@ -97,22 +97,6 @@ class SalesManager {
                         ui.item.item.nombre_completo;
                 }
             },
-            // // Opcional: Estilo para el mensaje "No encontrado"
-            // open: function (event, ui) {
-            //     $(
-            //         ".ui-autocomplete .ui-menu-item:has(a.ui-state-disabled)"
-            //     ).css({
-            //         color: "#999",
-            //         "font-style": "italic",
-            //         cursor: "default",
-            //     });
-            // },
-            // // Opcional: Deshabilitar el ítem de "No encontrado"
-            // focus: function (event, ui) {
-            //    if (ui.item.disabled) {
-            //        event.preventDefault();
-            //    }
-            // }
         });
 
         // Inicializar Autocomplete para producto
@@ -122,20 +106,38 @@ class SalesManager {
                     url: "/admin/producto",
                     data: { query: request.term },
                     success: (data) => {
-                        response(
-                            data.data.map((item) => ({
-                                label: `${item.id_producto} - ${item.nombre_producto}`,
-                                value: item.id_producto,
-                                item: item,
-                            }))
-                        );
+                        if (data.data && data.data.length > 0) {
+                            response(
+                                data.data.map((item) => ({
+                                    label: `${item.id_producto} - ${item.nombre_producto}`,
+                                    value: item.id_producto,
+                                    item: item,
+                                }))
+                            );
+                        } else {
+                            // Mostrar mensaje cuando no hay resultados
+                            response([
+                                {
+                                    label: "No se encontraron coincidencias",
+                                    value: "",
+                                    disabled: true,
+                                },
+                            ]);
+                        }
+                    },
+                    error: () => {
+                        response([
+                            {
+                                label: "Error al buscar producto",
+                                value: "",
+                                disabled: true,
+                            },
+                        ]);
                     },
                 });
             },
             minLength: 2,
             select: (event, ui) => {
-                console.log(ui.item);
-
                 event.preventDefault();
                 this.formFields.productCode.value = ui.item.value;
                 this.formFields.productName.value =
@@ -143,6 +145,13 @@ class SalesManager {
                 this.formFields.price.value = ui.item.item.precio;
                 this.formFields.quantity.value = 1;
                 this.formFields.url = ui.item.item.ruta_archivo;
+                const stockInfo = ui.item.item.cantidad
+                    ? ` (Stock: ${ui.item.item.cantidad})`
+                    : "";
+                $(this.formFields.productName)
+                    .parent()
+                    .find("small")
+                    .text(stockInfo);
             },
         });
     }
@@ -166,7 +175,7 @@ class SalesManager {
         });
     }
     addClient() {
-        this.modalTitle.text('nuevo cliente');
+        this.modalTitle.text("nuevo cliente");
         this.btnSubmit.prop("disabled", false);
         utilities.resetForm(this.formCliente);
     }
@@ -174,7 +183,7 @@ class SalesManager {
         this.btnSubmit.prop("disabled", true);
         $.ajax({
             type: "POST",
-            url: '/admin/cliente',
+            url: "/admin/cliente",
             data: this.formCliente.serialize(),
             success: (response) => {
                 this.modalEl.modal("hide");
@@ -226,12 +235,56 @@ class SalesManager {
             }
         });
 
-        if (parseInt(this.formFields.quantity.value) <= 0) {
+        const quantity = parseInt(this.formFields.quantity.value);
+        if (quantity <= 0) {
             Swal.fire("Error", "La cantidad debe ser mayor a 0", "error");
             isValid = false;
         }
 
+        // Nueva validación de stock
+        if (isValid) {
+            const productCode = this.formFields.productCode.value;
+            const stockAvailable = this.checkStockAvailable(
+                productCode,
+                quantity
+            );
+            if (!stockAvailable.available) {
+                Swal.fire(
+                    "Error",
+                    `La cantidad excede el stock disponible (${stockAvailable.stock} unidades)`,
+                    "error"
+                );
+                isValid = false;
+            }
+        }
+
         return isValid;
+    }
+
+    // Nuevo método para verificar stock
+    checkStockAvailable(productCode, requestedQuantity) {
+        // Hacer petición síncrona (en producción sería mejor usar async/await)
+        let result = {
+            available: false,
+            stock: 0,
+        };
+
+        $.ajax({
+            url: `/admin/producto/stock/${productCode}`,
+            method: "GET",
+            async: false, // Solo para este ejemplo, en producción usar promesas
+            success: (response) => {
+                result = {
+                    available: response.stock >= requestedQuantity,
+                    stock: response.stock,
+                };
+            },
+            error: () => {
+                Swal.fire("Error", "No se pudo verificar el stock", "error");
+            },
+        });
+
+        return result;
     }
 
     updateDetailsTable() {

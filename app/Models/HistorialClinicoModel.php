@@ -99,15 +99,16 @@ class HistorialClinicoModel extends Model
     /**
      * Obtiene datos del historial según la opción especificada
      */
-    public static function getDataHistorial($id, $option = null)
+    public static function getDataHistorial($id, $option = null, $report = false)
     {
         try {
             $historial = DB::table('historial_clinico')
-                ->select('historial_clinico.*', 'm.*', 'p.*','r.raza','a.animal')
+                ->select('historial_clinico.*', 'm.*', 'p.*','r.raza','a.animal', 'historial_clinico.vacunas')
                 ->selectRaw("CONCAT_WS(' ', p.nombre, p.paterno, IFNULL(p.materno, '')) as nombre_completo")
-                ->join('mascotas as m', 'm.id_mascota', '=', 'historial_clinico.id_mascota')
-                ->join('animales as a', 'a.id_animal', '=', 'm.id_animal')
-                ->join('razas as r', 'r.id_raza', '=', 'm.id_raza')
+                ->selectRaw("CONCAT('VET-', YEAR(m.created_at), '-', LPAD(m.id_mascota, 6, '0')) as registro")
+                ->leftJoin('mascotas as m', 'm.id_mascota', '=', 'historial_clinico.id_mascota')
+                ->leftJoin('animales as a', 'a.id_animal', '=', 'm.id_animal')
+                ->leftJoin('razas as r', 'r.id_raza', '=', 'm.id_raza')
                 ->join('propietarios as p', 'p.id_propietario', '=', 'm.id_propietario')
                 ->where('id_historial', $id)
                 ->first();
@@ -131,7 +132,7 @@ class HistorialClinicoModel extends Model
             //             ->select('v.id_vacuna', 'v.id_tipo_vacuna', 'tv.nombre_vacuna', 'tv.id_animal')
             //             ->join('tipos_vacunas as tv', 'tv.id_tipo_vacuna', '=', 'v.id_tipo_vacuna')
             //             ->get()
-            if (request()->ajax()) {
+            if (request()->ajax() || $report) {
                 $fullData = [
                     'anamnesis' => $historial,
                     'tipos_vacunas' => DB::table('tipos_vacunas')->where('id_animal', $historial->id_animal)->get()
@@ -140,7 +141,7 @@ class HistorialClinicoModel extends Model
                     $query = DB::table($mapping['table'])->where('id_historial', $id);
 
                     if ($key === 'vacunas') {
-                        $query->join('tipos_vacunas as tv', $mapping['table'] . '.id_tipo_vacuna', '=', 'tv.id_tipo_vacuna')
+                        $query->leftjoin('tipos_vacunas as tv', $mapping['table'] . '.id_tipo_vacuna', '=', 'tv.id_tipo_vacuna')
                             ->select($mapping['table'] . '.*', 'tv.nombre_vacuna');
                     }
                     if ($key === 'metodos_complementarios') {

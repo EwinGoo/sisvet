@@ -85,6 +85,7 @@
                                 <th>Imagen</th>
                                 <th>nombre producto</th>
                                 <th>precio</th>
+                                <th>cantidad</th>
                                 <th class="text-center">fecha vencimiento</th>
                                 <th>acción</th>
                             </tr>

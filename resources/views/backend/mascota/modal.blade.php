@@ -271,6 +271,8 @@
             <div class="modal-footer">
                 <button id="btn-cancel" type="button" class="btn btn-sm bg-gradient-secondary" data-bs-dismiss="modal"><i
                         class="material-icons">close</i> Cerrar</button>
+                <button id="btn-submit" type="button" class="btn bg-gradient-primary "><i
+                            class="material-icons">done</i> Guardar</button>
             </div>
         </div>
     </div>

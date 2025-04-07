@@ -12,8 +12,8 @@
                     </div>
                     <div class="ms-auto my-auto mt-lg-0 mt-4">
                         <div class="ms-auto my-auto">
-                            <button id="btn-add-client" type="button" class="btn bg-gradient-primary btn-sm mb-0" target="_blank"
-                                data-bs-toggle="modal" data-bs-target="#modal-main">+&nbsp;
+                            <button id="btn-add-client" type="button" class="btn bg-gradient-primary btn-sm mb-0"
+                                target="_blank" data-bs-toggle="modal" data-bs-target="#modal-main">+&nbsp;
                                 Nuevo cliente</button>
                         </div>
                     </div>
@@ -82,6 +82,7 @@
                                         <span class="input-group-text" id="cantidad">Cantidad</span>
                                         <input name="cantidad" id="cantidad" type="number" class="form-control"
                                             placeholder="Cantidad">
+                                        <small id="stock-info" class="text-sm text-secondary ms-2">Stock disponible: 0</small>
                                     </div>
                                 </div>
                                 <div class="col-lg-6">
@@ -101,7 +102,8 @@
                                                 class="text-center text-uppercase text-secondary text-xxs font-weight-bolder opacity-7">
                                                 Codigo
                                             </th>
-                                            <th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7">
+                                            <th
+                                                class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7">
                                                 Producto
                                             </th>
                                             <th

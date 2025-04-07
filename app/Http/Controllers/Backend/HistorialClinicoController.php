@@ -30,6 +30,7 @@ class HistorialClinicoController extends Controller
 
     public function historial($id = null, $option = null)
     {
+        // dd($id);
         try {
             if (request()->ajax()) {
                 $data = HistorialClinicoModel::getDataHistorial($id, $option);

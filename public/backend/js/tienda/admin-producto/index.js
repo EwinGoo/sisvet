@@ -11,7 +11,6 @@ class ClientManager {
         this.currentId = null;
         this.dataSelect = null;
         this.initializeDataTable();
-        this.initChoices();
         this.initializeEventListeners();
         this.initializeUtilities();
     }
@@ -45,6 +44,7 @@ class ClientManager {
                     orderable: true,
                     render: (data, type, row) => row.precio + " Bs.",
                 },
+                { data: "cantidad" },
                 {
                     data: null,
                     targets: -1,
@@ -65,11 +65,6 @@ class ClientManager {
                 utilities.loaderTool();
             },
         });
-    }
-
-    initChoices() {
-        // this.queryFetch('admin/producto/create','GET', this.dataSelect);
-        // $('.choice name=[categiras]')
     }
 
     initializeEventListeners() {
@@ -138,7 +133,7 @@ class ClientManager {
             if ($(this).prop("tagName") === "SELECT") {
                 const choice = choiceInstances[name];
                 if (choice)
-                    choice.setChoiceByValue(data[name].toString() || "");
+                    choice.setChoiceByValue((data[name] || "").toString());
             } else {
                 $(this).parent().addClass("is-filled");
                 $(this).val(data[name]);
