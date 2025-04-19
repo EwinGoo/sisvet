@@ -46,6 +46,66 @@ utilities = {
             }
         });
     },
+    // formValidation: function (errors) {
+    //     $("form#form-main :input").each(function () {
+    //         const $input = $(this);
+    //         const name = $input.attr("name");
+    //         const value = $input.val();
+    //         const $errorContainer = $input.next("small.text-danger");
+
+    //         // Resetear estado del campo
+    //         $input.removeClass("is-invalid").addClass("is-valid");
+    //         if ($errorContainer.length) {
+    //             $errorContainer.text("").removeClass("text-danger");
+    //         }
+
+    //         // Si no hay errores para este campo
+    //         if (!errors || !errors[name]) {
+    //             // Marcar como válido si tiene valor (opcional)
+    //             if (value && value.trim() !== "" && name && name !== "change") {
+    //                 $input.addClass("is-valid");
+    //                 if (typeof showSucces === "function") {
+    //                     showSucces($input[0]);
+    //                 }
+    //             }
+    //             return; // Continuar con el siguiente campo
+    //         }
+
+    //         // Manejo de errores
+    //         $input.removeClass("is-valid").addClass("is-invalid");
+
+    //         // Determinar el mensaje de error
+    //         let errorMessage = Array.isArray(errors[name])
+    //             ? errors[name].join(", ")
+    //             : errors[name];
+
+    //         // Mostrar error según el tipo de campo
+    //         switch (true) {
+    //             case $input.prop("tagName") === "SELECT":
+    //                 $(`[error-name="${name}"]`)
+    //                     .text(errorMessage)
+    //                     .addClass("text-danger");
+    //                 break;
+
+    //             case $input.attr("type") === "file":
+    //                 $("#error-image")
+    //                     .text(errorMessage)
+    //                     .addClass("text-danger");
+    //                 break;
+
+    //             default:
+    //                 if ($errorContainer.length) {
+    //                     $errorContainer
+    //                         .text(errorMessage)
+    //                         .addClass("text-danger");
+    //                 } else {
+    //                     $input.after(
+    //                         `<small class="text-danger">${errorMessage}</small>`
+    //                     );
+    //                 }
+    //         }
+    //     });
+    // },
     formValidation: function (errors) {
         $("form#form-main :input").each(function () {
             let name = $(this).attr("name");
@@ -68,10 +128,14 @@ utilities = {
                 }
             } else {
                 if (errors.hasOwnProperty(name) && name !== "image") {
+                    // console.log(errors[name]);
+                    console.log($(`[name="${name}"]`)[0]);
                     errors[name].length > 1
+
                         ? showError($(`[name="${name}"]`)[0], errors[name][0])
                         : showError($(`[name="${name}"]`)[0], errors[name]);
                 } else if (value.trim() !== "" && name && name !== "change") {
+                    // console.log(name);
                     showSucces($(`[name="${name}"]`)[0]);
                 }
             }
@@ -118,6 +182,9 @@ utilities = {
                 e.parent().removeClass("is-invalid is-valid is-filled mb-3");
                 e.val("");
                 if (e.prop("type") === "date") {
+                    e.parent().addClass("is-filled");
+                }
+                if (e.prop("type") === "datetime-local") {
                     e.parent().addClass("is-filled");
                 }
             }

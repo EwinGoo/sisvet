@@ -78,7 +78,9 @@ class Controller extends BaseController
           $grupoMedico = ($user->rol == 'médico' || $user->rol == 'administrador') ? [
             '<hr>',
             'CONSULTORIO',
+            "calendario" => 'admin-calendario',
             "propietarios" => 'admin-propietario',
+            "citas" => 'admin-cita',
             "mascotas" => 'admin-mascota',
             "razas" => 'admin-raza',
         ]:[];
@@ -108,6 +110,7 @@ class Controller extends BaseController
             'marines' => 'image',
             'estudiantes' => 'group_add',
             'respuestas' => 'fact_check',
+            'calendario' => 'event_available',
             'propietarios' => 'person',
             'mascotas' => 'pets',
             'preguntas' => 'task_alt',
@@ -125,6 +128,7 @@ class Controller extends BaseController
             "productos" => 'production_quantity_limits',
             "clientes" => 'groups',
             "razas" => 'format_list_bulleted',
+            "citas" => 'calendar_month',
         ];
     }
 }

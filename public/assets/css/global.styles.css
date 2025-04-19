@@ -202,6 +202,7 @@
 div.dt-container div.dt-search input {
     margin-left: 0 !important;
     /* padding: 0; */
+    width: 36rem !important;
 }
 
 .dt-container > :first-child .dt-search {
@@ -612,4 +613,23 @@ table.dataTable.dtr-inline.collapsed > tbody > tr > th.dtr-control:before {
 }
 .margin-preview{
     margin-left: 2.35rem !important;
+}
+/* Estilos para el gráfico */
+.chart-canvas {
+    width: 100% !important;
+    height: 100% !important;
+}
+
+/* Estilos para los dropdown items activos */
+.dropdown-item.chart-range-btn.active {
+    background-color: rgba(123, 128, 154, 0.1);
+    color: #2dce89;
+}
+
+/* Tooltip personalizado */
+.chartjs-tooltip {
+    opacity: 1 !important;
+    box-shadow: 0 4px 20px 0 rgba(0, 0, 0, 0.14),
+                0 7px 10px -5px rgba(0, 0, 0, 0.4);
+    border-radius: 0.5rem;
 }

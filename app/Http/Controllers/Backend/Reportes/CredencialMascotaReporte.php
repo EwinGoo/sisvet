@@ -65,6 +65,10 @@ class CredencialMascotaReporte extends Controller
 
     private function generarAnverso($pdf, $mascota)
     {
+        $background = public_path('assets/images/fondo-credencial.png');
+        if (file_exists($background)) {
+            $pdf->Image($background, 0, 0, 86, 54);
+        }
         // Aquí puedes copiar el código de tu "anverso" como en tu clase CredencialMascotaReporte
         // Encabezado
         $this->agregarEncabezado($pdf);
@@ -85,7 +89,7 @@ class CredencialMascotaReporte extends Controller
 
     private function generarReverso($pdf, $mascota)
     {
-        $background = public_path('assets/images/fondo-reverso.png');
+        $background = public_path('assets/images/fondo-credencial.png');
         if (file_exists($background)) {
             $pdf->Image($background, 0, 0, 86, 54);
         }
@@ -120,7 +124,7 @@ class CredencialMascotaReporte extends Controller
                 $pdf->Cell(40, 4, $vacuna->fecha_aplicacion, 1, 1);
             }
         }else{
-            $pdf->SetTextColor(225, 225, 225); // Negro
+            $pdf->SetTextColor(255, 255, 255); // Negro
             $pdf->Cell(0, 4, '---------------Sin vacunas----------------', 0, 0, 'C');
         }
 

@@ -31,7 +31,7 @@
                 <div class="collapse" id="ProfileNav" style>
                     <ul class="nav">
                         <li class="nav-item">
-                            <a class="nav-link text-white" href="../../pages/pages/profile/overview.html">
+                            <a class="nav-link text-white" href="{{ route('admin-perfil.index') }}">
                                 <span class="sidenav-mini-icon"> P </span>
                                 <span class="sidenav-normal ms-3 ps-1">Perfil</span>
                             </a>

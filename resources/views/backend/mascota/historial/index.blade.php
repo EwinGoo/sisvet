@@ -131,7 +131,7 @@
                                     Mucosa
                                 </th>
                                 <th class="text-center text-uppercase text-xxs font-weight-bolder opacity-7">
-                                    R.S. SEG
+                                    R.C. SEG
                                 </th>
                                 <th class="text-center text-uppercase text-xxs font-weight-bolder opacity-7">
                                     Acciones

@@ -78,7 +78,7 @@ export function examenForm() {
                 <div class="input-group input-group-outline" id="select-validation-mucosa">
                     <select class="form-control choices" name="mucosa" id="mucosa">
                         <option value="">[SELECCIONE]</option>
-                        <option value="Convestiva">Convestiva</option>
+                        <option value="Congestiva">Congestiva</option>
                         <option value="Cianotico">Cianotico</option>
                         <option value="Icterico">Icterico</option>
                         <option value="Anemico">Anemico</option>
@@ -92,7 +92,7 @@ export function examenForm() {
                     <label for="rc">R.S. SEG</label>
                     <input type="text" name="rc" id="rc" class="form-control" placeholder="" />
                 </div>-->
-                <label for="rc">R.S. SEG</label>
+                <label for="rc">R.C. SEG</label>
                 <div class="input-group input-group-outline" id="select-validation-rc">
                     <select class="form-control choices" name="rc" id="rc">
                         <option value="">[SELECCIONE]</option>

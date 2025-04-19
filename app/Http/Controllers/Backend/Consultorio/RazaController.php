@@ -16,6 +16,7 @@ class RazaController extends Controller
     {
         $this->title = 'Razas';
         $this->page = 'admin-raza';
+        $this->area = 'Consultorio';
     }
 
     public function index()

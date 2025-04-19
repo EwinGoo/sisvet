@@ -1,9 +1,11 @@
 <?php
 
+use App\Http\Controllers\Backend\Consultorio\CitaController;
 use App\Http\Controllers\Backend\Consultorio\RazaController;
 use App\Http\Controllers\Backend\HistorialClinicoController;
 use App\Http\Controllers\Backend\PropietarioController;
 use App\Http\Controllers\Backend\MascotaController;
+use App\Http\Controllers\Auth\PerfilController;
 use App\Http\Controllers\Backend\Reportes\ComprobanteVentaReporte;
 use App\Http\Controllers\Backend\Reportes\CredencialMascotaReporte;
 use App\Http\Controllers\Backend\Reportes\HistorialClinicoReport;
@@ -33,6 +35,7 @@ Route::prefix('admin')->middleware(['auth'])->group(function () {
     Route::get('/dashboard', [DashboardController::class, 'index'])->name('dashboard');
 
     Route::middleware(['role:administrador'])->group(function () {
+        Route::get('/perfil', [PerfilController::class, 'index'])->name('admin-perfil.index');
         Route::resource('usuario', UsuarioController::class)->names('admin-usuario');
         Route::post('/change-state-user', [UsuarioController::class, 'changeStatus'])->name('change-state');
         Route::get('/usuario/{id}/image', [UsuarioController::class, 'getImage'])->name('admin-usuario.get-image');
@@ -41,6 +44,7 @@ Route::prefix('admin')->middleware(['auth'])->group(function () {
         Route::resource('propietario', PropietarioController::class)->names('admin-propietario');
         Route::resource('mascota', MascotaController::class)->names('admin-mascota');
         Route::get('mascota/get-razas/{id}',  [MascotaController::class, 'getRazas']);
+        Route::get('mascota/get-mascotas/{id_propietario}',  [MascotaController::class, 'getMascotas']);
         Route::prefix('mascota')->group(function () {
             Route::get('/{id}/historial/reporte', [HistorialClinicoReport::class, 'generarPdf']);
         });
@@ -61,6 +65,27 @@ Route::prefix('admin')->middleware(['auth'])->group(function () {
         Route::put('raza/{raza}', [RazaController::class, 'update']);
         Route::delete('raza/{raza}', [RazaController::class, 'destroy']);
         Route::post('change-state-raza', [RazaController::class, 'changeStatus']);
+
+        // Route::resource('citas', MascotaController::class)->names('admin-citas');
+
+        Route::get('/calendario', [CitaController::class, 'calendario'])->name('admin-calendario.index');
+        Route::put('/calendario/{cita}', [CitaController::class, 'updateFecha'])->name('admin-calendario.updateFecha');
+        Route::get('/calendario/proximos-eventos', [CitaController::class, 'proximosEventos']);
+        Route::get('/calendario/estadisticas-productividad', [CitaController::class, 'datosProductividad']);
+
+        // CRUD Citas
+        Route::get('/cita', [CitaController::class, 'index'])->name('admin-cita.index');
+        Route::post('/cita', [CitaController::class, 'store'])->name('admin.cita.store');
+        Route::get('/cita/{id}/edit', [CitaController::class, 'edit'])->name('admin.cita.edit');
+        Route::put('/cita/{id}', [CitaController::class, 'update'])->name('admin.cita.update');
+        Route::delete('/cita/{id}', [CitaController::class, 'destroy'])->name('admin.cita.destroy');
+
+        // Otras rutas relacionadas
+        Route::get('/cita/mascotas/{propietarioId}', [CitaController::class, 'getMascotas'])->name('admin.cita.mascotas');
+        Route::post('/cita/{id}/cambiar-estado', [CitaController::class, 'cambiarEstado'])->name('admin.cita.cambiar-estado');
+
+        // Historial de citas
+        Route::get('/cita/{id}/historial', [CitaController::class, 'historial'])->name('admin.cita.historial');
     });
 
     Route::middleware(['role:administrador,vendedor'])->group(function () {
@@ -69,11 +94,10 @@ Route::prefix('admin')->middleware(['auth'])->group(function () {
         Route::resource('cliente', ClienteController::class)->names('admin-cliente');
         Route::resource('producto', ProductoController::class)->names('admin-producto');
         Route::resource('venta', VentaController::class)->names('admin-venta');
-        Route::get('venta/{id}/comprobante', [ComprobanteVentaReporte::class,'generarComprobante']);
+        Route::get('venta/{id}/comprobante', [ComprobanteVentaReporte::class, 'generarComprobante']);
 
         Route::get('venta/{id}/detalle', [VentaController::class, 'detalle']);
         Route::get('producto/stock/{id}', [ProductoController::class, 'checkStock']);
-
     });
 });
 

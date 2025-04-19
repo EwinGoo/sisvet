@@ -17,6 +17,7 @@ class UsuarioController extends Controller
     {
         $this->title = 'Usuarios';
         $this->page = 'admin-usuario';
+        $this->area = 'Administración';
     }
     public function index()
     {

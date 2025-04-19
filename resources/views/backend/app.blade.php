@@ -16,7 +16,7 @@
     {{-- <link rel="stylesheet" type="text/css"
         href="{{ asset('assets/css/typography.css') }}" /> --}}
     <link rel="stylesheet" type="text/css"
-        href="https://fonts.googleapis.com/css?family=Roboto:300,400,500,700,900|Roboto+Slab:400,700" />
+        href="https://fonts.googleapis.com/css?family=Roboto:300,400,500,700,900|Roboto+Slab:400,700"  />
 
     <link href="{{ asset('material-dashboard/assets/css/nucleo-icons.css') }}" rel="stylesheet" />
     <link href="{{ asset('material-dashboard/assets/css/nucleo-svg.css') }}" rel="stylesheet" />
@@ -35,7 +35,7 @@
     {{-- <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet"> --}}
     <script src="{{ asset('material-dashboard/assets/js/core/jquery.min.js') }}"></script>
     <script src="{{ asset('material-dashboard/assets/js/plugins/datatables.js') }}"></script>
-    <script src="{{ asset('material-dashboard/assets/js/plugins/datatables.responsive.js') }}"></script>
+    {{-- <script src="{{ asset('material-dashboard/assets/js/plugins/datatables.responsive.js') }}"></script> --}}
 
 </head>
 
@@ -187,8 +187,8 @@
     <script src="{{ asset('material-dashboard/assets/js/plugins/datatables.js') }}"></script>
     <script src="{{ asset('material-dashboard/assets/js/plugins/datatables.responsive.js') }}"></script>
     {{-- <script src="{{ asset('material-dashboard/assets/js/plugins/jquery.dataTables.min.js') }}"></script> --}}
-    <script src="{{ asset('material-dashboard/assets/js/plugins/choices.min.js') }}"></script>
     <script src="{{ asset('material-dashboard/assets/js/plugins/fullcalendar.min.js') }}"></script>
+    <script src="{{ asset('material-dashboard/assets/js/plugins/choices.min.js') }}"></script>
 
     <script src="{{ asset('material-dashboard/assets/js/plugins/dragula/dragula.min.js') }}"></script>
     <script src="{{ asset('material-dashboard/assets/js/plugins/jkanban/jkanban.js') }}"></script>

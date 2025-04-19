@@ -266,26 +266,65 @@ $(document).ready(function () {
         handleDelete(e) {
             const id = $(e.currentTarget).data("id");
             const option = $(e.currentTarget).closest("table").data("type");
+            const self= this;
+            Swal.fire({
+                title: "¿Está seguro de eliminar este registro?",
+                text: "¡No podrás revertir esto!",
+                icon: "warning",
+                showCancelButton: true,
+                confirmButtonColor: "#3085d6",
+                cancelButtonColor: "#d33",
+                confirmButtonText: "Sí, eliminar!",
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    $.ajax({
+                        url: `${this.formUrls[option]}/${id}`,
+                        type: "DELETE",
+                        success: function (response) {
+                            self.showToast(response.message);
 
-            if (confirm("¿Está seguro de eliminar este registro?")) {
-                $.ajax({
-                    url: `${this.formUrls[option]}/${id}`,
-                    type: "DELETE",
-                    success: (response) => {
-                        this.showToast(response.message);
-                        console.log(this.data.data[option]);
+                            self.data.data[option] = self.data.data[
+                                option
+                            ].filter(
+                                (item) =>
+                                    item[self.formOptions[option].id] !== id
+                            );
+                            self.updateSpecificSection(
+                                option,
+                                self.data.data[option]
+                            );
+                        },
+                        error: function (xhr) {
+                            Swal.fire(
+                                "Error!",
+                                xhr.responseJSON.message ||
+                                    "Ocurrió un error al eliminar.",
+                                "error"
+                            );
+                        },
+                    });
+                }
+            });
 
-                        this.data.data[option] = this.data.data[option].filter(
-                            (item) => item[this.formOptions[option].id] !== id
-                        );
-                        this.updateSpecificSection(
-                            option,
-                            this.data.data[option]
-                        );
-                    },
-                    error: this.handleError,
-                });
-            }
+            // if (confirm("¿Está seguro de eliminar este registro?")) {
+            //     $.ajax({
+            //         url: `${this.formUrls[option]}/${id}`,
+            //         type: "DELETE",
+            //         success: (response) => {
+            //             this.showToast(response.message);
+            //             console.log(this.data.data[option]);
+
+            //             this.data.data[option] = this.data.data[option].filter(
+            //                 (item) => item[this.formOptions[option].id] !== id
+            //             );
+            //             this.updateSpecificSection(
+            //                 option,
+            //                 this.data.data[option]
+            //             );
+            //         },
+            //         error: this.handleError,
+            //     });
+            // }
         },
         handleError(xhr) {
             const errorMessages = Object.values(xhr.responseJSON.errors)
@@ -422,6 +461,11 @@ $(document).ready(function () {
         showToast(message) {
             this.elements.toastMessage.text(message);
             new bootstrap.Toast(this.elements.toast, { delay: 2500 }).show();
+        },
+        showSwal(type, url, title, id, option) {
+            // const this = this; // Guardamos la referencia al contexto actual
+
+
         },
     };
 

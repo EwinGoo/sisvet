@@ -114,6 +114,8 @@ $(document).ready(function () {
             this.elements.btnSubmit.on("click", this.handleSubmit.bind(this));
 
             const idAnimalChoice = choiceInstances["id_animal"];
+            console.log(idAnimalChoice);
+
             if (idAnimalChoice) {
                 const selectElement = idAnimalChoice.passedElement.element;
 
@@ -342,7 +344,6 @@ $(document).ready(function () {
                         if (razaChoice) {
                             razaChoice.clearChoices();
                             console.log(response.razas);
-
                             if (response.razas) {
                                 response.razas.forEach((raza) => {
                                     razaChoice.setChoices([

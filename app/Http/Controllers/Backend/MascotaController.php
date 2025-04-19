@@ -45,6 +45,21 @@ class MascotaController extends Controller
         }
         return $this->render("mascota.index");
     }
+
+    public function getMascotas($id = null)
+    {
+        if (request()->ajax()) {
+            $mascotas = MascotaModel::where('id_propietario', $id)
+            ->leftJoin('animales as a', 'a.id_animal', '=', 'mascotas.id_animal')
+            ->get();
+
+            return response()->json([
+                'mascotas' => $mascotas,
+                'status' => 200
+            ]);
+        }
+    }
+
     public function getRazas($id = null)
     {
         if (request()->ajax()) {
@@ -162,7 +177,7 @@ class MascotaController extends Controller
                 ];
                 return response()->json($data, 500);
             }
-        }else{
+        } else {
             $idImage = $mascota->id_multimedia ? $mascota->id_multimedia : null;
         }
 
