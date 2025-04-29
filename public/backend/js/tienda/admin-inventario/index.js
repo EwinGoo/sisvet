@@ -23,15 +23,20 @@ class ClientManager {
             order: [[0, "desc"]],
             responsive: true,
             language: languageTable,
-            lengthMenu: [[5, 25, 50, -1], [10, 25, 50, "Todos"]],
+            lengthMenu: [[10, 25, 50, -1], [10, 25, 50, "Todos"]],
             pagingType: "full_numbers",
             ajax: { url: "/admin/inventario" },
             columns: [
                 { data: "id_producto" },
                 { data: "nombre_producto" },
-                { data: "precio_venta" },
-                { data: "cantidad_compra" },
-                { data: "fecha_vencimiento" },
+                { data: "precio_venta_actual" },
+                { data: "cantidad_disponible" },
+                {
+                    data: "fecha_caducidad_actual",  // Accede al nombre anidado
+                    render: function(data, type, row) {
+                        return data || "N/A";  // Manejo de valores nulos
+                    }
+                },
                 // {
                 //     data: null,
                 //     targets: -1,

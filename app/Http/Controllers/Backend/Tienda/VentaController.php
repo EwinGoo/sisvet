@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Backend\Tienda;
 
 use App\Http\Controllers\Controller;
 use App\Models\PropietarioModel;
+use App\Models\Tienda\CompraModel;
 use App\Models\Tienda\DetalleVentaModel;
 use App\Models\Tienda\ProductoModel;
 use App\Models\Tienda\VentaModel;
@@ -68,7 +69,7 @@ class VentaController extends Controller
             ], 400);
         }
 
-        // Validar stock antes de crear la venta
+        // Validar stock basado en COMPRAS (no en ProductoModel->cantidad)
         foreach ($request->productos as $producto) {
             $productoModel = ProductoModel::find($producto['codigo']);
 
@@ -79,20 +80,64 @@ class VentaController extends Controller
                 ], 400);
             }
 
-            if ($productoModel->cantidad < $producto['cantidad']) {
+            // 1. Sumar todas las compras del producto
+            $totalCompras = CompraModel::where('id_producto', $producto['codigo'])
+                ->sum('cantidad_compra');
+
+            // 2. Sumar todas las ventas del producto (para restarlas)
+            $totalVentas = DetalleVentaModel::where('id_producto', $producto['codigo'])
+                ->sum('cantidad');
+
+            // 3. Stock disponible = Compras - Ventas
+            $stockDisponible = $totalCompras - $totalVentas;
+
+            if ($stockDisponible < $producto['cantidad']) {
                 return response()->json([
                     'message' => 'Stock insuficiente para el producto: ' . $productoModel->nombre_producto .
-                        ' (Stock: ' . $productoModel->cantidad . ', Solicitado: ' . $producto['cantidad'] . ')',
+                        ' (Stock disponible: ' . $stockDisponible . ', Solicitado: ' . $producto['cantidad'] . ')',
                     'status' => 400
                 ], 400);
             }
         }
 
-        // Iniciar transacción para asegurar integridad de datos
+        // Iniciar transacción para asegurar integridad
         DB::beginTransaction();
 
+        // Validar stock y preparar decremento
+        // foreach ($request->productos as $producto) {
+        //     $productoModel = ProductoModel::find($producto['codigo']);
+        //     if (!$productoModel) {
+        //         return response()->json(['message' => 'Producto no encontrado', 'status' => 400], 400);
+        //     }
+
+        //     // 1. Obtener compras del producto (ordenadas por fecha ASC para FIFO)
+        //     $compras = CompraModel::where('id_producto', $producto['codigo'])
+        //         ->orderBy('fecha_compra', 'asc')
+        //         ->get();
+
+        //     // 2. Calcular stock disponible
+        //     $stockDisponible = $compras->sum('cantidad_compra') - DetalleVentaModel::where('id_producto', $producto['codigo'])->sum('cantidad');
+
+        //     if ($stockDisponible < $producto['cantidad']) {
+        //         return response()->json([
+        //             'message' => 'Stock insuficiente. Disponible: ' . $stockDisponible,
+        //             'status' => 400
+        //         ], 400);
+        //     }
+
+        //     // 3. Descontar de compras (FIFO)
+        //     $cantidadRestante = $producto['cantidad'];
+        //     foreach ($compras as $compra) {
+        //         if ($cantidadRestante <= 0) break;
+
+        //         $cantidadADescontar = min($compra->cantidad_compra, $cantidadRestante);
+        //         $compra->decrement('cantidad_compra', $cantidadADescontar);
+        //         $cantidadRestante -= $cantidadADescontar;
+        //     }
+        // }
+
         try {
-            // Crear la venta
+            // Crear la venta (igual que antes)
             $venta = VentaModel::create([
                 'id_usuario' => Auth::id(),
                 'fecha_venta' => date("Y-m-d H:i:s"),
@@ -100,7 +145,7 @@ class VentaController extends Controller
                 'id_cliente' => $request->id_cliente,
             ]);
 
-            // Preparar detalles de venta y reducir stock
+            // Preparar detalles de venta (NO reducir stock en ProductoModel)
             $detallesVenta = [];
             foreach ($request->productos as $producto) {
                 $detallesVenta[] = [
@@ -110,27 +155,20 @@ class VentaController extends Controller
                     'precio_unitario' => $producto['precio'],
                     'subtotal' => $producto['subtotal'],
                 ];
-
-                // Reducir el stock del producto
-                ProductoModel::where('id_producto', $producto['codigo'])
-                    ->decrement('cantidad', $producto['cantidad']);
             }
 
             // Insertar detalles de venta
             DetalleVentaModel::insert($detallesVenta);
 
-            // Confirmar la transacción
             DB::commit();
 
             return response()->json([
-                'message' => 'Venta registrada exitosamente y stock actualizado',
+                'message' => 'Venta registrada exitosamente (stock validado por compras)',
                 'venta' => $venta,
                 'status' => 201
             ], 201);
         } catch (\Exception $e) {
-            // Revertir la transacción en caso de error
             DB::rollBack();
-
             return response()->json([
                 'message' => 'Error al registrar la venta: ' . $e->getMessage(),
                 'status' => 500

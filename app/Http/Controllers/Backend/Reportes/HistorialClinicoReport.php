@@ -70,7 +70,7 @@ class HistorialClinicoReport extends Controller
         $metodos_complementarios = array_map(function ($metodo) {
             return [
                 'fecha_hora' => date('d/m/Y', strtotime($metodo['fecha_hora'])),
-                'examen' => $metodo['examen'],
+                // 'examen' => $metodo['examen'],
                 'resultados' => $metodo['resultados'],
                 'nombre_examen' => $metodo['nombre_examen']
             ];
@@ -190,7 +190,7 @@ class HistorialClinicoReport extends Controller
         $pdf->sectionTitle('6. MÉTODOS COMPLEMENTARIOS');
         $pdf->Ln(2);
 
-        $pdf->createTable(['Fecha', 'Examen', 'Resultados', 'Tipo examen'], $metodos_complementarios,[30,30, 60, 60]);
+        $pdf->createTable(['Fecha', 'Resultados', 'Tipo examen'], $metodos_complementarios,[30, 95, 55]);
         $pdf->Ln(4);
 
         // 7. DIAGNÓSTICO PRESUNTIVO
@@ -297,11 +297,11 @@ class VeterinariaPDF extends TCPDF
 
         // Título
         $this->SetFont('helvetica', 'B', 14);
-        $this->Cell(280, 10, 'CLÍNICA VETERINARIA SAN MARTIN', 0, 1, 'C');
+        $this->Cell(0, 10, 'CLÍNICA VETERINARIA SAN MARTIN', 0, 1, 'R');
 
         // Información de contacto
         $this->SetFont('helvetica', '', 9);
-        $this->Cell(280, 5, 'Tel: 2222-5555 | Emergencias: 7777-8888 | Av. Central #123', 0, 1, 'C');
+        $this->Cell(0, 5, 'Cel: 67059010 | Emergencias: 63216170 | Av. Ladislao Cabrera #2702', 0, 1, 'R');
 
         // Línea separadora
         $this->Line(10, 25, $this->getPageWidth() - 10, 25);

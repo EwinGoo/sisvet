@@ -111,9 +111,19 @@ utilities = {
             let name = $(this).attr("name");
             let value = $(this).val();
 
+            // Verificar si el elemento con el atributo name existe
+            let element = $(`[name="${name}"]`);
+
             if ($(this).prop("tagName") === "SELECT") {
                 if (errors.hasOwnProperty(name)) {
-                    showError($(`[error-name="${name}"]`)[0], errors[name]);
+                    let errorElement = $(`[error-name="${name}"]`);
+                    if (errorElement.length > 0) {
+                        showError(errorElement[0], errors[name]);
+                    } else {
+                        console.log(
+                            `No existe el elemento [error-name="${name}"]`
+                        );
+                    }
                 }
             } else if ($(this).is(":radio")) {
                 // Si necesitas manejar radios, descomenta lo siguiente
@@ -122,21 +132,28 @@ utilities = {
                 // }
             } else if ($(this).attr("type") === "file") {
                 if (errors.hasOwnProperty(name)) {
-                    showError($(`[name="${name}"]`)[0], errors[name]);
+                    if (element.length > 0) {
+                        showError(element[0], errors[name]);
+                    }
                 } else if (errors.hasOwnProperty("image")) {
-                    $("#error-image").text(errors["image"]);
+                    let imageErrorElement = $("#error-image");
+                    if (imageErrorElement.length > 0) {
+                        imageErrorElement.text(errors["image"]);
+                    } else {
+                        console.log("No existe el elemento #error-image");
+                    }
                 }
             } else {
                 if (errors.hasOwnProperty(name) && name !== "image") {
-                    // console.log(errors[name]);
-                    console.log($(`[name="${name}"]`)[0]);
-                    errors[name].length > 1
-
-                        ? showError($(`[name="${name}"]`)[0], errors[name][0])
-                        : showError($(`[name="${name}"]`)[0], errors[name]);
+                    if (element.length > 0) {
+                        errors[name].length > 1
+                            ? showError(element[0], errors[name][0])
+                            : showError(element[0], errors[name]);
+                    }
                 } else if (value.trim() !== "" && name && name !== "change") {
-                    // console.log(name);
-                    showSucces($(`[name="${name}"]`)[0]);
+                    if (element.length > 0) {
+                        showSucces(element[0]);
+                    }
                 }
             }
         });

@@ -20,13 +20,18 @@ class PerfilController extends Controller
 
     public function index()
     {
-        $usuario = Auth::user();
-        return view('perfil.index', compact('usuario'));
+        // $usuario = Auth::id();
+        // dd($usuario);
+        $usuario = UsuarioModel::find(Auth::id());
+        // return view('usuario.perfil', compact('usuario'));
+        $this->data['usuario'] = $usuario;
+        return $this->render('usuario.perfil');
     }
 
     public function update(Request $request)
     {
-        $usuario = Auth::user();
+
+        $usuario = UsuarioModel::find(Auth::id());
 
         $validator = Validator::make($request->all(), [
             'nombre' => 'required|string|max:100',
@@ -43,21 +48,22 @@ class PerfilController extends Controller
         }
 
         // Actualizar datos básicos
-        $usuario->update([
-            'nombre' => $request->nombre,
-            'paterno' => $request->paterno,
-            'materno' => $request->materno,
-            'celular' => $request->celular
-        ]);
+        // $usuario->update([
+        //     'nombre' => $request->nombre,
+        //     'paterno' => $request->paterno,
+        //     'materno' => $request->materno,
+        //     'celular' => $request->celular
+        // ]);
 
         // Actualizar imagen si se proporcionó
         if ($request->hasFile('image')) {
-            $idImage = Helpers::__fileUpload($request, 'image', 'perfiles', $usuario->id_multimedia);
+            $idImage = Helpers::__fileUpload($request, 'image', 'usuarios', $usuario->id_multimedia);
             $usuario->update(['id_multimedia' => $idImage]);
         }
+        // dd($);
 
-        return redirect()->route('perfil')
-            ->with('success', 'Perfil actualizado correctamente');
+        return $this->render('usuario.perfil');
+            // ->with('success', 'Perfil actualizado correctamente');
     }
 
     public function getImagenPerfil()
@@ -66,6 +72,6 @@ class PerfilController extends Controller
         if (!$usuario->ruta_archivo) {
             return response()->json(['default' => asset('assets/img/default-profile.png')]);
         }
-        return response()->json(['image' => asset('storage/'.$usuario->ruta_archivo)]);
+        return response()->json(['image' => asset('storage/' . $usuario->ruta_archivo)]);
     }
 }

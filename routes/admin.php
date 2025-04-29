@@ -9,7 +9,9 @@ use App\Http\Controllers\Auth\PerfilController;
 use App\Http\Controllers\Backend\Reportes\ComprobanteVentaReporte;
 use App\Http\Controllers\Backend\Reportes\CredencialMascotaReporte;
 use App\Http\Controllers\Backend\Reportes\HistorialClinicoReport;
+use App\Http\Controllers\Backend\Reportes\InventarioReport;
 use App\Http\Controllers\Backend\Tienda\ClienteController;
+use App\Http\Controllers\Backend\Tienda\CompraController;
 use App\Http\Controllers\Backend\Tienda\InventarioController;
 use App\Http\Controllers\Backend\Tienda\ProductoController;
 use App\Http\Controllers\Backend\Tienda\VentaController;
@@ -22,7 +24,7 @@ use SebastianBergmann\CodeCoverage\Report\Html\Dashboard;
 
 /* init::Rutas del sistema de administración*/
 
-Route::get('/test', [TestController::class, 'index']);
+Route::get('/test3', [TestController::class, 'index']);
 // Route::get('/dashboard', [DashboardController::class, 'index'])->middleware(['auth'])->name('dashboard');
 
 // Route::resource('admin/persona', PersonaController::class)->middleware(['auth'])->names('admin-persona');
@@ -31,11 +33,16 @@ Route::get('/test', [TestController::class, 'index']);
 //     Route::resource('persona', PersonaController::class)->names('admin-persona');
 // });
 // Route::get('/dashboard', [DashboardController::class, 'index'])->name('dashboard');
+
 Route::prefix('admin')->middleware(['auth'])->group(function () {
-    Route::get('/dashboard', [DashboardController::class, 'index'])->name('dashboard');
+    Route::middleware(['role:administrador,médico,vendedor'])->group(function () {
+        Route::post('perfil', [PerfilController::class, 'update'])->name('perfil.update');
+        Route::get('perfil/imagen', [PerfilController::class, 'getImagenPerfil'])->name('perfil.imagen');
+        Route::get('/dashboard', [DashboardController::class, 'index'])->name('dashboard');
+        Route::get('perfil', [PerfilController::class, 'index'])->name('admin-perfil.index');
+    });
 
     Route::middleware(['role:administrador'])->group(function () {
-        Route::get('/perfil', [PerfilController::class, 'index'])->name('admin-perfil.index');
         Route::resource('usuario', UsuarioController::class)->names('admin-usuario');
         Route::post('/change-state-user', [UsuarioController::class, 'changeStatus'])->name('change-state');
         Route::get('/usuario/{id}/image', [UsuarioController::class, 'getImage'])->name('admin-usuario.get-image');
@@ -90,7 +97,7 @@ Route::prefix('admin')->middleware(['auth'])->group(function () {
 
     Route::middleware(['role:administrador,vendedor'])->group(function () {
         Route::resource('inventario', InventarioController::class)->names('admin-inventario');
-        Route::get('inventario-reporte', [InventarioController::class, 'reporte'])->name('admin-inventario.reporte');
+        Route::get('inventario-reporte', [InventarioReport::class, 'generarPdf'])->name('admin-inventario.reporte');
         Route::resource('cliente', ClienteController::class)->names('admin-cliente');
         Route::resource('producto', ProductoController::class)->names('admin-producto');
         Route::resource('venta', VentaController::class)->names('admin-venta');
@@ -98,8 +105,20 @@ Route::prefix('admin')->middleware(['auth'])->group(function () {
 
         Route::get('venta/{id}/detalle', [VentaController::class, 'detalle']);
         Route::get('producto/stock/{id}', [ProductoController::class, 'checkStock']);
+
+        // rutas de compras
+        Route::get('compra', [CompraController::class, 'index'])->name('admin-compra.index');
+        Route::post('compra', [CompraController::class, 'store'])->name('admin-compra.store');
+        Route::put('compra/{id}', [CompraController::class, 'update'])->name('admin-compra.update');
+        Route::delete('compra/{id}', [CompraController::class, 'destroy'])->name('admin-compra.destroy');
+        Route::get('compra/{id}', [CompraController::class, 'show'])->name('admin.compra.show');
+
+        // Rutas adicionales (opcionales)
+        Route::get('compra/get-compras', [CompraController::class, 'getCompras'])->name('admin-compra.data'); // Para Datatable AJAX
+        Route::get('compra/{id}/detalle', [CompraController::class, 'show'])->name('admin-compra.show'); // Detalle de compra
+        Route::get('compra/productos', [CompraController::class, 'getProductos']);
     });
 });
 
 
-/* end::Rutas del sistema de administración*/
+//

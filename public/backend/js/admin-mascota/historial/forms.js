@@ -209,20 +209,6 @@ export function metodoForm() {
                     }"/>
                 </div>
             </div>
-            <div class="col-12 col-sm-12 mt-3">
-                <label for="examen" class="form-control ms-0 mb-0">Examen</label>
-                <div class="input-group input-group-static az-input-group-outline">
-                    <textarea id="examen" name="examen" class="form-control az-area p-3" rows="2"></textarea>
-                    <small>Error message</small>
-                </div>
-            </div>
-            <div class="col-12 col-sm-12 mt-3">
-                <label for="resultados" class="form-control ms-0 mb-0">Resultados</label>
-                <div class="input-group input-group-static az-input-group-outline">
-                    <textarea id="resultados" name="resultados" class="form-control az-area p-3" rows="2"></textarea>
-                    <small>Error message</small>
-                </div>
-            </div>
             <div class="col-12 col-sm-12 mt-3 ">
                 <label for="id_tipo_examen">Tipo de examen</label>
                 <div class="input-group input-group-outline" id="select-validation-id_tipo_examen">
@@ -237,6 +223,13 @@ export function metodoForm() {
                         <option value="7">Radiografia</option>
                     </select>
                     <small class="select-error" error-name="id_tipo_examen">Error message</small>
+                </div>
+            </div>
+            <div class="col-12 col-sm-12 mt-3">
+                <label for="resultados" class="form-control ms-0 mb-0">Resultados</label>
+                <div class="input-group input-group-static az-input-group-outline">
+                    <textarea id="resultados" name="resultados" class="form-control az-area p-3" rows="2"></textarea>
+                    <small>Error message</small>
                 </div>
             </div>
             <div class="col-12 col-sm-12 mb-2 mt-3">

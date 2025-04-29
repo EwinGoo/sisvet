@@ -140,7 +140,7 @@ class CredencialMascotaReporte extends Controller
         $pdf->SetTextColor(0, 0, 128); // Azul corporativo
         $pdf->Cell(0, 5, 'CLÍNICA VETERINARIA SAN MARTÍN', 0, 1, 'C');
         $pdf->SetFont('helvetica', '', 6);
-        $pdf->Cell(0, 3, 'Tel: 2222-5555 | Emergencias: 7777-8888', 0, 0, 'C');
+        $pdf->Cell(0, 3, 'Cel: 67059010 | Emergencias: 63216170', 0, 0, 'C');
     }
 
     private function agregarFotoMascota($pdf, $imagePath)

@@ -38,7 +38,8 @@
             </div>
             <ul class="navbar-nav justify-content-end">
                 <li class="nav-item">
-                    <a href="javascript:void(0)" class="nav-link text-body p-0 position-relative">
+                    <a href="{{ route('admin-perfil.index') }}" class="nav-link text-body p-0 position-relative" data-bs-toggle="tooltip"
+                    data-bs-original-title="Mi perfil">
                         <i class="material-icons me-sm-1"> account_circle </i>
                     </a>
                 </li>

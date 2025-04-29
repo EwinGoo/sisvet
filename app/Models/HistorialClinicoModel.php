@@ -39,7 +39,7 @@ class HistorialClinicoModel extends Model
             'table' => 'metodos_complementarios',
             'id_column' => 'id_metodo',
             'title' => 'Método Complementario',
-            'required_fields' => ['examen', 'resultados']
+            'required_fields' => ['resultados']
         ],
         'diagnosticos_presuntivos' => [
             'table' => 'diagnosticos_presuntivos',

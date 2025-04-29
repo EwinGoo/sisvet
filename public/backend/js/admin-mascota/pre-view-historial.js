@@ -110,9 +110,6 @@ export function getHistorial(data) {
                         metodo.fecha_hora || ""
                     }</td>
                     <td class="font-weight-normal text-sm" colspan="5">${
-                        metodo.examen || ""
-                    }</td>
-                    <td class="font-weight-normal text-sm" colspan="5">${
                         metodo.resultados || ""
                     }</td>
                     <td class="font-weight-normal text-sm" colspan="5">${

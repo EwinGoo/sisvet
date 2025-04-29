@@ -46,6 +46,7 @@ class Controller extends BaseController
             'title' => $this->title,
             'sistema' => self::SISTEMA,
             'menu' => $this->getMenu($user),
+            'usuario'=> $user,
             'icon' => $this->getIconMenu(),
             'page' => $this->page,
             'area' => $this->area,
@@ -58,7 +59,6 @@ class Controller extends BaseController
     protected function getCurrentUser()
     {
         $user = UsuarioModel::getUser(Auth::id());
-        // dd($user);
         // dd(Auth::user());
         $user->image = Helpers::getImage($user->ruta_archivo);
         return $user;
@@ -76,6 +76,7 @@ class Controller extends BaseController
 
           // Menús específicos para el grupo médico
           $grupoMedico = ($user->rol == 'médico' || $user->rol == 'administrador') ? [
+            "Panel Principal" => 'dashboard',
             '<hr>',
             'CONSULTORIO',
             "calendario" => 'admin-calendario',
@@ -88,11 +89,13 @@ class Controller extends BaseController
 
         // Menús específicos para el grupo vendedor
         $grupoVendedor = ($user->rol == 'vendedor' || $user->rol == 'administrador') ? [
+            "Panel Principal" => 'dashboard',
             '<hr>',
             'TIENDA',
             "inventario" => 'admin-inventario',
             "ventas" => 'admin-venta',
             "productos" => 'admin-producto',
+            "compras" => 'admin-compra',
             "clientes" => 'admin-cliente',
         ] : [];
 
@@ -129,6 +132,7 @@ class Controller extends BaseController
             "clientes" => 'groups',
             "razas" => 'format_list_bulleted',
             "citas" => 'calendar_month',
+            "compras" => 'add_shopping_cart',
         ];
     }
 }

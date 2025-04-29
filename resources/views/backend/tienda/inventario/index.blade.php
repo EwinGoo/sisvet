@@ -12,10 +12,11 @@
                     </div>
                     <div class="ms-auto my-auto mt-lg-0 mt-4">
                         <div class="ms-auto my-auto">
-                            <button class="btn btn-outline-primary btn-sm export mb-0 mt-sm-0 mt-1" data-type="csv"
+                            <a href="{{ route('admin-inventario.reporte') }}"
+                                class="btn btn-outline-primary btn-sm export mb-0 mt-sm-0 mt-1" data-type="csv"
                                 type="button" name="button">
                                 Exportar
-                            </button>
+                            </a>
                             <button id="btn-new" type="button" class="btn bg-gradient-primary btn-sm mb-0 d-none"
                                 target="_blank" data-bs-toggle="modal" data-bs-target="#modal-main">+&nbsp;
                                 Nuevo inventario</button>

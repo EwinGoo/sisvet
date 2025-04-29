@@ -32,7 +32,7 @@ class PropietarioController extends Controller
         /* init::Guardar propietario */
         $validator = Validator::make($request->all(), [
             'ci' => 'required|unique:propietarios,ci',
-            'nombre' => 'required',
+            'nombre' => 'required|alpha',
             'paterno' => 'required',
             'celular' => 'required|numeric|digits:8',
             'direccion' => 'required',
@@ -85,7 +85,7 @@ class PropietarioController extends Controller
                 'required',
                 Rule::unique('propietarios')->ignore($propietario->id_propietario, 'id_propietario'),
             ],
-            'nombre' => 'required',
+            'nombre' => 'required|alpha',
             'paterno' => 'required',
             'celular' => 'nullable|numeric|digits:8',
         ], [

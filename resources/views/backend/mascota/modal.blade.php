@@ -187,7 +187,6 @@
                                     <thead class="thead-light">
                                         <tr class="title-table">
                                             <th class="w-10">fecha</th>
-                                            <th colspan="5">examen</th>
                                             <th colspan="5">resultado</th>
                                             <th colspan="5">tipo examen</th>
                                         </tr>
@@ -271,8 +270,8 @@
             <div class="modal-footer">
                 <button id="btn-cancel" type="button" class="btn btn-sm bg-gradient-secondary" data-bs-dismiss="modal"><i
                         class="material-icons">close</i> Cerrar</button>
-                <button id="btn-submit" type="button" class="btn bg-gradient-primary "><i
-                            class="material-icons">done</i> Guardar</button>
+                {{-- <button id="btn-submit" type="button" class="btn bg-gradient-primary "><i
+                            class="material-icons">done</i> Guardar</button> --}}
             </div>
         </div>
     </div>

@@ -35,7 +35,7 @@ class UsuarioController extends Controller
             $request->all(),
             [
                 'usuario' => 'required|unique:usuarios,usuario',
-                'rol' => 'required',
+                'id_rol' => 'required',
                 'nombre' => 'required',
                 'paterno' => 'required',
                 'image' => 'required|file|max:10000|mimes:png,jpg,jpeg',
@@ -75,7 +75,7 @@ class UsuarioController extends Controller
             'email' => $request->email,
             'password' => Hash::make($request->password),
             'id_multimedia' => $idImage,
-            'id_rol' => $request->rol,
+            'id_rol' => $request->id_rol,
         ]);
         if (!$user) {
             $data = [
@@ -135,7 +135,7 @@ class UsuarioController extends Controller
                     'required',
                     Rule::unique('usuarios')->ignore($user->usuario, 'usuario'),
                 ],
-                'rol' => 'required',
+                'id_rol' => 'required',
                 'nombre' => 'required',
                 'paterno' => 'required',
                 'image' => 'nullable|file|max:10000|mimes:png,jpg,jpeg',
@@ -172,7 +172,7 @@ class UsuarioController extends Controller
             'celular' => $request->celular,
             'email' => $request->email,
             'id_multimedia' => $idImage,
-            'rol' => $request->rol,
+            'id_rol' => $request->id_rol,
         ], $request->change ? ['password' => Hash::make($request->password)] : []));
         if (!$user) {
             $data = [

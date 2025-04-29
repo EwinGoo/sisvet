@@ -16,6 +16,7 @@ class SalesManager {
             quantity: document.querySelector('[name="cantidad"]'),
             url: "",
         };
+
         this.btnSubmit = $("#btn-submit");
         this.hiddenProductsContainer =
             document.getElementById("productos-hidden");
@@ -29,6 +30,9 @@ class SalesManager {
 
             // this.table.on("click", ".edit", (e) => this.handleEdit(e));
         };
+
+        //datos de venta
+        this.data = [];
 
         // Tabla de detalles
         this.detailsTable = document.querySelector("#sales-details tbody");
@@ -142,7 +146,7 @@ class SalesManager {
                 this.formFields.productCode.value = ui.item.value;
                 this.formFields.productName.value =
                     ui.item.item.nombre_producto;
-                this.formFields.price.value = ui.item.item.precio;
+                this.formFields.price.value = ui.item.item.precio_venta_actual;
                 this.formFields.quantity.value = 1;
                 this.formFields.url = ui.item.item.ruta_archivo;
                 const stockInfo = ui.item.item.cantidad
@@ -212,13 +216,34 @@ class SalesManager {
             url: this.formFields.url,
         };
 
+        console.log(product);
+
+
+        // Buscar si ya existe el producto por código
+        const existingIndex = this.saleDetails.findIndex((p) => p.code === product.code);
+
+        if (existingIndex !== -1) {
+            // Ya existe: actualizar cantidad y subtotal
+            console.log(this.saleDetails[existingIndex]);
+
+            this.saleDetails[existingIndex].quantity += product.quantity;
+            this.saleDetails[existingIndex].subtotal += product.subtotal;
+        } else {
+            // No existe: agregar nuevo
+            this.saleDetails.push(product);
+        }
+
         // Agregar a la lista
-        this.saleDetails.push(product);
+        // this.saleDetails.push(product);
+        console.log(this.saleDetails);
+
+        // this.saleDetails = [...this.data];
 
         // Actualizar tabla y total
         this.updateDetailsTable();
         this.updateTotal();
-        this.updateHiddenInputs();
+        // this.updateHiddenInputs();
+        // this.data = producto[];
 
         // Resetear campos de producto
         this.resetProductFields();
@@ -375,7 +400,7 @@ class SalesManager {
         this.saleDetails.splice(index, 1);
         this.updateDetailsTable();
         this.updateTotal();
-        this.updateHiddenInputs();
+        // this.updateHiddenInputs();
         // utilities.tooltip('dispose');
     }
 
@@ -434,6 +459,8 @@ class SalesManager {
         //     details: this.saleDetails
         // };
         console.log(this.form);
+        this.updateHiddenInputs();
+
 
         const saleData = this.form.serialize();
 
@@ -451,8 +478,7 @@ class SalesManager {
                 this.resetAll();
             },
             error: (error) => {
-                Swal.fire("Error", "No se pudo generar la venta", "error");
-                console.error("Error generating sale:", error);
+                az_new.showSwal({ e: "errors", message: `<span class="text-danger text-md">${error.responseJSON.message}</span><br>` });
             },
         });
     }

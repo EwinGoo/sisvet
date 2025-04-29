@@ -6,6 +6,8 @@ use App\Helpers\Helpers;
 use App\Http\Controllers\Controller;
 use App\Models\PropietarioModel;
 use App\Models\Tienda\CategoriaModel;
+use App\Models\Tienda\CompraModel;
+use App\Models\Tienda\DetalleVentaModel;
 use App\Models\Tienda\ProductoModel;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
@@ -44,14 +46,13 @@ class ProductoController extends Controller
             'nombre_producto' => 'required|string|max:90',
             'id_categoria'    => 'required|integer|exists:categorias,id_categoria',
             'descripcion'     => 'nullable|string|max:200',
-            'precio'          => 'required|numeric|min:0',
-            'cantidad'          => 'nullable|integer',
+            // 'precio'          => 'required|numeric|min:0',
             // 'fecha_vencimiento' => 'required',
             // 'fecha_vencimiento' => 'required|date|after:today',
         ], [
             'nombre_producto.required' => 'El producto es requerido',
             'id_categoria.required' => 'El campo categoria es requerido.',
-            'fecha_vencimiento.after' => 'El campo fecha vencimiento debe ser una fecha posterior a hoy.',
+            // 'fecha_vencimiento.after' => 'El campo fecha vencimiento debe ser una fecha posterior a hoy.',
         ]);
         if ($validator->fails()) {
             $data = [
@@ -73,9 +74,8 @@ class ProductoController extends Controller
             'id_categoria' => $request->id_categoria,
             'id_usuario' => Auth::id(),
             'descripcion' => $request->descripcion,
-            'precio' => $request->precio,
-            'cantidad' => $request->cantidad,
-            'fecha_vencimiento' => $request->fecha_vencimiento,
+            // 'precio' => $request->precio,
+            // 'fecha_vencimiento' => $request->fecha_vencimiento,
             'id_multimedia' => $idImage,
         ]);
         if (!$producto) {
@@ -108,14 +108,13 @@ class ProductoController extends Controller
             'nombre_producto' => 'required|string|max:90',
             'id_categoria'    => 'required|integer|exists:categorias,id_categoria',
             'descripcion'     => 'nullable|string|max:200',
-            'precio'          => 'required|numeric|min:0',
-            'cantidad'          => 'nullable|integer',
+            // 'precio'          => 'required|numeric|min:0',
             // 'fecha_vencimiento' => 'required',
             // 'fecha_vencimiento' => 'required|date|after:today',
         ], [
             'nombre_producto.required' => 'El producto es requerido',
             'id_categoria.required' => 'El campo categoria es requerido.',
-            'fecha_vencimiento.after' => 'El campo fecha vencimiento debe ser una fecha posterior a hoy.',
+            // 'fecha_vencimiento.after' => 'El campo fecha vencimiento debe ser una fecha posterior a hoy.',
         ]);
 
         if ($validator->fails()) {
@@ -140,9 +139,8 @@ class ProductoController extends Controller
             'id_categoria' => $request->id_categoria,
             'id_usuario' => Auth::id(),
             'descripcion' => $request->descripcion,
-            'precio' => $request->precio,
-            'cantidad' => $request->cantidad,
-            'fecha_vencimiento' => $request->fecha_vencimiento,
+            // 'precio' => $request->precio,
+            // 'fecha_vencimiento' => $request->fecha_vencimiento,
             'id_multimedia' => $idImage ?? $producto->id_multimedia
         ]);
         if (!$producto) {
@@ -187,10 +185,18 @@ class ProductoController extends Controller
                 'status' => 404
             ], 404);
         }
+        // dd($id);
+
+        $totalCompras = CompraModel::where('id_producto', $id)->sum('cantidad_compra'); // Suma todas las compras del producto
+        $totalVentas = DetalleVentaModel::where('id_producto', $id)->sum('cantidad'); // Suma todas las compras del producto
+
+        // 3. Calcular stock disponible (cantidad actual + compras)
 
         return response()->json([
-            'stock' => $producto->cantidad, // Asumiendo que tienes un campo 'cantidad' en tu modelo
+            'stock' => $totalCompras - $totalVentas, // Asumiendo que tienes un campo 'cantidad' en tu modelo
             'status' => 200
         ]);
     }
+
+
 }

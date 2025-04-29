@@ -16,7 +16,7 @@
     <div class="collapse navbar-collapse w-auto h-auto" id="sidenav-collapse-main">
         <ul class="navbar-nav">
             <li class="nav-item mb-2 mt-0">
-                <a data-bs-toggle="collapse" href="#ProfileNav" class="nav-link text-white" aria-controls="ProfileNav"
+                <a data-bs-toggle="collapse" href="#ProfileNav" class="nav-link text-white {{ $page =='admin-perfil' ? 'active' : '' }}" aria-controls="ProfileNav"
                     role="button" aria-expanded="false">
                     <img src="{{ $usuario->image }}" class="avatar" />
                     <div class="nav-link-text ms-2 ps-1 text-center">
@@ -28,10 +28,10 @@
                         </div>
                     </div>
                 </a>
-                <div class="collapse" id="ProfileNav" style>
+                <div class="collapse {{ $page == 'admin-perfil' ? 'show' : '' }}" id="ProfileNav" style>
                     <ul class="nav">
-                        <li class="nav-item">
-                            <a class="nav-link text-white" href="{{ route('admin-perfil.index') }}">
+                        <li class="nav-item {{ 'admin-perfil' == $page ? 'active' : '' }}">
+                            <a class="nav-link text-white {{ 'admin-perfil' == $page ? 'active' : '' }}" href="{{ route('admin-perfil.index') }}">
                                 <span class="sidenav-mini-icon"> P </span>
                                 <span class="sidenav-normal ms-3 ps-1">Perfil</span>
                             </a>
@@ -83,7 +83,6 @@
                         <a data-bs-toggle="collapse" href="#menu{{ $count }}"
                             class="nav-link text-white {{ $option ? 'active' : '' }}"
                             aria-controls="menu{{ $count }}" role="button" aria-expanded="false">
-
                             <i
                                 class="material-icons-round {% if page.brand == 'RTL' %}ms-2{% else %} me-2{% endif %}">{{ isset($icon[$mKey]) ? $icon[$mKey] : '' }}</i>
                             <span class="nav-link-text ms-2 ps-1 text-capitalize">{{ $mKey }}</span>

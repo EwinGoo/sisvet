@@ -633,3 +633,6 @@ table.dataTable.dtr-inline.collapsed > tbody > tr > th.dtr-control:before {
                 0 7px 10px -5px rgba(0, 0, 0, 0.4);
     border-radius: 0.5rem;
 }
+.swal2-container.swal2-center.swal2-backdrop-show{
+    z-index: 10000;
+}

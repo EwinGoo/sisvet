@@ -120,11 +120,6 @@ function createRowTwo(data, index, name) {
             name == "metodo"
                 ? /*html*/ `
             <td>
-                <p class="text-sm font-weight-normal mb-0">${
-                    data.examen ?? "-"
-                }</p>
-            </td>
-            <td>
                 <p class="text-sm font-weight-normal mb-0">
                     ${data.resultados ?? "-"}
                 </p>

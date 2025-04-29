@@ -38,20 +38,20 @@ class ClientManager {
                     },
                 },
                 { data: "nombre_producto" },
-                {
-                    data: null,
-                    targets: -1,
-                    orderable: true,
-                    render: (data, type, row) => row.precio + " Bs.",
-                },
-                { data: "cantidad" },
-                {
-                    data: null,
-                    targets: -1,
-                    orderable: true,
-                    render: (data, type, row) =>
-                        __bgFormat(row.fecha_vencimiento),
-                },
+                { data: "nombre_categoria" },
+                // {
+                //     data: null,
+                //     targets: -1,
+                //     orderable: true,
+                //     render: (data, type, row) => row.precio + " Bs.",
+                // },
+                // {
+                //     data: null,
+                //     targets: -1,
+                //     orderable: true,
+                //     render: (data, type, row) =>
+                //         __bgFormat(row.fecha_vencimiento),
+                // },
                 {
                     data: null,
                     targets: -1,

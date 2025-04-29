@@ -176,6 +176,8 @@ $(document).ready(function () {
             const user = utilities.getByID(id, this.table, "id_usuario");
             const url = user.ruta_archivo && "/storage/" + user.ruta_archivo;
             this.resetForm();
+            console.log(user);
+
             this.populateForm(user);
             this.elements.modalTitle.text("editar usuario");
             this.elements.btnSubmit.prop("disabled", false);
@@ -184,7 +186,7 @@ $(document).ready(function () {
             this.setRoleValues();
             this.elements.changeField.show();
             this.disablePasswordFields();
-            console.log(url);
+            // console.log(url);
 
             imageUploader.loadImageFromURL(url);
         },
@@ -194,10 +196,17 @@ $(document).ready(function () {
                 const $input = $(this);
                 const name = $input.attr("name");
                 if ($input.is(":radio")) {
+                    console.log(name);
+
+                    console.log(user[name]);
+
+
                     $input.prop(
                         "checked",
-                        user[name]?.toLowerCase() === $input.val().toLowerCase()
+                        user[name]?.toString() === $input.val()
                     );
+
+                    console.log(user[name],$input.val());
                 } else {
                     $input.val(user[name]).parent().addClass("is-filled");
                 }
