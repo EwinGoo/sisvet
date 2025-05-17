@@ -11,6 +11,7 @@ class CompraManager {
         this.currentId = null; // Para manejar edición
         this.table = this.initDataTable();
         this.productoChoice = null; // Para almacenar la instancia de Choices
+        this.proveedorChoice = null; // Para almacenar la instancia de Choices
         this.initEvents();
         this.initSelects();
         this.initializeUtilities();
@@ -34,7 +35,13 @@ class CompraManager {
                     render: (data, type, row) =>
                         __bgFormat(row.fecha_caducidad),
                 },
-                { data: "usuario" },
+                {
+                    data: null,
+                    targets: -1,
+                    orderable: true,
+                    render: (data, type, row) =>
+                        row.proveedor ? row.proveedor : "N/A",
+                },
                 {
                     data: null,
                     render: (data) => ACTIONS("compra", data.id_compra),
@@ -76,9 +83,11 @@ class CompraManager {
     initSelects() {
         // Inicializar Choices.js para los selects
         const productoSelect = document.getElementById("id_producto");
+        const proveedorSelect = document.getElementById("id_proveedor");
 
         if (productoSelect) {
             this.productoChoice = new Choices(productoSelect);
+            this.proveedorChoice = new Choices(proveedorSelect);
             // this.loadProductos();
         }
     }
@@ -101,7 +110,15 @@ class CompraManager {
             this.form.find(":input").each(function () {
                 const name = $(this).attr("name");
                 if ($(this).prop("tagName") === "SELECT") {
-                    self.productoChoice.setChoiceByValue((data[name] || "").toString());
+                    console.log(name);
+
+                    name == "id_producto"
+                        ? self.productoChoice.setChoiceByValue(
+                              (data[name] || "").toString()
+                          )
+                        : self.proveedorChoice.setChoiceByValue(
+                              (data[name] || "").toString()
+                          );
                 } else {
                     $(this).parent().addClass("is-filled");
                     $(this).val(data[name]);

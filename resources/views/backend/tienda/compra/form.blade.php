@@ -1,6 +1,6 @@
 <form id="form-main" autocomplete="off">
     <div class="row">
-        <div class="col-md-12">
+        <div class="col-md-12 mt-3">
             <div class="input-group input-group-static" id="select-validation-id_producto">
                 <label>Producto *</label>
                 <select name="id_producto" class="form-control choices" id="id_producto">
@@ -10,6 +10,18 @@
                     @endforeach
                 </select>
                 <small class="select-error" error-name="id_producto">Error message</small>
+            </div>
+        </div>
+        <div class="col-md-12 mt-3">
+            <div class="input-group input-group-static" id="select-validation-id_proveedor">
+                <label>Proveedor *</label>
+                <select name="id_proveedor" class="form-control choices" id="id_proveedor">
+                    <option value="">[SELECCIONE]</option>
+                    @foreach ($data['proveedores'] as $proveedor)
+                        <option value="{{ $proveedor->id_proveedor }}">{{ $proveedor->nombre }}</option>
+                    @endforeach
+                </select>
+                <small class="select-error" error-name="id_proveedor">Error message</small>
             </div>
         </div>
         <div class="col-md-6 mt-4">

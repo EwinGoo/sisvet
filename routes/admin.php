@@ -6,6 +6,7 @@ use App\Http\Controllers\Backend\HistorialClinicoController;
 use App\Http\Controllers\Backend\PropietarioController;
 use App\Http\Controllers\Backend\MascotaController;
 use App\Http\Controllers\Auth\PerfilController;
+use App\Http\Controllers\Backend\Tienda\ProveedorController;
 use App\Http\Controllers\Backend\Reportes\ComprobanteVentaReporte;
 use App\Http\Controllers\Backend\Reportes\CredencialMascotaReporte;
 use App\Http\Controllers\Backend\Reportes\HistorialClinicoReport;
@@ -106,7 +107,7 @@ Route::prefix('admin')->middleware(['auth'])->group(function () {
         Route::get('venta/{id}/detalle', [VentaController::class, 'detalle']);
         Route::get('producto/stock/{id}', [ProductoController::class, 'checkStock']);
 
-        // rutas de compras
+        // Rutas de compras
         Route::get('compra', [CompraController::class, 'index'])->name('admin-compra.index');
         Route::post('compra', [CompraController::class, 'store'])->name('admin-compra.store');
         Route::put('compra/{id}', [CompraController::class, 'update'])->name('admin-compra.update');
@@ -117,6 +118,12 @@ Route::prefix('admin')->middleware(['auth'])->group(function () {
         Route::get('compra/get-compras', [CompraController::class, 'getCompras'])->name('admin-compra.data'); // Para Datatable AJAX
         Route::get('compra/{id}/detalle', [CompraController::class, 'show'])->name('admin-compra.show'); // Detalle de compra
         Route::get('compra/productos', [CompraController::class, 'getProductos']);
+
+        // Rutas Proveedor
+        Route::get('proveedor', [ProveedorController::class, 'index'])->name('admin-proveedor.index');
+        Route::post('proveedor', [ProveedorController::class, 'store']);
+        Route::put('proveedor/{id}', [ProveedorController::class, 'update']);
+        Route::delete('proveedor/{id}', [ProveedorController::class, 'destroy']);
     });
 });
 

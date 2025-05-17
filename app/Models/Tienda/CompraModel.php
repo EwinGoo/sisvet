@@ -71,11 +71,12 @@ class CompraModel extends Model
                 'compras.precio_total_compra',
                 'compras.fecha_caducidad',
                 'productos.nombre_producto as producto',
-                // 'proveedores.nombre as proveedor',
+                'productos.id_producto',
+                'proveedores.nombre as proveedor',
                 DB::raw("CONCAT_WS(' ', usuarios.nombre, usuarios.paterno) as usuario"),
             ])
                 ->join('productos', 'productos.id_producto', '=', 'compras.id_producto')
-                // ->join('proveedores', 'proveedores.id_proveedor', '=', 'compras.id_proveedor')
+                ->leftjoin('proveedores', 'proveedores.id_proveedor', '=', 'compras.id_proveedor')
                 ->join('usuarios', 'usuarios.id_usuario', '=', 'compras.id_usuario')
                 ->orderBy('compras.fecha_compra', 'desc')
                 ->get();

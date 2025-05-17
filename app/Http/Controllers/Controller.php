@@ -96,6 +96,7 @@ class Controller extends BaseController
             "ventas" => 'admin-venta',
             "productos" => 'admin-producto',
             "compras" => 'admin-compra',
+            "proveedores" => 'admin-proveedor',
             "clientes" => 'admin-cliente',
         ] : [];
 
@@ -131,6 +132,7 @@ class Controller extends BaseController
             "productos" => 'production_quantity_limits',
             "clientes" => 'groups',
             "razas" => 'format_list_bulleted',
+            "proveedores" => 'group',
             "citas" => 'calendar_month',
             "compras" => 'add_shopping_cart',
         ];

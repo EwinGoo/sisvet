@@ -5,7 +5,7 @@ namespace App\Http\Controllers\Backend\Tienda;
 use App\Http\Controllers\Controller;
 use App\Models\Tienda\CompraModel;
 use App\Models\Tienda\ProductoModel;
-use App\Models\ProveedorModel;
+use App\Models\Tienda\ProveedorModel;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Validator;
@@ -24,7 +24,7 @@ class CompraController extends Controller
             return response()->json(['data' => CompraModel::getCompras()]);
         }
 
-        // $this->data['proveedores'] = ProveedorModel::all();
+        $this->data['proveedores'] = ProveedorModel::all();
         $this->data['productos'] = ProductoModel::all();
         // return view("backend.compras.index", $this->data);
         return $this->render("tienda.compra.index");

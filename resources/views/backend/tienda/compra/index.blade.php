@@ -25,7 +25,7 @@
                             <th>Cantidad</th>
                             <th>Total</th>
                             <th>fecha caducidad</th>
-                            <th>Registrado por</th>
+                            <th>Proveedor</th>
                             <th>Acciones</th>
                         </tr>
                     </thead>
