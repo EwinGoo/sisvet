@@ -71,8 +71,8 @@ class HistorialClinicoReport extends Controller
             return [
                 'fecha_hora' => date('d/m/Y', strtotime($metodo['fecha_hora'])),
                 // 'examen' => $metodo['examen'],
-                'resultados' => $metodo['resultados'],
-                'nombre_examen' => $metodo['nombre_examen']
+                'nombre_examen' => $metodo['nombre_examen'],
+                'resultados' => $metodo['resultados']
             ];
         }, $data['metodos_complementarios']);
 
@@ -181,7 +181,7 @@ class HistorialClinicoReport extends Controller
 
         foreach ($sintomas as $key => $s) {
             $pdf->Cell(30, 5, date('d/m/Y', strtotime($examen['fecha'])), 1);
-            $pdf->Cell(150, 5, $s['descripcion'], 1, 1);
+            $pdf->MultiCell(150, 5, $s['descripcion'], 1, 1);
         }
 
         $pdf->Ln(4);
@@ -190,7 +190,7 @@ class HistorialClinicoReport extends Controller
         $pdf->sectionTitle('6. MÉTODOS COMPLEMENTARIOS');
         $pdf->Ln(2);
 
-        $pdf->createTable(['Fecha', 'Resultados', 'Tipo examen'], $metodos_complementarios,[30, 95, 55]);
+        $pdf->createTable(['Fecha', 'Tipo examen', 'Resultados'], $metodos_complementarios, [30, 55, 95]);
         $pdf->Ln(4);
 
         // 7. DIAGNÓSTICO PRESUNTIVO
@@ -204,7 +204,7 @@ class HistorialClinicoReport extends Controller
 
         foreach ($diagnostico_presuntivo as $key => $d) {
             $pdf->Cell(30, 5, date('d/m/Y', strtotime($d['fecha'])), 1);
-            $pdf->Cell(150, 5, $d['descripcion'], 1, 1);
+            $pdf->MultiCell(150, 5, $d['descripcion'], 1, 1);
         }
 
         $pdf->Ln(5);
@@ -223,7 +223,7 @@ class HistorialClinicoReport extends Controller
 
         foreach ($diagnostico_definitivo as $key => $d) {
             $pdf->Cell(30, 5, date('d/m/Y', strtotime($d['fecha'])), 1);
-            $pdf->Cell(150, 5, $d['descripcion'], 1, 1);
+            $pdf->MultiCell(150, 5, $d['descripcion'], 1, 1);
         }
 
         $pdf->Ln(5);
@@ -246,7 +246,7 @@ class HistorialClinicoReport extends Controller
         foreach ($tratamientos as $t) {
             $pdf->SetFillColor($fill ? 240 : 255);
             $pdf->Cell(30, 6, date('d/m/Y', strtotime($t['fecha'])), 'LR', 0, 'L', $fill);
-            $pdf->Cell(150, 6, $t['descripcion'], 'LR', 0, 'L', $fill);
+            $pdf->MultiCell(150, 6, $t['descripcion'], 'LR', 0, 'L', $fill);
             $pdf->Ln();
             $fill = !$fill;
         }
@@ -284,7 +284,6 @@ class HistorialClinicoReport extends Controller
         }
         return $edad;
     }
-
 }
 
 class VeterinariaPDF extends TCPDF
@@ -388,10 +387,14 @@ class VeterinariaPDF extends TCPDF
             $this->SetFillColor($fill ? 240 : 255);
             $num = 0;
             foreach ($row as $i => $value) {
-                $this->Cell($columnWidths[$num], 6, $value, 'LR', 0, 'L', $fill);
+                if ($i == 'descripcion' || $i == 'resultados') { // Columna "Detalle"
+                    $this->MultiCell($columnWidths[$num], 6, $value, 'LR', 'L', $fill);
+                } else {
+                    $this->Cell($columnWidths[$num], 6, $value, 'LR', 0, 'L', $fill);
+                }
                 $num++;
             }
-            $this->Ln();
+            // $this->Ln();
             $fill = !$fill;
         }
 

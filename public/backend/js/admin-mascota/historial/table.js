@@ -120,7 +120,7 @@ function createRowTwo(data, index, name) {
             name == "metodo"
                 ? /*html*/ `
             <td>
-                <p class="text-sm font-weight-normal mb-0">
+                <p class="text-sm font-weight-normal mb-0 text-wrap">
                     ${data.resultados ?? "-"}
                 </p>
             </td>
@@ -135,7 +135,7 @@ function createRowTwo(data, index, name) {
             `
                 : /*html*/ `
             <td>
-                <p class="text-sm font-weight-normal mb-0">${
+                <p class="text-sm font-weight-normal mb-0 text-wrap">${
                     name === "vacunas" ? data.nombre_vacuna ?? "" : data.descripcion ?? ""
                 }</p>
             </td>

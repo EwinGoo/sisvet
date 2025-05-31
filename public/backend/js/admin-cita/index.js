@@ -84,7 +84,7 @@ class CitaManager {
     }
 
     initializeUtilities() {
-        utilities.initChoice();
+        utilities.initChoice(true);
         utilities.formValidateInit();
         utilities.ajaxSetup();
         setTimeout(() => {
