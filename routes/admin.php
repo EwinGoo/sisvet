@@ -16,6 +16,7 @@ use App\Http\Controllers\Backend\Tienda\CompraController;
 use App\Http\Controllers\Backend\Tienda\InventarioController;
 use App\Http\Controllers\Backend\Tienda\ProductoController;
 use App\Http\Controllers\Backend\Tienda\VentaController;
+use App\Http\Controllers\Backend\Tienda\NotificacionController;
 use App\Http\Controllers\Backend\UsuarioController;
 use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\TestController;
@@ -44,6 +45,10 @@ Route::prefix('admin')->middleware(['auth'])->group(function () {
     });
 
     Route::middleware(['role:administrador'])->group(function () {
+        Route::get('/backup-db', [App\Http\Controllers\BackupController::class, 'index'])->name('admin-db.index');
+        Route::get('/backup-db/generate', [App\Http\Controllers\BackupController::class, 'backup'])->name('admin-db.generate');
+        Route::get('/backups/download/{filename}', [App\Http\Controllers\BackupController::class, 'download'])->name('admin-db.download');
+
         Route::resource('usuario', UsuarioController::class)->names('admin-usuario');
         Route::post('/change-state-user', [UsuarioController::class, 'changeStatus'])->name('change-state');
         Route::get('/usuario/{id}/image', [UsuarioController::class, 'getImage'])->name('admin-usuario.get-image');
@@ -124,6 +129,11 @@ Route::prefix('admin')->middleware(['auth'])->group(function () {
         Route::post('proveedor', [ProveedorController::class, 'store']);
         Route::put('proveedor/{id}', [ProveedorController::class, 'update']);
         Route::delete('proveedor/{id}', [ProveedorController::class, 'destroy']);
+
+
+        Route::get('notificaciones', [NotificacionController::class, 'index']);
+        Route::post('notificaciones/marcar-leida/{id}', [NotificacionController::class, 'marcarLeida']);
+        Route::get('notificaciones/contar', [NotificacionController::class, 'contarNoLeidas']);
     });
 });
 

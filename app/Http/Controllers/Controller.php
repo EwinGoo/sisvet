@@ -70,6 +70,7 @@ class Controller extends BaseController
          $grupoAdministrador = ($user->rol == 'administrador') ? [
             "administración" => [
                 "usuarios" => "admin-usuario",
+                "Backup DB" => "admin-db",
             ],
             "Panel Principal" => 'dashboard',
         ]:[];

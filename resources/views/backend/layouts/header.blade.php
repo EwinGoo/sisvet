@@ -2,22 +2,22 @@
     id="navbarBlur" data-scroll="true">
     <div class="container-fluid py-1 px-3">
         @if (isset($area) && isset($title))
-        <nav aria-label="breadcrumb">
-            <ol class="breadcrumb bg-transparent mb-0 pb-0 pt-1 px-0 me-sm-6 me-5">
-                <li class="breadcrumb-item text-sm">
-                    <a class="opacity-3 text-dark" href="javascript:;">
-                        <x-backend.icon-home />
-                    </a>
-                </li>
-                <li class="breadcrumb-item text-sm">
-                    <a class="opacity-5 text-dark" href="javascript:;">{{$area}}</a>
-                </li>
-                <li class="breadcrumb-item text-sm text-dark active" aria-current="page">
-                    {{$title}}
-                </li>
-            </ol>
-            <h6 class="font-weight-bolder mb-0">{{$title}}</h6>
-        </nav>
+            <nav aria-label="breadcrumb">
+                <ol class="breadcrumb bg-transparent mb-0 pb-0 pt-1 px-0 me-sm-6 me-5">
+                    <li class="breadcrumb-item text-sm">
+                        <a class="opacity-3 text-dark" href="javascript:;">
+                            <x-backend.icon-home />
+                        </a>
+                    </li>
+                    <li class="breadcrumb-item text-sm">
+                        <a class="opacity-5 text-dark" href="javascript:;">{{ $area }}</a>
+                    </li>
+                    <li class="breadcrumb-item text-sm text-dark active" aria-current="page">
+                        {{ $title }}
+                    </li>
+                </ol>
+                <h6 class="font-weight-bolder mb-0">{{ $title }}</h6>
+            </nav>
         @endif
 
         <div class="sidenav-toggler sidenav-toggler-inner d-xl-block d-none">
@@ -37,9 +37,49 @@
                 </div> --}}
             </div>
             <ul class="navbar-nav justify-content-end">
+
+                {{-- <li class="nav-item px-3">
+                    <a href="javascript:;" class="nav-link text-body p-0">
+                        <i class="material-icons fixed-plugin-button-nav cursor-pointer">
+                            settings
+                        </i>
+                    </a>
+                </li> --}}
+                @if ($data['usuario']->rol == 'vendedor' || $data['usuario']->rol == 'administrador')
+                    <li class="nav-item dropdown pe-4">
+                        <a href="javascript:;" class="nav-link text-body p-0 position-relative" id="dropdownMenuButton"
+                            data-bs-toggle="dropdown" aria-expanded="false">
+                            <i class="material-icons cursor-pointer">notifications</i>
+                            <span
+                                class="position-absolute top-5 start-100 translate-middle py-1 px-2 notification-count">
+                                {{-- El contador se actualizará via JS --}}
+
+                                <span class="visually-hidden">unread notifications</span>
+                            </span>
+                        </a>
+                        <ul class="dropdown-menu dropdown-menu-end p-2 me-sm-n4" aria-labelledby="dropdownMenuButton"
+                            id="notifications-dropdown">
+                            <li id="notifications-loading">
+                                <div class="text-center py-2">
+                                    <div class="spinner-border text-primary" role="status">
+                                        <span class="visually-hidden">Loading...</span>
+                                    </div>
+                                </div>
+                            </li>
+                            <li id="no-notifications" class="d-none">
+                                <a class="dropdown-item border-radius-md text-center">
+                                    No hay notificaciones
+                                </a>
+                            </li>
+                            <div id="notifications-items">
+                            </div>
+                            <!-- Las notificaciones se cargarán aquí via AJAX -->
+                        </ul>
+                    </li>
+                @endif
                 <li class="nav-item">
-                    <a href="{{ route('admin-perfil.index') }}" class="nav-link text-body p-0 position-relative" data-bs-toggle="tooltip"
-                    data-bs-original-title="Mi perfil">
+                    <a href="{{ route('admin-perfil.index') }}" class="nav-link text-body p-0 position-relative"
+                        data-bs-toggle="tooltip" data-bs-original-title="Mi perfil">
                         <i class="material-icons me-sm-1"> account_circle </i>
                     </a>
                 </li>
@@ -52,62 +92,6 @@
                         </div>
                     </a>
                 </li>
-                {{-- <li class="nav-item px-3">
-                    <a href="javascript:;" class="nav-link text-body p-0">
-                        <i class="material-icons fixed-plugin-button-nav cursor-pointer">
-                            settings
-                        </i>
-                    </a>
-                </li> --}}
-                {{-- <li class="nav-item dropdown pe-2">
-                    <a href="javascript:;" class="nav-link text-body p-0 position-relative" id="dropdownMenuButton"
-                        data-bs-toggle="dropdown" aria-expanded="false">
-                        <i class="material-icons cursor-pointer"> notifications </i>
-                        <span
-                            class="position-absolute top-5 start-100 translate-middle badge rounded-pill bg-danger border border-white small py-1 px-2">
-                            <span class="small">11</span>
-                            <span class="visually-hidden">unread notifications</span>
-                        </span>
-                    </a>
-                    <ul class="dropdown-menu dropdown-menu-end p-2 me-sm-n4" aria-labelledby="dropdownMenuButton">
-                        <li class="mb-2">
-                            <a class="dropdown-item border-radius-md" href="javascript:;">
-                                <div class="d-flex align-items-center py-1">
-                                    <span class="material-icons">email</span>
-                                    <div class="ms-2">
-                                        <h6 class="text-sm font-weight-normal my-auto">
-                                            Check new messages
-                                        </h6>
-                                    </div>
-                                </div>
-                            </a>
-                        </li>
-                        <li class="mb-2">
-                            <a class="dropdown-item border-radius-md" href="javascript:;">
-                                <div class="d-flex align-items-center py-1">
-                                    <span class="material-icons">podcasts</span>
-                                    <div class="ms-2">
-                                        <h6 class="text-sm font-weight-normal my-auto">
-                                            Manage podcast session
-                                        </h6>
-                                    </div>
-                                </div>
-                            </a>
-                        </li>
-                        <li>
-                            <a class="dropdown-item border-radius-md" href="javascript:;">
-                                <div class="d-flex align-items-center py-1">
-                                    <span class="material-icons">shopping_cart</span>
-                                    <div class="ms-2">
-                                        <h6 class="text-sm font-weight-normal my-auto">
-                                            Payment successfully completed
-                                        </h6>
-                                    </div>
-                                </div>
-                            </a>
-                        </li>
-                    </ul>
-                </li> --}}
             </ul>
         </div>
     </div>

@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Backend\Tienda;
 
 use App\Http\Controllers\Controller;
+use App\Models\Tienda\NotificacionModel;
 use App\Models\PropietarioModel;
 use App\Models\Tienda\CompraModel;
 use App\Models\Tienda\DetalleVentaModel;
@@ -71,6 +72,7 @@ class VentaController extends Controller
 
         // Validar stock basado en COMPRAS (no en ProductoModel->cantidad)
         foreach ($request->productos as $producto) {
+
             $productoModel = ProductoModel::find($producto['codigo']);
 
             if (!$productoModel) {
@@ -97,6 +99,19 @@ class VentaController extends Controller
                         ' (Stock disponible: ' . $stockDisponible . ', Solicitado: ' . $producto['cantidad'] . ')',
                     'status' => 400
                 ], 400);
+            }
+            $newStockTotal = $stockDisponible - $producto['cantidad'];
+
+            $umbralStockBajo = 5;
+
+            if ($newStockTotal <= $umbralStockBajo) {
+                NotificacionModel::create([
+                    'id_usuario' => Auth::id(),
+                    'id_producto' => $productoModel->id_producto,
+                    'titulo' => 'Stock bajo',
+                    'mensaje' => "El producto {$productoModel->nombre_producto} tiene stock bajo ({$newStockTotal} unidades)",
+                    'tipo' => 'stock'
+                ]);
             }
         }
 
@@ -175,6 +190,7 @@ class VentaController extends Controller
             ], 500);
         }
     }
+
     public function update(Request $request, $id)
     {
         $propietario = PropietarioModel::find($id);

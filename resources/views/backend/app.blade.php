@@ -16,7 +16,7 @@
     {{-- <link rel="stylesheet" type="text/css"
         href="{{ asset('assets/css/typography.css') }}" /> --}}
     <link rel="stylesheet" type="text/css"
-        href="https://fonts.googleapis.com/css?family=Roboto:300,400,500,700,900|Roboto+Slab:400,700"  />
+        href="https://fonts.googleapis.com/css?family=Roboto:300,400,500,700,900|Roboto+Slab:400,700" />
 
     <link href="{{ asset('material-dashboard/assets/css/nucleo-icons.css') }}" rel="stylesheet" />
     <link href="{{ asset('material-dashboard/assets/css/nucleo-svg.css') }}" rel="stylesheet" />
@@ -222,6 +222,9 @@
         <script src="{{ asset('backend/js/tienda/admin-cliente/index.js') }}" type="module"></script>
     @endif --}}
 
+    @if ($data['usuario']->rol == 'vendedor' || $data['usuario']->rol == 'administrador')
+        <script src="{{ asset('backend/js/notification.js') }}" type="module"></script>
+    @endif
     @yield('scripts')
 
 </body>
